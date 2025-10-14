@@ -7,11 +7,6 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
-
-
-
-
-  
   const login = async (email, senha) => {
     try {
       const response = await axios.post(
@@ -32,7 +27,7 @@ const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorageService.remover("token");
     localStorageService.remover("user");
-    setToken(null); 
+    setToken(null);
     setUser(null);
   };
 

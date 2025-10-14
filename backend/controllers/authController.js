@@ -48,10 +48,10 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// L.ogin de usuário
+// Login de usuário
 
 export const loginUser = async (req, res) => {
-  const registerSchema = z.object({
+  const loginSchema = z.object({
     email: z.string().email({ message: "Formato de e-mail inválido." }),
     senha: z
       .string()
@@ -59,7 +59,7 @@ export const loginUser = async (req, res) => {
   });
 
   try {
-    const { email, senha } = registerSchema.parse(req.body);
+    const { email, senha } = loginSchema.parse(req.body);
 
     const user = await prisma.user.findUnique({
       where: { email },
@@ -90,3 +90,5 @@ export const loginUser = async (req, res) => {
     console.error(error);
   }
 };
+
+

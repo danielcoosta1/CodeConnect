@@ -33,7 +33,10 @@ const Login = () => {
     setErro("");
 
     try {
-      const response = await axios.post("http://localhost:51213/api/auth/login", { email, senha });
+      const response = await axios.post(
+        "http://localhost:51213/api/auth/login",
+        { email, senha }
+      );
       console.log(response.data);
       navigate("/feed");
       // Lógica para lidar com a resposta bem-sucedida
