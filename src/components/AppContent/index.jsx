@@ -7,6 +7,7 @@ import Feed from "../../pages/Feed";
 import Perfil from "../../pages/Perfil";
 import SobreNos from "../../pages/SobreNos";
 import { ToastContainer } from "react-toastify";
+import ProtectedLayout from "../ProtectedLayout";
 
 const AppContent = () => {
   return (
@@ -24,7 +25,7 @@ const AppContent = () => {
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/login" element={<Login />} />
         {/* Layout com Sidebar */}
-        <Route path="/" element={<ContainerMain />}>
+        <Route path="/" element={<ProtectedLayout />}>
           <Route path="publicar" element={<Publicar />} />
           <Route path="feed" element={<Feed />} />
           <Route path="perfil" element={<Perfil />} />
