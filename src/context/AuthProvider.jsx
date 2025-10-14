@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
 import { localStorageService } from "../services/localStorageService";
-
+import { useNavigate } from "react-router-dom";
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+
+  const navigation = useNavigate();
 
   //Restaura o estado de autenticação ao carregar o aplicativo
   useEffect(() => {
@@ -26,6 +28,7 @@ const AuthProvider = ({ children }) => {
         { email, senha }
       );
       const { user: userData, token: authToken } = response.data;
+      navigation("/feed");
       localStorageService.salvar("token", authToken);
       localStorageService.salvar("user", userData);
       // ATIVA O CRACHÁ após o login
