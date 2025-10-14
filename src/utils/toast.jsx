@@ -10,7 +10,7 @@ export const toastSucesso = (mensagem) => {
         color: "#fff",
         fontSize: "16px",
       },
-      autoClose: 3000,
+      autoClose: 2000,
       pauseOnHover: true,
       draggable: true,
     });
@@ -27,7 +27,7 @@ export const toastErro = (mensagem) => {
       color: "#fff",
       fontSize: "16px",
     },
-    autoClose: 3000,
+    autoClose: 2000,
     pauseOnHover: true,
     draggable: true,
   });
