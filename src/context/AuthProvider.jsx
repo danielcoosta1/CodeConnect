@@ -12,8 +12,8 @@ const AuthProvider = ({ children }) => {
 
   //Restaura o estado de autenticação ao carregar o aplicativo
   useEffect(() => {
-    const storedToken = localStorageService.ler("user");
-    const storedUser = localStorageService.ler("token");
+    const storedUser = localStorageService.ler("user");
+    const storedToken = localStorageService.ler("token");
     // ATIVA O CRACHÁ ao restaurar a sessão
     axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
     if (storedToken && storedUser) {
