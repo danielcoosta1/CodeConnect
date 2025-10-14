@@ -52,12 +52,13 @@ const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
   };
-
+// Condicionamos a renderização dos filhos
+  // Isso previne que a aplicação renderize as rotas protegidas antes da verificação terminar
   return (
     <AuthContext.Provider
       value={{ user, token, login, logout, isAuthenticated: !!token, loading }}
     >
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 };
