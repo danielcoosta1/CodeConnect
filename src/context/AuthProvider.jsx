@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
 import { localStorageService } from "../services/localStorageService";
@@ -6,7 +6,15 @@ import { localStorageService } from "../services/localStorageService";
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-
+  
+  useEffect(() => {
+    const storedToken = localStorageService.ler("user");
+    const storedUser = localStorageService.ler("token");
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(storedUser);
+    }
+  }, []);
   const login = async (email, senha) => {
     try {
       const response = await axios.post(
