@@ -15,8 +15,9 @@ const AuthProvider = ({ children }) => {
     const storedUser = localStorageService.ler("user");
     const storedToken = localStorageService.ler("token");
     // ATIVA O CRACHÁ ao restaurar a sessão
-    axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+
     if (storedToken && storedUser) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
       setToken(storedToken);
       setUser(storedUser);
     }
