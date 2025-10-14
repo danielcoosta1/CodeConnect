@@ -44,6 +44,7 @@ const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorageService.remover("token");
     localStorageService.remover("user");
+    navigation("/login");
     // REMOVE O CRACHÁ no logout
     delete axios.defaults.headers.common["Authorization"];
     setToken(null);
