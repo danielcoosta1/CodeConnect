@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigate();
 
   //Restaura o estado de autenticação ao carregar o aplicativo
@@ -21,6 +21,7 @@ const AuthProvider = ({ children }) => {
       setToken(storedToken);
       setUser(storedUser);
     }
+    setLoading(false);
   }, []);
   const login = async (email, senha) => {
     try {
@@ -54,7 +55,7 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, login, logout, isAuthenticated: !!token }}
+      value={{ user, token, login, logout, isAuthenticated: !!token, loading }}
     >
       {children}
     </AuthContext.Provider>
