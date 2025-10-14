@@ -9,17 +9,17 @@ import {
   Form,
   LinkCadastro,
 } from "./style";
-import axios from "axios";
 import imgLogin from "./assets/img_login.png";
 import { useState } from "react";
 
 import { CgArrowRight } from "react-icons/cg";
 import { MdOutlineContentPaste } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+
 import { FiLoader } from "react-icons/fi";
+import { useAuth } from "../../hooks/useAuth";
 
 const Login = () => {
-  let navigate = useNavigate();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -33,13 +33,7 @@ const Login = () => {
     setErro("");
 
     try {
-      const response = await axios.post(
-        "http://localhost:51213/api/auth/login",
-        { email, senha }
-      );
-      console.log(response.data);
-      navigate("/feed");
-      // Lógica para lidar com a resposta bem-sucedida
+      await login(email, senha);
     } catch (error) {
       setErro(
         error.response?.data?.error || "Erro ao fazer login.Tente Novamente"
