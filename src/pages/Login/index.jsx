@@ -17,6 +17,7 @@ import { MdOutlineContentPaste } from "react-icons/md";
 
 import { FiLoader } from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
+import { toastErro, toastSucesso } from "../../utils/toast";
 
 const Login = () => {
   const { login } = useAuth();
@@ -34,10 +35,12 @@ const Login = () => {
 
     try {
       await login(email, senha);
+      toastSucesso("Login realizado com sucesso!");
     } catch (error) {
       setErro(
         error.response?.data?.error || "Erro ao fazer login.Tente Novamente"
       );
+      toastErro("Erro ao fazer login.Tente Novamente");
     } finally {
       setLoading(false);
     }
