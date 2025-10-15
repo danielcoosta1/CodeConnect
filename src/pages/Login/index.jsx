@@ -18,17 +18,20 @@ import { MdOutlineContentPaste } from "react-icons/md";
 import { FiLoader } from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
 import { toastErro, toastSucesso } from "../../utils/toast";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { login } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const origem = location.state?.from?.pathname || "/feed";
 
   useEffect(() => {
     if (location.state?.from) {
@@ -44,6 +47,7 @@ const Login = () => {
     try {
       await login(email, senha);
       toastSucesso("Login realizado com sucesso!");
+      navigate(origem, { replace: true }); //replace para não voltar para a página de login
     } catch (error) {
       setErro(
         error.response?.data?.error || "Erro ao fazer login.Tente Novamente"
