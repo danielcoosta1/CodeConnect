@@ -10,7 +10,7 @@ import {
   LinkCadastro,
 } from "./style";
 import imgLogin from "./assets/img_login.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { CgArrowRight } from "react-icons/cg";
 import { MdOutlineContentPaste } from "react-icons/md";
@@ -18,15 +18,23 @@ import { MdOutlineContentPaste } from "react-icons/md";
 import { FiLoader } from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
 import { toastErro, toastSucesso } from "../../utils/toast";
+import { useLocation } from "react-router-dom";
 
 const Login = () => {
   const { login } = useAuth();
+  const location = useLocation();
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (location.state?.from) {
+      toastErro("Você precisa estar logado para acessar essa página.");
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
