@@ -46,7 +46,7 @@ const SideBar = () => {
     },
     {
       name: "Sair",
-      path: "/login",
+      path: null,
       src: logoutIcon,
       src2: null,
       onclick: logout,
