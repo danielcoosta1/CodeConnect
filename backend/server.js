@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import authRoutes from "./routes/authRoutes.js";
+import postRoutes from "./routes/postRoutes.js";
 /* global process */
 import express from "express";
 import cors from "cors";
@@ -18,6 +19,9 @@ app.use(express.json());
 
     //Rotas de  autenticação
 app.use("/api/auth", authRoutes);
+
+    //Rotas de posts
+app.use("/api/posts", postRoutes);
 
 
 app.listen(PORT, () => {

@@ -19,4 +19,21 @@ model User {
   email         String  @unique
   senha         String
   nomeDeUsuario String?
+  // A relação inversa: um usuário pode ter múltiplos posts
+  posts         Post[]
+}
+
+// O novo model, baseado na sua ideia do Figma
+model Post {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String   // Equivalente ao "nome" da publicação
+  content       String   // Equivalente à "descricao"
+  imageUrl      String   // Equivalente à "imagem" (será a URL da imagem)
+  imageFileName String   // Equivalente ao "nomeArquivo"
+  tags          String[] // Lista de strings para as tags
+  createdAt     DateTime @default(now())
+
+  // --- A Relação com o User ---
+  author   User   @relation(fields: [authorId], references: [id]) // Relaciona o post ao autor
+  authorId String @db.ObjectId
 }

@@ -46,13 +46,13 @@ const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorageService.remover("token");
     localStorageService.remover("user");
-    navigation("/login");
+
     // REMOVE O CRACHÁ no logout
     delete axios.defaults.headers.common["Authorization"];
     setToken(null);
     setUser(null);
   };
-// Condicionamos a renderização dos filhos
+  // Condicionamos a renderização dos filhos
   // Isso previne que a aplicação renderize as rotas protegidas antes da verificação terminar
   return (
     <AuthContext.Provider
