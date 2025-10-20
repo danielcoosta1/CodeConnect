@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const ContainerWrapper = styled.div`
   display: flex;
-   width: 100%;
+  width: 100%;
   height: 100%;
 `;
 
@@ -32,12 +32,11 @@ export const ButtonCarregarImg = styled.button`
 export const LegendaImg = styled.p``;
 
 export const ContainerForm = styled.div`
-width:100%;
+  width: 100%;
   color: #e1e1e1;
 `;
 
 export const Form = styled.form`
-
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -78,6 +77,14 @@ export const ContainerInputDescricao = styled.div`
     min-height: 60px;
     padding: 1em 1.5em;
     font-size: 1rem;
+    &::placeholder {
+      color: #171d1f;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #81fe88;
+    }
   }
 `;
 
@@ -90,7 +97,6 @@ export const ContainerBotoes = styled.div`
   width: 100%;
   font-weight: bold;
 `;
-
 
 export const BotaoDescartar = styled.button`
   display: flex;
