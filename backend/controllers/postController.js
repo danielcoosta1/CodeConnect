@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma.js";
+import { z } from "zod";
 
 // Rota para buscar/listar todos os posts
 export const getAllPosts = async (req, res) => {
@@ -12,6 +13,38 @@ export const getAllPosts = async (req, res) => {
     res.json(posts);
   } catch (error) {
     console.error("Error fetching posts:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
+export const createPost = async (req, res) => {
+  const postSchema = z.object({
+    title: z.string().min(1, { message: "O título é obrigatório." }),
+    content: z.string().min(1, { message: "O conteúdo é obrigatório." }),
+  });
+
+  const validation = postSchema.safeParse(req.body);
+  if (!validation.success) {
+    return res.status(400).json({ error: validation.error });
+  }
+
+  const { title, content } = validation.data;
+
+  try {
+    const newPost = await prisma.post.create({
+      data: {
+        title,
+        content,
+        author: {
+          connect: { id: req.user.id },
+        },
+      },
+    });
+    res.status(201).json(newPost);
+  } catch (error) {
+    console.error("Error creating post:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
