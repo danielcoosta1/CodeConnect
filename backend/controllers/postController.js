@@ -18,7 +18,7 @@ export const getAllPosts = async (req, res) => {
 };
 
 
-// Rota para criar um novo post
+// Rota para criar um novo post 
 export const createPost = async (req, res) => {
   const postSchema = z.object({
     title: z.string().min(1, { message: "O título é obrigatório." }),
