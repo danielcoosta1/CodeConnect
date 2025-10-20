@@ -1,6 +1,9 @@
 import {
+  BotaoDescartar,
+  BotaoPublicar,
   ButtonCarregarImg,
   CampoInput,
+  ContainerBotoes,
   ContainerForm,
   ContainerImg,
   ContainerInputDescricao,
@@ -29,14 +32,18 @@ const Publicar = () => {
       <ContainerForm>
         <h2>Novo Projeto </h2>
         <Form>
-            <CampoInput>
-                <label>Nome do projeto</label>
-                <input></input>
-            </CampoInput>
-            <ContainerInputDescricao>
-                <label>Descrição</label>
-                <textarea/>
-            </ContainerInputDescricao>
+          <CampoInput>
+            <label>Nome do projeto</label>
+            <input></input>
+          </CampoInput>
+          <ContainerInputDescricao>
+            <label>Descrição</label>
+            <textarea />
+          </ContainerInputDescricao>
+          <ContainerBotoes>
+            <BotaoDescartar>Descartar</BotaoDescartar>
+            <BotaoPublicar>Publicar</BotaoPublicar>
+          </ContainerBotoes>
         </Form>
       </ContainerForm>
     </ContainerWrapper>

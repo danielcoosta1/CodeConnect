@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 export const ContainerWrapper = styled.div`
   display: flex;
+   width: 100%;
+  height: 100%;
 `;
 
 export const ContainerImg = styled.div`
@@ -30,10 +32,12 @@ export const ButtonCarregarImg = styled.button`
 export const LegendaImg = styled.p``;
 
 export const ContainerForm = styled.div`
+width:100%;
   color: #e1e1e1;
 `;
 
 export const Form = styled.form`
+
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -85,4 +89,67 @@ export const ContainerBotoes = styled.div`
 
   width: 100%;
   font-weight: bold;
+`;
+
+
+export const BotaoDescartar = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  border: 1px solid #81fe88;
+  color: #81fe88;
+  background-color: transparent;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  width: 100%;
+  font-size: 1rem;
+
+  &:hover {
+    background-color: rgba(129, 254, 136, 0.1);
+  }
+
+  &:active {
+    background-color: rgba(129, 254, 136, 0.2);
+    transform: scale(0.98);
+  }
+
+  &:focus {
+    outline: 2px solid #81fe88;
+    outline-offset: 2px;
+  }
+`;
+
+export const BotaoPublicar = styled.button`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  font-size: 1rem;
+
+  background-color: #81fe88;
+  color: #132e35;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+
+  &:hover {
+    background-color: #6be276;
+  }
+
+  &:active {
+    background-color: #5acd66;
+    transform: scale(0.98);
+  }
+
+  &:focus {
+    outline: 2px solid #132e35;
+    outline-offset: 2px;
+  }
 `;
