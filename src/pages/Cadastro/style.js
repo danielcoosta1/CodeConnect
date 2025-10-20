@@ -90,7 +90,7 @@ export const CampoInput = styled.div`
 
     &:focus {
       outline: none;
-      border-color: #007bff;
+      border-color: #81FE88
     }
   }
 `;
