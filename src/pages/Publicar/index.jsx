@@ -30,6 +30,11 @@ const Publicar = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const limparCampos = () => {
+    setTitle("");
+    setContent("");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -41,6 +46,7 @@ const Publicar = () => {
         content,
       });
       toastSucesso("Post publicado com sucesso!");
+      limparCampos();
     } catch (error) {
       console.error(error);
       setErro(
