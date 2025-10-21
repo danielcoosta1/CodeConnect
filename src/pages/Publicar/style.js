@@ -4,16 +4,22 @@ export const ContainerWrapper = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
+  gap: 2rem;
 `;
 
 export const ContainerImg = styled.div`
   display: flex;
 
   flex-direction: column;
+ 
+`;
+
+export const BgImg = styled.div`
+  background-color: #888888;
 `;
 
 export const Img = styled.img`
-  width: 500px;
+  width: 450px;
 `;
 
 export const ButtonCarregarImg = styled.button`
@@ -27,9 +33,12 @@ export const ButtonCarregarImg = styled.button`
   background-color: transparent;
   border: 2px solid #888888;
   border-radius: 8px;
+  margin-top: 2rem;
 `;
 
-export const LegendaImg = styled.p``;
+export const LegendaImg = styled.p`
+margin-top:.5rem;
+`;
 
 export const ContainerForm = styled.div`
   width: 100%;
@@ -40,6 +49,7 @@ export const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-top: 2.5rem;
 `;
 
 export const CampoInput = styled.div`
