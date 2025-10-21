@@ -14,13 +14,38 @@ import {
 } from "./style";
 import exemploImg from "./assets/exemplo.png";
 import { useState } from "react";
+import { toastSucesso } from "../../utils/toast";
+import axios from "axios";
 
 const Publicar = () => {
-  const [title, setTittle] = useState("");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const [erro, setErro] = useState("");
   const [cadastroSucesso, setCadastroSucesso] = useState(false);
 
   const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setErro("");
+    try {
+      await axios.post("http://localhost:51213/api/posts", {
+        title,
+        content,
+      });
+      setCadastroSucesso(true);
+      toastSucesso("Post publicado com sucesso!");
+    } catch (error) {
+      console.error(error);
+      setErro(
+        error.response?.data?.error ||
+          "Não foi possível publicar. Tente novamente."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ContainerWrapper>
@@ -31,18 +56,31 @@ const Publicar = () => {
       </ContainerImg>
       <ContainerForm>
         <h2>Novo Projeto </h2>
-        <Form>
+        <Form onSubmit={handleSubmit}>
           <CampoInput>
-            <label>Nome do projeto</label>
-            <input></input>
+            <label>Título do projeto</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            ></input>
           </CampoInput>
           <ContainerInputDescricao>
             <label>Descrição</label>
-            <textarea />
+            <textarea
+              id="content"
+              name="content"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              required
+            />
           </ContainerInputDescricao>
           <ContainerBotoes>
             <BotaoDescartar>Descartar</BotaoDescartar>
-            <BotaoPublicar>Publicar</BotaoPublicar>
+            <BotaoPublicar type="submit">Publicar</BotaoPublicar>
           </ContainerBotoes>
         </Form>
       </ContainerForm>
