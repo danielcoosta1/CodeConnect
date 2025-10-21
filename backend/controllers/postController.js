@@ -17,8 +17,7 @@ export const getAllPosts = async (req, res) => {
   }
 };
 
-
-// Rota para criar um novo post 
+// Rota para criar um novo post
 export const createPost = async (req, res) => {
   const postSchema = z.object({
     title: z.string().min(1, { message: "O título é obrigatório." }),
@@ -31,15 +30,23 @@ export const createPost = async (req, res) => {
   }
 
   const { title, content } = validation.data;
-
+  const authorId = req.user.id;
   try {
     const newPost = await prisma.post.create({
       data: {
         title,
         content,
+        // --- Adicione valores padrão temporários ---
+        imageUrl: "placeholder.jpg", // Ou qualquer string temporária
+        imageFileName: "placeholder", // Ou qualquer string temporária
+        tags: [], // Um array vazio como padrão para as tags
+        // ------------------------------------------
         author: {
-          connect: { id: req.user.id },
+          connect: {
+            id: authorId,
+          },
         },
+        // createdAt é gerado automaticamente pelo @default(now())
       },
     });
     res.status(201).json(newPost);
