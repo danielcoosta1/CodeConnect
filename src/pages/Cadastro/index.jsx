@@ -17,6 +17,7 @@ import { FiLoader } from "react-icons/fi";
 
 
 import imgCadastro from "./assets/img_cadastro.png";
+import { toastSucesso } from "../../utils/toast";
 
 const Cadastro = () => {
   const [nome, setNome] = useState("");
@@ -40,6 +41,7 @@ const Cadastro = () => {
         senha,
       });
       setCadastroSucesso(true);
+      toastSucesso("Cadastro realizado com sucesso!");
     } catch (error) {
       console.error(error);
       setErro(
