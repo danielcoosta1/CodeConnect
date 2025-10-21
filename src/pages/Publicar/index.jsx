@@ -12,16 +12,21 @@ import {
   Img,
   LegendaImg,
 } from "./style";
+
+import { FaTrash } from "react-icons/fa";
+import { MdPublish } from "react-icons/md";
 import exemploImg from "./assets/exemplo.png";
+
 import { useState } from "react";
-import { toastSucesso } from "../../utils/toast";
 import axios from "axios";
+
+import { toastSucesso } from "../../utils/toast";
+import { LuLoader } from "react-icons/lu";
 
 const Publicar = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [erro, setErro] = useState("");
-  const [cadastroSucesso, setCadastroSucesso] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -29,12 +34,12 @@ const Publicar = () => {
     e.preventDefault();
     setLoading(true);
     setErro("");
+
     try {
       await axios.post("http://localhost:51213/api/posts", {
         title,
         content,
       });
-      setCadastroSucesso(true);
       toastSucesso("Post publicado com sucesso!");
     } catch (error) {
       console.error(error);
@@ -78,9 +83,20 @@ const Publicar = () => {
               required
             />
           </ContainerInputDescricao>
+          {erro && <p style={{ color: "red" }}>{erro}</p>}
           <ContainerBotoes>
-            <BotaoDescartar>Descartar</BotaoDescartar>
-            <BotaoPublicar type="submit">Publicar</BotaoPublicar>
+            <BotaoDescartar>
+              Descartar <FaTrash />
+            </BotaoDescartar>
+            <BotaoPublicar type="submit">
+              {!loading ? (
+                <>
+                  Publicar <MdPublish />
+                </>
+              ) : (
+                <LuLoader />
+              )}{" "}
+            </BotaoPublicar>
           </ContainerBotoes>
         </Form>
       </ContainerForm>
