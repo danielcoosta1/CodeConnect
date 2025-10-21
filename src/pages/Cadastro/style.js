@@ -33,7 +33,7 @@ export const ContainerImg = styled.div`
 export const ContainerForm = styled.div`
   display: flex;
   width: 100%;
-  
+
   justify-content: center;
 
   max-width: 30rem;
@@ -47,20 +47,15 @@ export const ContainerSucesso = styled.div`
   flex-direction: column;
   gap: 2rem;
   font-size: 1.25rem;
- 
-
-
 `;
 
 export const LinkLogin = styled(Link)`
-   color: #81fe88;
+  color: #81fe88;
 
   &:hover {
     text-decoration: underline;
     scale: 1.1;
   }
-
-
 `;
 
 export const Form = styled.form`
@@ -90,16 +85,20 @@ export const CampoInput = styled.div`
 
     &:focus {
       outline: none;
-      border-color: #007bff;
+      border-color: #81fe88;
     }
   }
+
 `;
 
+
+
+
 export const Button = styled.button`
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   padding: 0.75rem;
   border: none;
   border-radius: 0.25rem;
@@ -113,6 +112,3 @@ gap: 0.5rem;
     background-color: #66d75b;
   }
 `;
-
-
-
