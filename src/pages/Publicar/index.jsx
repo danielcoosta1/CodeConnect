@@ -24,7 +24,7 @@ import { MdPublish } from "react-icons/md";
 
 import defaultImg from "./assets/exemplo.png";
 import closeIcon from "./assets/icons/close.svg";
-import trashIcon from "./assets/icons/trash.svg";
+
 import uploadIcon from "./assets/icons/upload.svg";
 
 import { useRef, useState } from "react";
@@ -197,8 +197,10 @@ const Publicar = () => {
             />
           </ContainerInputDescricao>
           <ContainerTags>
-            <label>Tags</label>
+            <label htmlFor="tags">Tags</label>
             <input
+              id="tags"
+              name="tags"
               type="text"
               placeholder="Digite e pressione Enter(Ex: JavaScript, React, Node.js)"
               value={novaTag}
