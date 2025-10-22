@@ -12,12 +12,14 @@ import {
   ContainerWrapper,
   Form,
   Img,
-  LegendaImg,
 } from "./style";
 
 import { FaTrash } from "react-icons/fa";
 import { MdPublish } from "react-icons/md";
+
 import defaultImg from "./assets/exemplo.png";
+import trashIcon from "./assets/icons/trash.svg";
+import uploadIcon from "./assets/icons/upload.svg";
 
 import { useRef, useState } from "react";
 import axios from "axios";
@@ -30,6 +32,7 @@ const Publicar = () => {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+
   const [image, setImage] = useState(null);
   const [imageFileName, setImageFileName] = useState("");
 
@@ -54,9 +57,9 @@ const Publicar = () => {
     const reader = new FileReader(); // Cria um leitor de arquivos
 
     // Quando o arquivo for carregado
-    reader.onload = () => { 
+    reader.onload = () => {
       const base64String = reader.result.split(",")[1]; // Extrai a parte base64 que seria o  src da imagem
-      setImage(base64String);// Armazena a imagem em base64 no estado
+      setImage(base64String); // Armazena a imagem em base64 no estado
       setImageFileName(file.name); // Armazena o nome do arquivo no estado
     };
 
@@ -79,6 +82,9 @@ const Publicar = () => {
       await axios.post("http://localhost:51213/api/posts", {
         title,
         content,
+        imageFileName,
+        image,
+        tags: [],
       });
       toastSucesso("Post publicado com sucesso!");
       limparCampos();
@@ -97,7 +103,7 @@ const Publicar = () => {
     <ContainerWrapper>
       <ContainerUploadImg>
         <ContainerImg>
-          <Img src={defaultImg} alt="Imagem de exemplo" />
+          <Img src={image || defaultImg} alt="Imagem de exemplo" />
         </ContainerImg>
         <ContainerButton>
           <ButtonUploadImg onClick={() => inputRef.current.click()}>
@@ -109,8 +115,9 @@ const Publicar = () => {
               onChange={lidarComUpload}
               style={{ display: "none" }}
             />
+            <img src={uploadIcon} alt="Ícone de upload" />
           </ButtonUploadImg>
-          <LegendaImg>Legenda da Imagem</LegendaImg>
+          {image && <p>{imageFileName}</p>}
         </ContainerButton>
       </ContainerUploadImg>
       <ContainerForm>
