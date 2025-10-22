@@ -27,13 +27,17 @@ import axios from "axios";
 
 import { toastSucesso } from "../../utils/toast";
 import { LuLoader } from "react-icons/lu";
+import { set } from "zod";
 
 const Publicar = () => {
   const inputRef = useRef();
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+
+  const [novaTag, setNovaTag] = useState("");
   const [tags, setTags] = useState([]);
+  const [erroTags, setErroTags] = useState("");
 
   const [image, setImage] = useState(null);
   const [imageFileName, setImageFileName] = useState("");
@@ -67,6 +71,21 @@ const Publicar = () => {
     };
 
     reader.readAsDataURL(file); // Converte o arquivo para base64
+  };
+
+  const lidarComKeyDown = (e) => {
+    e.preventDefault();
+    if (e.key !== "Enter") return;
+    const novaTag = e.target.value.trim();
+
+    if (!novaTag)
+      return setErroTags("Digite uma tag antes de pressionar Enter.");
+    if (tags.includes(novaTag)) {
+      return setErroTags("Essa tag já foi adicionada.");
+    }
+    setTags([...tags, novaTag]);
+    setNovaTag(""); //zera o input de nova tag
+    setErroTags("");
   };
 
   const limparCampos = () => {
@@ -152,8 +171,9 @@ const Publicar = () => {
             <input
               type="text"
               placeholder="Digite e pressione Enter(Ex: JavaScript, React, Node.js)"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
+              value={novaTag}
+              onChange={(e) => setNovaTag(e.target.value)}
+              onKeyDown={lidarComKeyDown}
             />
           </ContainerTags>
           {erro && <p style={{ color: "red" }}>{erro}</p>}
