@@ -7,22 +7,29 @@ export const ContainerWrapper = styled.div`
   gap: 2rem;
 `;
 
-export const ContainerImg = styled.div`
+export const ContainerUploadImg = styled.div`
   display: flex;
 
   flex-direction: column;
  
 `;
 
-export const BgImg = styled.div`
+export const ContainerImg = styled.div`
   background-color: #888888;
+  border-radius: 8px;
+  
 `;
 
 export const Img = styled.img`
   width: 450px;
 `;
 
-export const ButtonCarregarImg = styled.button`
+export const ContainerButton = styled.div`
+  display: flex;
+  flex-direction: column;
+  `;
+
+export const ButtonUploadImg = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;

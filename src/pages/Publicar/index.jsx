@@ -1,12 +1,14 @@
 import {
   BotaoDescartar,
   BotaoPublicar,
-  ButtonCarregarImg,
+  ButtonUploadImg,
   CampoInput,
   ContainerBotoes,
+  ContainerButton,
   ContainerForm,
   ContainerImg,
   ContainerInputDescricao,
+  ContainerUploadImg,
   ContainerWrapper,
   Form,
   Img,
@@ -17,22 +19,28 @@ import { FaTrash } from "react-icons/fa";
 import { MdPublish } from "react-icons/md";
 import exemploImg from "./assets/exemplo.png";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 
 import { toastSucesso } from "../../utils/toast";
 import { LuLoader } from "react-icons/lu";
 
 const Publicar = () => {
+  const inputRef = useRef();
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [erro, setErro] = useState("");
+  const [image, setImage] = useState(null);
+  const [imageFileName, setImageFileName] = useState("");
 
+  const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
 
   const limparCampos = () => {
     setTitle("");
     setContent("");
+    setImage(null);
+    setImageFileName("");
   };
 
   const handleSubmit = async (e) => {
@@ -60,11 +68,15 @@ const Publicar = () => {
 
   return (
     <ContainerWrapper>
-      <ContainerImg>
-        <Img src={exemploImg} alt="Imagem de exemplo" />
-        <ButtonCarregarImg>Carregar Imagem</ButtonCarregarImg>
-        <LegendaImg>Legenda da Imagem</LegendaImg>
-      </ContainerImg>
+      <ContainerUploadImg>
+        <ContainerImg>
+          <Img src={exemploImg} alt="Imagem de exemplo" />
+        </ContainerImg>
+        <ContainerButton>
+          <ButtonUploadImg>Carregar Imagem</ButtonUploadImg>
+          <LegendaImg>Legenda da Imagem</LegendaImg>
+        </ContainerButton>
+      </ContainerUploadImg>
       <ContainerForm>
         <h2>Novo Projeto </h2>
         <Form onSubmit={handleSubmit}>
@@ -91,7 +103,7 @@ const Publicar = () => {
           </ContainerInputDescricao>
           {erro && <p style={{ color: "red" }}>{erro}</p>}
           <ContainerBotoes>
-            <BotaoDescartar>
+            <BotaoDescartar onClick={limparCampos}>
               Descartar <FaTrash />
             </BotaoDescartar>
             <BotaoPublicar type="submit">
