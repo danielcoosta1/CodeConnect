@@ -11,13 +11,11 @@ export const ContainerUploadImg = styled.div`
   display: flex;
 
   flex-direction: column;
- 
 `;
 
 export const ContainerImg = styled.div`
   background-color: #888888;
   border-radius: 8px;
-  
 `;
 
 export const Img = styled.img`
@@ -27,7 +25,7 @@ export const Img = styled.img`
 export const ContainerButton = styled.div`
   display: flex;
   flex-direction: column;
-  `;
+`;
 
 export const ButtonUploadImg = styled.button`
   display: flex;
@@ -41,10 +39,6 @@ export const ButtonUploadImg = styled.button`
   border: 2px solid #888888;
   border-radius: 8px;
   margin-top: 2rem;
-`;
-
-export const LegendaImg = styled.p`
-margin-top:.5rem;
 `;
 
 export const ContainerForm = styled.div`
@@ -94,6 +88,32 @@ export const ContainerInputDescricao = styled.div`
     min-height: 60px;
     padding: 1em 1.5em;
     font-size: 1rem;
+    &::placeholder {
+      color: #171d1f;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #81fe88;
+    }
+  }
+`;
+
+export const ContainerTags = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  input {
+    padding: 0.8rem;
+    border: 1px solid #333;
+    border-radius: 0.25rem;
+    background-color: #888888;
+
     &::placeholder {
       color: #171d1f;
     }

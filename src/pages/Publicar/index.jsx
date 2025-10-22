@@ -8,6 +8,7 @@ import {
   ContainerForm,
   ContainerImg,
   ContainerInputDescricao,
+  ContainerTags,
   ContainerUploadImg,
   ContainerWrapper,
   Form,
@@ -32,6 +33,7 @@ const Publicar = () => {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [tags, setTags] = useState([]);
 
   const [image, setImage] = useState(null);
   const [imageFileName, setImageFileName] = useState("");
@@ -40,6 +42,7 @@ const Publicar = () => {
   const [loading, setLoading] = useState(false);
 
   const lidarComUpload = (event) => {
+    event.preventDefault();
     const file = event.target.files[0];
     if (!file) return;
 
@@ -84,7 +87,7 @@ const Publicar = () => {
         content,
         imageFileName,
         image,
-        tags: [],
+        tags,
       });
       toastSucesso("Post publicado com sucesso!");
       limparCampos();
@@ -144,6 +147,15 @@ const Publicar = () => {
               required
             />
           </ContainerInputDescricao>
+          <ContainerTags>
+            <label>Tags</label>
+            <input
+              type="text"
+              placeholder="Digite e pressione Enter(Ex: JavaScript, React, Node.js)"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+            />
+          </ContainerTags>
           {erro && <p style={{ color: "red" }}>{erro}</p>}
           <ContainerBotoes>
             <BotaoDescartar onClick={limparCampos}>
