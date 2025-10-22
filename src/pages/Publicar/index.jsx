@@ -13,6 +13,9 @@ import {
   ContainerWrapper,
   Form,
   Img,
+  TagItem,
+  TagList,
+  TagRemoveButton,
 } from "./style";
 
 import { FaTrash } from "react-icons/fa";
@@ -27,6 +30,8 @@ import axios from "axios";
 
 import { toastSucesso } from "../../utils/toast";
 import { LuLoader } from "react-icons/lu";
+
+import { IoMdClose } from "react-icons/io";
 import { set } from "zod";
 
 const Publicar = () => {
@@ -74,8 +79,9 @@ const Publicar = () => {
   };
 
   const lidarComKeyDown = (e) => {
-    e.preventDefault();
     if (e.key !== "Enter") return;
+    e.preventDefault();
+
     const novaTag = e.target.value.trim();
 
     if (!novaTag)
@@ -93,6 +99,14 @@ const Publicar = () => {
     setContent("");
     setImage(null);
     setImageFileName("");
+    setTags([]);
+    setNovaTag("");
+    setErro("");
+    setErroTags("");
+  };
+
+  const removerTag = (indexToRemove) => {
+    setTags(tags.filter((_, index) => index !== indexToRemove));
   };
 
   const handleSubmit = async (e) => {
@@ -125,7 +139,10 @@ const Publicar = () => {
     <ContainerWrapper>
       <ContainerUploadImg>
         <ContainerImg>
-          <Img src={image || defaultImg} alt="Imagem de exemplo" />
+          <Img
+            src={image ? `data:image/png;base64,${image}` : defaultImg}
+            alt="Imagem de exemplo"
+          />
         </ContainerImg>
         <ContainerButton>
           <ButtonUploadImg onClick={() => inputRef.current.click()}>
@@ -139,7 +156,19 @@ const Publicar = () => {
             />
             <img src={uploadIcon} alt="Ícone de upload" />
           </ButtonUploadImg>
-          {image && <p>{imageFileName}</p>}
+          {image && (
+            <ContainerSubtittle>
+              <p>{imageFileName}</p>
+              <img
+                src={trashIcon}
+                alt="Ícone de lixeira"
+                onClick={() => {
+                  setImage(null);
+                  setImageFileName("");
+                }}
+              />
+            </ContainerSubtittle>
+          )}
         </ContainerButton>
       </ContainerUploadImg>
       <ContainerForm>
@@ -175,7 +204,21 @@ const Publicar = () => {
               onChange={(e) => setNovaTag(e.target.value)}
               onKeyDown={lidarComKeyDown}
             />
+            {erroTags && <p style={{ color: "red" }}>{erroTags}</p>}
+            {tags?.length > 0 && (
+              <TagList>
+                {tags.map((tag, index) => (
+                  <TagItem key={index}>
+                    <span>{tag}</span>
+                    <TagRemoveButton>
+                      <IoMdClose onClick={() => removerTag(index)} />
+                    </TagRemoveButton>
+                  </TagItem>
+                ))}
+              </TagList>
+            )}
           </ContainerTags>
+
           {erro && <p style={{ color: "red" }}>{erro}</p>}
           <ContainerBotoes>
             <BotaoDescartar onClick={limparCampos}>

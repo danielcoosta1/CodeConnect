@@ -41,6 +41,16 @@ export const ButtonUploadImg = styled.button`
   margin-top: 2rem;
 `;
 
+export const ContainerSubtittle = styled.div`
+  display: flex;
+  gap: 0.5em;
+
+  img {
+    margin-bottom: 1em;
+    cursor: pointer;
+  }
+`;
+
 export const ContainerForm = styled.div`
   width: 100%;
   color: #e1e1e1;
@@ -123,6 +133,36 @@ export const ContainerTags = styled.div`
       border-color: #81fe88;
     }
   }
+`;
+
+export const TagList = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+`;
+
+export const TagItem = styled.li`
+  background-color: #888888;
+  padding: 0.3em 0.5em;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+
+  span {
+    font-size: 0.85rem;
+    color: #171d1f;
+    margin-right: 0.5rem;
+  }
+`;
+
+export const TagRemoveButton = styled.button`
+  background: none;
+  border: none;
+  color: #171d1f;
+  cursor: pointer;
+  font-size: 1rem;
 `;
 
 export const ContainerBotoes = styled.div`
