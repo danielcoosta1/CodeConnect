@@ -8,6 +8,7 @@ import {
   ContainerForm,
   ContainerImg,
   ContainerInputDescricao,
+  ContainerSubtittle,
   ContainerTags,
   ContainerUploadImg,
   ContainerWrapper,
@@ -22,6 +23,7 @@ import { FaTrash } from "react-icons/fa";
 import { MdPublish } from "react-icons/md";
 
 import defaultImg from "./assets/exemplo.png";
+import closeIcon from "./assets/icons/close.svg";
 import trashIcon from "./assets/icons/trash.svg";
 import uploadIcon from "./assets/icons/upload.svg";
 
@@ -32,7 +34,6 @@ import { toastSucesso } from "../../utils/toast";
 import { LuLoader } from "react-icons/lu";
 
 import { IoMdClose } from "react-icons/io";
-import { set } from "zod";
 
 const Publicar = () => {
   const inputRef = useRef();
@@ -160,7 +161,7 @@ const Publicar = () => {
             <ContainerSubtittle>
               <p>{imageFileName}</p>
               <img
-                src={trashIcon}
+                src={closeIcon}
                 alt="Ícone de lixeira"
                 onClick={() => {
                   setImage(null);

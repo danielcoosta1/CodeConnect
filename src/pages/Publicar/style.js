@@ -44,7 +44,9 @@ export const ButtonUploadImg = styled.button`
 export const ContainerSubtittle = styled.div`
   display: flex;
   gap: 0.5em;
-
+  color: #888888;
+  margin-top: 1rem;
+  align-items: center;
   img {
     margin-bottom: 1em;
     cursor: pointer;
