@@ -36,6 +36,7 @@ export const createPost = async (req, res) => {
       data: {
         title,
         content,
+        image: req.body.image,
         imageFileName: req.body.imageFileName,
         tags: req.body.tags,
         authorId: {
