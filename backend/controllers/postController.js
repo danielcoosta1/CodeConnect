@@ -39,9 +39,9 @@ export const createPost = async (req, res) => {
         image: req.body.image || null,
         imageFileName: req.body.imageFileName || null,
         tags: req.body.tags || [],
-        authorId: {
+        author: {
           connect: { id: authorId },
-        },
+        }, // Conexão com o autor do post AUTOMATICAMENTE PELO SCHEMA.PRISMA
         // createdAt é gerado automaticamente pelo @default(now())
       },
     });
