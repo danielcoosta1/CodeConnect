@@ -139,6 +139,7 @@ export const ContainerTags = styled.div`
 
 export const TagList = styled.ul`
   display: flex;
+  
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.5rem;
@@ -156,6 +157,8 @@ export const TagItem = styled.li`
     font-size: 0.85rem;
     color: #171d1f;
     margin-right: 0.5rem;
+    text-transform: uppercase;
+    font-weight: bold;
   }
 `;
 
