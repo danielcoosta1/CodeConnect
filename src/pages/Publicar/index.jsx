@@ -114,6 +114,7 @@ const Publicar = () => {
     e.preventDefault();
     setLoading(true);
     setErro("");
+    
 
     try {
       await axios.post("http://localhost:51213/api/posts", {
