@@ -28,8 +28,8 @@ model Post {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   title         String   // Equivalente ao "nome" da publicação
   content       String   // Equivalente à "descricao"
-  image        String   // Equivalente à "imagem" (será a URL da imagem)
-  imageFileName String   // Equivalente ao "nomeArquivo"
+  image        String?   // Equivalente à "imagem" (será a URL da imagem)
+  imageFileName String?   // Equivalente ao "nomeArquivo"
   tags          String[] // Lista de strings para as tags
   createdAt     DateTime @default(now())
 
