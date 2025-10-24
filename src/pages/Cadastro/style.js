@@ -49,8 +49,19 @@ export const ContainerSucesso = styled.div`
   font-size: 1.25rem;
 `;
 
-export const LinkLogin = styled(Link)`
+export const ContainerLoginSucesso = styled.div`
+  display: flex;
+  gap: 0.55rem;
+  text-align: center;
+  font-size: 0.95rem;
+`;
+
+export const LinkLoginSucesso = styled(Link)`
   color: #81fe88;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 
   &:hover {
     text-decoration: underline;
@@ -88,11 +99,7 @@ export const CampoInput = styled.div`
       border-color: #81fe88;
     }
   }
-
 `;
-
-
-
 
 export const Button = styled.button`
   display: flex;
@@ -110,5 +117,33 @@ export const Button = styled.button`
 
   &:hover {
     background-color: #66d75b;
+  }
+`;
+
+export const ContainerLogin = styled.div`
+  display: flex;
+
+  gap: 0.55rem;
+  text-align: center;
+  font-size: 0.85rem;
+
+  justify-content: center;
+  align-items: center;
+
+  p {
+    margin: 0;
+  }
+`;
+
+export const LinkLogin = styled(Link)`
+  color: #81fe88;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  &:hover {
+    text-decoration: underline;
+    scale: 1.1;
   }
 `;

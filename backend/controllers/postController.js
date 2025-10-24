@@ -20,8 +20,8 @@ export const getAllPosts = async (req, res) => {
 // Rota para criar um novo post
 export const createPost = async (req, res) => {
   const postSchema = z.object({
-    title: z.string().min(1, { message: "O título é obrigatório." }),
-    content: z.string().min(1, { message: "O conteúdo é obrigatório." }),
+    title: z.string().min(3, { message: "O título é obrigatório." }),
+    content: z.string().min(10, { message: "O conteúdo é obrigatório." }),
   });
 
   const validation = postSchema.safeParse(req.body);
@@ -36,15 +36,11 @@ export const createPost = async (req, res) => {
       data: {
         title,
         content,
-        // --- Adicione valores padrão temporários ---
-        imageUrl: "placeholder.jpg", // Ou qualquer string temporária
-        imageFileName: "placeholder", // Ou qualquer string temporária
-        tags: [], // Um array vazio como padrão para as tags
-        // ------------------------------------------
-        author: {
-          connect: {
-            id: authorId,
-          },
+        image: req.body.image,
+        imageFileName: req.body.imageFileName,
+        tags: req.body.tags,
+        authorId: {
+          connect: { id: authorId },
         },
         // createdAt é gerado automaticamente pelo @default(now())
       },

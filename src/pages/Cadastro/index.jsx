@@ -4,17 +4,20 @@ import {
   ContainerContent,
   ContainerForm,
   ContainerImg,
+  ContainerLogin,
+  ContainerLoginSucesso,
   ContainerSucesso,
   ContainerWrapper,
   Form,
   LinkLogin,
+  LinkLoginSucesso,
 } from "./style";
 import axios from "axios";
 import { useState } from "react";
 
 import { CgArrowRight } from "react-icons/cg";
 import { FiLoader } from "react-icons/fi";
-
+import { IoLogIn } from "react-icons/io5";
 
 import imgCadastro from "./assets/img_cadastro.png";
 import { toastSucesso } from "../../utils/toast";
@@ -66,9 +69,9 @@ const Cadastro = () => {
           {cadastroSucesso ? (
             <ContainerSucesso>
               <p>Cadastro realizado com sucesso!</p>
-              <p>
-                Você já pode fazer <LinkLogin to="/login">login</LinkLogin>
-              </p>
+              <ContainerLoginSucesso>
+                Você já pode fazer <LinkLoginSucesso to="/login">login <IoLogIn /></LinkLoginSucesso>
+              </ContainerLoginSucesso>
             </ContainerSucesso>
           ) : (
             <Form onSubmit={handleSubmit}>
@@ -110,6 +113,12 @@ const Cadastro = () => {
                 <p>{loading ? "Carregando..." : "Cadastrar "}</p>
                 {loading ? <FiLoader /> : <CgArrowRight />}
               </Button>
+              <ContainerLogin>
+                <p style={{ fontSize: "14px" }}> Já possui conta?</p>
+                <LinkLogin to="/login">
+                  Login <IoLogIn />
+                </LinkLogin>
+              </ContainerLogin>
             </Form>
           )}
         </ContainerForm>

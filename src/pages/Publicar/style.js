@@ -7,22 +7,27 @@ export const ContainerWrapper = styled.div`
   gap: 2rem;
 `;
 
-export const ContainerImg = styled.div`
+export const ContainerUploadImg = styled.div`
   display: flex;
 
   flex-direction: column;
- 
 `;
 
-export const BgImg = styled.div`
+export const ContainerImg = styled.div`
   background-color: #888888;
+  border-radius: 8px;
 `;
 
 export const Img = styled.img`
   width: 450px;
 `;
 
-export const ButtonCarregarImg = styled.button`
+export const ContainerButton = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ButtonUploadImg = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,8 +41,16 @@ export const ButtonCarregarImg = styled.button`
   margin-top: 2rem;
 `;
 
-export const LegendaImg = styled.p`
-margin-top:.5rem;
+export const ContainerSubtittle = styled.div`
+  display: flex;
+  gap: 0.5em;
+  color: #888888;
+  margin-top: 1rem;
+  align-items: center;
+  img {
+    margin-bottom: 1em;
+    cursor: pointer;
+  }
 `;
 
 export const ContainerForm = styled.div`
@@ -96,6 +109,62 @@ export const ContainerInputDescricao = styled.div`
       border-color: #81fe88;
     }
   }
+`;
+
+export const ContainerTags = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  input {
+    padding: 0.8rem;
+    border: 1px solid #333;
+    border-radius: 0.25rem;
+    background-color: #888888;
+
+    &::placeholder {
+      color: #171d1f;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #81fe88;
+    }
+  }
+`;
+
+export const TagList = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+`;
+
+export const TagItem = styled.li`
+  background-color: #888888;
+  padding: 0.3em 0.5em;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+
+  span {
+    font-size: 0.85rem;
+    color: #171d1f;
+    margin-right: 0.5rem;
+  }
+`;
+
+export const TagRemoveButton = styled.button`
+  background: none;
+  border: none;
+  color: #171d1f;
+  cursor: pointer;
+  font-size: 1rem;
 `;
 
 export const ContainerBotoes = styled.div`
