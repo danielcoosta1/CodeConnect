@@ -101,7 +101,7 @@ const Publicar = () => {
     if (tags.length >= 4)
       return setErroTags("Você não pode adicionar mais de 4 tags.");
     if (allTags.length > 0 && !allTags.includes(novaTag))
-      return setErroTags("Tag inválida. Escolha uma tag disponível.");
+      return setErroTags("Tag inválida. Escolha uma tag válida");
     setTags([...tags, novaTag]);
     setNovaTag(""); //zera o input de nova tag
     setErroTags("");
@@ -219,7 +219,7 @@ const Publicar = () => {
               onChange={(e) => setNovaTag(e.target.value)}
               onKeyDown={lidarComKeyDown}
             />
-            {erroTags && <p style={{ color: "red" }}>{erroTags}</p>}
+            {erroTags && <p style={{ color: "red", marginTop: "15px" }}>{erroTags}</p>}
             {tags?.length > 0 && (
               <TagList>
                 {tags.map((tag, index) => (
