@@ -54,7 +54,7 @@ const Publicar = () => {
 
   // Buscar todas as tags disponíveis ao montar o componente
   useEffect(() => {
-    fetch("/public/mocks/tags.json")
+    fetch("/mocks/tags.json")
       .then((response) => response.json())
       .then((data) => setAllTags(data))
       .catch((error) => console.error("Error fetching tags:", error));
@@ -92,7 +92,7 @@ const Publicar = () => {
     if (e.key !== "Enter") return;
     e.preventDefault();
 
-    const novaTag = e.target.value.trim();
+    const novaTag = e.target.value.trim().toLowerCase();
 
     if (!novaTag)
       return setErroTags("Digite uma tag antes de pressionar Enter.");
