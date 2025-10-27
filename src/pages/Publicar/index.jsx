@@ -27,7 +27,7 @@ import closeIcon from "./assets/icons/close.svg";
 
 import uploadIcon from "./assets/icons/upload.svg";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 import { toastSucesso } from "../../utils/toast";
@@ -41,6 +41,7 @@ const Publicar = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
+  const [allTags, setAllTags] = useState([]);
   const [novaTag, setNovaTag] = useState("");
   const [tags, setTags] = useState([]);
   const [erroTags, setErroTags] = useState("");
@@ -50,6 +51,14 @@ const Publicar = () => {
 
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Buscar todas as tags disponíveis ao montar o componente
+  useEffect(() => {
+    fetch("/mocks/tags.json")
+      .then((response) => response.json())
+      .then((data) => setAllTags(data))
+      .catch((error) => console.error("Error fetching tags:", error));
+  }, []);
 
   const lidarComUpload = (event) => {
     event.preventDefault();
@@ -83,13 +92,16 @@ const Publicar = () => {
     if (e.key !== "Enter") return;
     e.preventDefault();
 
-    const novaTag = e.target.value.trim();
+    const novaTag = e.target.value.trim().toLowerCase();
 
     if (!novaTag)
       return setErroTags("Digite uma tag antes de pressionar Enter.");
-    if (tags.includes(novaTag)) {
+    if (tags && tags.includes(novaTag))
       return setErroTags("Essa tag já foi adicionada.");
-    }
+    if (tags.length >= 4)
+      return setErroTags("Você não pode adicionar mais de 4 tags.");
+    if (allTags.length > 0 && !allTags.includes(novaTag))
+      return setErroTags("Tag inválida. Escolha uma tag válida");
     setTags([...tags, novaTag]);
     setNovaTag(""); //zera o input de nova tag
     setErroTags("");
@@ -114,7 +126,6 @@ const Publicar = () => {
     e.preventDefault();
     setLoading(true);
     setErro("");
-    
 
     try {
       await axios.post("http://localhost:51213/api/posts", {
@@ -208,7 +219,7 @@ const Publicar = () => {
               onChange={(e) => setNovaTag(e.target.value)}
               onKeyDown={lidarComKeyDown}
             />
-            {erroTags && <p style={{ color: "red" }}>{erroTags}</p>}
+            {erroTags && <p style={{ color: "red", marginTop: "15px" }}>{erroTags}</p>}
             {tags?.length > 0 && (
               <TagList>
                 {tags.map((tag, index) => (
