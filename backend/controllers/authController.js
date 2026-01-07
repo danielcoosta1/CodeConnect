@@ -80,8 +80,8 @@ export const loginUser = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    const { senha: _, ...userSemSenha } = user;
-    res.json({ user: userSemSenha, token });
+    const { senha: _, ...userSemSenha } = user; //Desestruturação para excluir a senha
+    res.json({ user: userSemSenha, token }); // Retorna o usuário sem a senha e o token(response data)
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ error: error.issues[0].message });
@@ -90,5 +90,3 @@ export const loginUser = async (req, res) => {
     console.error(error);
   }
 };
-
-

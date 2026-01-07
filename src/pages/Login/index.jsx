@@ -22,12 +22,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { login } = useAuth();
+
   const location = useLocation();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
 

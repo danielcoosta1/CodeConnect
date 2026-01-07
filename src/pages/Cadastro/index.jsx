@@ -29,7 +29,6 @@ const Cadastro = () => {
 
   const [erro, setErro] = useState("");
   const [cadastroSucesso, setCadastroSucesso] = useState(false);
-
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
