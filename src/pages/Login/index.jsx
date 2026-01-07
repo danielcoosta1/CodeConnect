@@ -36,6 +36,9 @@ const Login = () => {
   useEffect(() => {
     if (location.state?.from) {
       toastErro("Você precisa estar logado para acessar essa página.");
+
+      // Limpa o estado para evitar loop infinito de toasts
+      navigate(location.pathname, { replace: true, state: {} }); //Substituimos a rota atual pela mesma sem estado
     }
   }, []);
 
