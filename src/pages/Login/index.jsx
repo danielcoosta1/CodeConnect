@@ -22,12 +22,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { login } = useAuth();
+
   const location = useLocation();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -36,6 +36,9 @@ const Login = () => {
   useEffect(() => {
     if (location.state?.from) {
       toastErro("Você precisa estar logado para acessar essa página.");
+
+      // Limpa o estado para evitar loop infinito de toasts
+      navigate(location.pathname, { replace: true, state: {} }); //Substituimos a rota atual pela mesma sem estado
     }
   }, []);
 
