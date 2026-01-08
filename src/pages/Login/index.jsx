@@ -31,7 +31,7 @@ const Login = () => {
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const origem = location.state?.from?.pathname || "/feed";
+  const origem = location.state?.from?.pathname || "/feed"; //Caso não tenha vindo de lugar nenhum, redireciona para o feed
 
   useEffect(() => {
     if (location.state?.from) {
