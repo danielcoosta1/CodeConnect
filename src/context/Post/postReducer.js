@@ -1,8 +1,10 @@
+import { postInicialState } from "./inicialState";
+
 export const postReducer = (state, action) => {
   switch (action.type) {
     // --- GRUPO 1: Manipulação do Formulário ---
 
-    // Caso genérico para atualizar campos de texto 
+    // Caso genérico para atualizar campos de texto
     case "SET_DADO":
       return {
         ...state,
@@ -73,18 +75,8 @@ export const postReducer = (state, action) => {
 
     // Zera tudo para o estado original (usado após publicar ou ao clicar em descartar)
     case "RESET_FORM":
-      return {
-        ...state,
-        tittle: "",
-        body: "",
-        tags: [],
-        tagInput: "",
-        image: null,
-        imageFileName: "",
-        loading: false,
-        error: null,
-        success: false,
-      };
+      // Retorna o estado inicial limpo, sem herdar nada do anterior (...state)
+      return postInicialState;
 
     default:
       return state;
