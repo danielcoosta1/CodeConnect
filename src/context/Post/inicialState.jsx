@@ -1,6 +1,6 @@
 export const postInicialState = {
-  tittle: "",
-  body: "",
+  title: "",
+  content: "",
   tags: [],
   tagInput: "",
   image: null,
