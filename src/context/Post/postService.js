@@ -1,18 +1,14 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:51213/api/posts";
+const API_URL = "http://localhost:51213/api/posts";
 
 export const fetchPosts = async () => {
-  const response = await axios.get(BASE_URL);
+  const response = await axios.get(API_URL);
   return response.data;
 };
 
-
-export const criarPost = async (postData, token) => {
-  const response = await axios.post(BASE_URL, postData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export const createPostRequest = async (postData) => {
+  // O header Authorization vai automático graças ao AuthProvider
+  const response = await axios.post(API_URL, postData);
   return response.data;
 };
