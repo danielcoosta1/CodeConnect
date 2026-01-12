@@ -34,6 +34,10 @@ export const PostProvider = ({ children }) => {
     dispatch({ type: "SET_DADO", field, payload: value });
   };
 
+  const atualizarTagInput = (valor) => {
+    dispatch({ type: "SET_TAG_INPUT", payload: valor });
+  };
+
   const adicionarTag = (novaTag) => {
     dispatch({ type: "ADD_TAG", payload: novaTag });
   };
@@ -104,6 +108,7 @@ export const PostProvider = ({ children }) => {
         error: state.error,
         success: state.success,
         atualizarDato,
+        atualizarTagInput,
         adicionarTag,
         removerTag,
         definirImagem,
