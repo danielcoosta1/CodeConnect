@@ -1,4 +1,4 @@
-import { postInicialState } from "./inicialState";
+import { ESTADO_LIMPO } from "./inicialState";
 
 export const postReducer = (state, action) => {
   switch (action.type) {
@@ -9,6 +9,12 @@ export const postReducer = (state, action) => {
       return {
         ...state,
         [action.field]: action.payload, // Ex: field: 'title', payload: 'Meu Projeto'
+      };
+
+    case "SET_TAG_INPUT":
+      return {
+        ...state,
+        tagInput: action.payload,
       };
 
     // Adiciona uma tag ao array existente
@@ -23,7 +29,7 @@ export const postReducer = (state, action) => {
     case "REMOVE_TAG":
       return {
         ...state,
-        tags: state.tags.filter((tag) => tag !== action.payload),
+        tags: state.tags.filter((_, index) => index !== action.payload),
       };
 
     // Define a imagem e o nome do arquivo
@@ -76,7 +82,7 @@ export const postReducer = (state, action) => {
     // Zera tudo para o estado original (usado após publicar ou ao clicar em descartar)
     case "RESET_FORM":
       // Retorna o estado inicial limpo, sem herdar nada do anterior (...state)
-      return postInicialState;
+      return ESTADO_LIMPO;
 
     default:
       return state;

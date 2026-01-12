@@ -1,13 +1,14 @@
 import { useEffect, useReducer } from "react";
 import { PostContext } from "./PostContext";
 import { postReducer } from "./postReducer";
-import { initialState } from "./initialState";
+
 import { toastErro, toastSucesso } from "../../utils/toast";
 import { createPostRequest } from "./postService";
 import { localStorageService } from "../../services/localStorageService";
+import { postInicialState } from "./inicialState";
 
 export const PostProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(postReducer, initialState);
+  const [state, dispatch] = useReducer(postReducer, postInicialState);
 
   // --- EFEITO: Salvar Rascunho Automaticamente ---
   useEffect(() => {
@@ -30,7 +31,7 @@ export const PostProvider = ({ children }) => {
 
   //  -------  AÇÕES DE MANIPULAÇÃO DDO ESTADO LOCAL   --------
 
-  const atualizarDato = (field, value) => {
+  const atualizarDado = (field, value) => {
     dispatch({ type: "SET_DADO", field, payload: value });
   };
 
@@ -55,8 +56,13 @@ export const PostProvider = ({ children }) => {
   };
 
   const limparFormulario = () => {
+    // 1. Limpamos o "banco físico" (LocalStorage)
     localStorageService.remover("rascunho_post");
-    dispatch({ type: "LIMPAR_CAMPOS" });
+
+    // 2. Limpamos a "memória atual" (State do Reducer)
+    // Como o case RESET_FORM agora retorna o ESTADO_LIMPO,
+    // a tela vai zerar na hora, independente do que o postInicialState guardava.
+    dispatch({ type: "RESET_FORM" });
   };
 
   // -------  AÇÕES DE INTEGRAÇÃO COM A API   --------
@@ -107,7 +113,7 @@ export const PostProvider = ({ children }) => {
         loading: state.loading,
         error: state.error,
         success: state.success,
-        atualizarDato,
+        atualizarDado,
         atualizarTagInput,
         adicionarTag,
         removerTag,

@@ -50,7 +50,7 @@ const Publicar = () => {
     definirImagem,
     removerImagem,
     limparFormulario,
-    publicarProjeto,
+    publicarPost,
   } = usePost();
   const inputRef = useRef();
 
@@ -115,7 +115,7 @@ const Publicar = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    publicarProjeto();
+    publicarPost();
   };
 
   return (
@@ -208,7 +208,6 @@ const Publicar = () => {
             )}
           </ContainerTags>
 
-          {erroTags && <p style={{ color: "red" }}>{erroTags}</p>}
           <ContainerBotoes>
             <BotaoDescartar onClick={limparFormulario} type="button">
               Descartar <FaTrash />
