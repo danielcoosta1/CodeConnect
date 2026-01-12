@@ -34,6 +34,7 @@ import { LuLoader } from "react-icons/lu";
 import { IoMdClose } from "react-icons/io";
 import { usePost } from "../../hooks/usePost";
 
+
 const Publicar = () => {
   const {
     title,
@@ -116,6 +117,8 @@ const Publicar = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     publicarPost();
+    setErroTags("");
+    setErroLocal("");
   };
 
   return (
