@@ -27,18 +27,18 @@ import closeIcon from "./assets/icons/close.svg";
 
 import uploadIcon from "./assets/icons/upload.svg";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { LuLoader } from "react-icons/lu";
 
 import { IoMdClose } from "react-icons/io";
 import { usePost } from "../../hooks/usePost";
 
-
 const Publicar = () => {
   const {
     title,
     content,
+    allTags,
     tags,
     tagInput,
     image,
@@ -55,17 +55,8 @@ const Publicar = () => {
   } = usePost();
   const inputRef = useRef();
 
-  const [allTags, setAllTags] = useState([]);
   const [erroTags, setErroTags] = useState("");
   const [erroLocal, setErroLocal] = useState("");
-
-  // Buscar todas as tags disponíveis ao montar o componente
-  useEffect(() => {
-    fetch("/mocks/tags.json")
-      .then((response) => response.json())
-      .then((data) => setAllTags(data))
-      .catch((error) => console.error("Error fetching tags:", error));
-  }, []);
 
   const lidarComUpload = (event) => {
     event.preventDefault();

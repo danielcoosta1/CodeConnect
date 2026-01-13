@@ -10,7 +10,26 @@ import { postInicialState } from "./inicialState";
 export const PostProvider = ({ children }) => {
   const [state, dispatch] = useReducer(postReducer, postInicialState);
 
+  //ALIMENTAR ALLTAGS
+
+  useEffect(() => {
+    const carregarSugestoes = async () => {
+      try {
+        const response = await fetch("/mocks/tags.json");
+        const data = await response.json();
+
+        // Disparamos a ação para o Reducer guardar na "gaveta" global
+        dispatch({ type: "SET_ALL_TAGS", payload: data });
+      } catch (error) {
+        console.error("Erro ao carregar sugestões de tags:", error);
+      }
+    };
+
+    carregarSugestoes();
+  }, []);
+
   // --- EFEITO: Salvar Rascunho Automaticamente ---
+
   useEffect(() => {
     // Só salvamos os DADOS, não o status (loading/erro)
     const dadosParaSalvar = {
@@ -106,6 +125,7 @@ export const PostProvider = ({ children }) => {
       value={{
         title: state.title,
         content: state.content,
+        allTags: state.allTags,
         tags: state.tags,
         tagInput: state.tagInput,
         image: state.image,

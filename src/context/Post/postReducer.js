@@ -17,6 +17,11 @@ export const postReducer = (state, action) => {
         tagInput: action.payload,
       };
 
+    case "SET_ALL_TAGS":
+      return {
+        ...state,
+        allTags: action.payload, // O payload aqui será o array vindo do JSON
+      };
     // Adiciona uma tag ao array existente
     case "ADD_TAG":
       return {
