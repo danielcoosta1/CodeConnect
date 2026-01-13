@@ -1,4 +1,3 @@
-import { all } from "axios";
 import { localStorageService } from "../../services/localStorageService";
 
 // 1. O Gabarito: Como o estado deve ser quando não há nada digitado
