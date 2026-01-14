@@ -1,42 +1,36 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { usePost } from "../../hooks/usePost"; // Importe o hook
+import { LuLoader } from "react-icons/lu";
 
 const Feed = () => {
-  const [posts, setPosts] = useState([]);
-  // 2. Estado para controlar o carregamento
-  const [loading, setLoading] = useState(true);
-  // 3. Estado para mensagens de erro
-  const [error, setError] = useState(null);
+  const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
+    usePost();
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get("http://localhost:51213/api/posts");
-        setPosts(response.data);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-        setError("Failed to fetch posts. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
+    carregarPostsDoBanco();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
+  // 3. Renderização Condicional baseada no estado Global
+  if (loadingPosts) {
+    return (
+      <div
+        style={{ display: "flex", justifyContent: "center", marginTop: "50px" }}
+      >
+        <LuLoader className="spin" size={60} /> Carregando feed...
+      </div>
+    );
   }
 
-  if (error) {
-    return <div>{error}</div>;
+  if (errorPosts) {
+    return <div>{errorPosts}</div>;
   }
 
   return (
     <div>
       <h1>Feed de Posts</h1>
-      {posts.length > 0 ? (
-        posts.map((post) => (
+      {allPosts.length > 0 ? (
+        allPosts.map((post) => (
           <div key={post.id}>
             <h2>{post.title}</h2>
             <p>{post.content}</p>
