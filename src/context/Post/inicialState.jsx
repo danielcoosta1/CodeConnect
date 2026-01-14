@@ -9,9 +9,12 @@ export const ESTADO_LIMPO = {
   tagInput: "",
   image: null,
   imageFileName: "",
+  allPosts: [],
   loading: false,
   error: null,
   success: false,
+  loadingPosts: false,
+  errorPosts: null,
 };
 
 // 2. Tenta ler o rascunho

@@ -54,6 +54,33 @@ export const postReducer = (state, action) => {
 
     // --- GRUPO 2: Comunicação com a API ---
 
+    case "ADD_POST":
+      return {
+        ...state,
+        allPosts: [action.payload, ...state.allPosts],
+      };
+
+    case "CARREGAR_POSTS_INICIO":
+      return {
+        ...state,
+        loadingPosts: true,
+        errorPosts: null,
+      };
+
+    case "CARREGAR_POSTS_SUCESSO":
+      return {
+        ...state,
+        loadingPosts: false,
+        allPosts: action.payload,
+      };
+
+    case "CARREGAR_POSTS_ERRO":
+      return {
+        ...state,
+        loadingPosts: false,
+        errorPosts: action.payload,
+      };
+      
     // O usuário clicou em "Publicar"
     case "INICIAR_PUBLICACAO":
       return {

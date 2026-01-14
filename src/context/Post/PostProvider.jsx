@@ -3,7 +3,7 @@ import { PostContext } from "./PostContext";
 import { postReducer } from "./postReducer";
 
 import { toastErro, toastSucesso } from "../../utils/toast";
-import { createPostRequest } from "./postService";
+import { createPostRequest, fetchPosts } from "./postService";
 import { localStorageService } from "../../services/localStorageService";
 import { postInicialState } from "./inicialState";
 
@@ -86,6 +86,18 @@ export const PostProvider = ({ children }) => {
 
   // -------  AÇÕES DE INTEGRAÇÃO COM A API   --------
 
+  const carregarPostsDoBanco = async () => {
+    dispatch({ type: "CARREGAR_POSTS_INICIO" });
+
+    try {
+      const posts = await fetchPosts(); // Sua função do service que faz axios.get
+      dispatch({ type: "CARREGAR_POSTS_SUCESSO", payload: posts });
+    } catch (error) {
+      dispatch({ type: "CARREGAR_POSTS_ERRO", payload: error.message });
+      toastErro("Não foi possível carregar o feed.");
+    }
+  };
+
   const publicarPost = async () => {
     // VALIDAÇÃO BÁSICA ANTES DE ENVIAR
     if (state.title.trim().length < 3) {
@@ -108,10 +120,12 @@ export const PostProvider = ({ children }) => {
         tags: state.tags,
       };
 
-      await createPostRequest(postData);
+      const postCriado = await createPostRequest(postData); // Sua função do service que faz axios.post
 
       dispatch({ type: "PUBLICACAO_SUCESSO" });
       toastSucesso("Post publicado com sucesso!");
+
+      dispatch({ type: "ADD_POST", payload: postCriado }); // Adiciona o novo post ao estado global
 
       setTimeout(() => limparFormulario(), 1500); // Limpa após 1.5s para ver o sucesso
     } catch (error) {
@@ -130,6 +144,7 @@ export const PostProvider = ({ children }) => {
         tagInput: state.tagInput,
         image: state.image,
         imageFileName: state.imageFileName,
+        allPosts: state.allPosts,
         loading: state.loading,
         error: state.error,
         success: state.success,
@@ -141,6 +156,7 @@ export const PostProvider = ({ children }) => {
         removerImagem,
         limparFormulario,
         publicarPost,
+        carregarPostsDoBanco,
       }}
     >
       {" "}
