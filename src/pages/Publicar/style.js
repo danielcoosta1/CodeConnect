@@ -4,6 +4,8 @@ export const ContainerWrapper = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
+  background-color: #171D1F;
+  padding: 2rem;
   gap: 2rem;
   
 `;
