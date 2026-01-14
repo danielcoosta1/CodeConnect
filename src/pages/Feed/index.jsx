@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { usePost } from "../../hooks/usePost"; // Importe o hook
 import { LuLoader } from "react-icons/lu";
-import { Card, FeedContainer, FeedFilterContainer, FeedGrid } from "./style";
+import { Card, FeedContainerMain, FeedFilterContainer, FeedGrid, InputSearch } from "./style";
 
 const Feed = () => {
   const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
@@ -27,9 +27,9 @@ const Feed = () => {
   }
 
   return (
-    <FeedContainer>
+    <FeedContainerMain>
       <FeedFilterContainer>
-        Teste - BARRA DE PESQUISA DE FILTROS
+        <InputSearch type="search" placeholder="Buscar posts..." />
       </FeedFilterContainer>
       <FeedGrid>
         {allPosts && allPosts.length > 0 ? (
@@ -71,7 +71,7 @@ const Feed = () => {
           <p>Nenhum post encontrado. Seja o primeiro a publicar!</p>
         )}
       </FeedGrid>
-    </FeedContainer>
+    </FeedContainerMain>
   );
 };
 
