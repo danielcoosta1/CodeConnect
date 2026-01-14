@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const FeedContainer = styled.main`
+export const FeedContainerMain = styled.main`
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -10,6 +10,17 @@ export const FeedFilterContainer = styled.section`
   display: flex;
   flex-direction: column;
   gap: 10px;
+`;
+
+export const InputSearch = styled.input`
+  padding: 10px;
+  font-size: 16px;
+`;
+
+export const TagsFilterContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 `;
 
 export const FeedGrid = styled.section`
