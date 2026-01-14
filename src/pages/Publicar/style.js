@@ -4,6 +4,8 @@ export const ContainerWrapper = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
+  background-color: #171d1f;
+  padding: 2rem;
   gap: 2rem;
 `;
 
@@ -139,7 +141,7 @@ export const ContainerTags = styled.div`
 
 export const TagList = styled.ul`
   display: flex;
-  
+
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.5rem;

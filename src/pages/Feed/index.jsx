@@ -1,52 +1,77 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { usePost } from "../../hooks/usePost"; // Importe o hook
+import { LuLoader } from "react-icons/lu";
+import { Card, FeedContainerMain, FeedFilterContainer, FeedGrid, InputSearch } from "./style";
 
 const Feed = () => {
-  const [posts, setPosts] = useState([]);
-  // 2. Estado para controlar o carregamento
-  const [loading, setLoading] = useState(true);
-  // 3. Estado para mensagens de erro
-  const [error, setError] = useState(null);
+  const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
+    usePost();
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get("http://localhost:51213/api/posts");
-        setPosts(response.data);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-        setError("Failed to fetch posts. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
+    carregarPostsDoBanco();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
+  // 3. Renderização Condicional baseada no estado Global
+  if (loadingPosts) {
+    return (
+      <div
+        style={{ display: "flex", justifyContent: "center", marginTop: "50px" }}
+      >
+        <LuLoader className="spin" size={60} /> Carregando feed...
+      </div>
+    );
   }
 
-  if (error) {
-    return <div>{error}</div>;
+  if (errorPosts) {
+    return <div>{errorPosts}</div>;
   }
 
   return (
-    <div>
-      <h1>Feed de Posts</h1>
-      {posts.length > 0 ? (
-        posts.map((post) => (
-          <div key={post.id}>
-            <h2>{post.title}</h2>
-            <p>{post.content}</p>
-            <small>Por: {post.author.nome}</small>
-          </div>
-        ))
-      ) : (
-        <p>No posts available</p>
-      )}
-    </div>
+    <FeedContainerMain>
+      <FeedFilterContainer>
+        <InputSearch type="search" placeholder="Buscar posts..." />
+      </FeedFilterContainer>
+      <FeedGrid>
+        {allPosts && allPosts.length > 0 ? (
+          allPosts.map((post) => (
+            <Card key={post.id}>
+              {/* Tratamento da Imagem: Se for base64 puro ou URL */}
+              {post.image && (
+                <img
+                  src={`data:image/png;base64,${post.image}`}
+                  alt={post.title}
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
+              )}
+
+              <h2>{post.title}</h2>
+              <p>{post.content}</p>
+
+              {/* Aqui validamos se author existe para não quebrar */}
+              <small>
+                Por: {post.author ? post.author.nome : "Autor Desconhecido"}
+              </small>
+
+              {/* Opcional: Mostrar tags */}
+              {post.tags && post.tags.length > 0 && (
+                <div style={{ marginTop: "5px" }}>
+                  {post.tags.map((tag, index) => (
+                    <span
+                      key={index}
+                      style={{ marginRight: "5px", color: "blue" }}
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </Card>
+          ))
+        ) : (
+          <p>Nenhum post encontrado. Seja o primeiro a publicar!</p>
+        )}
+      </FeedGrid>
+    </FeedContainerMain>
   );
 };
 

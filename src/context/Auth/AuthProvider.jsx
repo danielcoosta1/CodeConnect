@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
-import { localStorageService } from "../services/localStorageService";
+import { localStorageService } from "../../services/localStorageService";
 import { useNavigate } from "react-router-dom";
 
 const AuthProvider = ({ children }) => {

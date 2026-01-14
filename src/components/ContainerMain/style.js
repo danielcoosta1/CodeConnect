@@ -11,8 +11,8 @@ export const ContainerEstilizado = styled.div`
   main {
     flex: 1;
     overflow-x: auto; /* Permite scroll horizontal */
-    padding:  1.5rem;
-    background-color: #171d1f;
-    border-radius: 8px; 
+
+    background-color: #00090e;
+    border-radius: 8px;
   }
 `;
