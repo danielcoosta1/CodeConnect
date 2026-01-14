@@ -5,6 +5,7 @@ export const ContainerWrapper = styled.div`
   width: 100%;
   height: 100%;
   gap: 2rem;
+  
 `;
 
 export const ContainerUploadImg = styled.div`
