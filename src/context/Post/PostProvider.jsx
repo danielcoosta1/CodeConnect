@@ -148,6 +148,8 @@ export const PostProvider = ({ children }) => {
         loading: state.loading,
         error: state.error,
         success: state.success,
+        loadingPosts: state.loadingPosts,
+        errorPosts: state.errorPosts,
         atualizarDado,
         atualizarTagInput,
         adicionarTag,
