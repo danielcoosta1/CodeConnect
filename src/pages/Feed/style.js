@@ -32,6 +32,7 @@ export const FeedGrid = styled.section`
   width: 100%;
 
   /* SE tiver posts ($hasPosts for true), vira Grid */
+  /* Recebe a prop $hasPosts para determinar o layout -  Essa parte sobescreve o display flex */
   ${({ $hasPosts }) =>
     $hasPosts &&
     `
