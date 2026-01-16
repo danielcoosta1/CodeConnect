@@ -24,16 +24,46 @@ export const TagsFilterContainer = styled.div`
 `;
 
 export const FeedGrid = styled.section`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  /* Comportamento padrão: Flex (para centralizar quando vazio) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 10px;
-`;
+  width: 100%;
 
+  /* SE tiver posts ($hasPosts for true), vira Grid */
+  /* Recebe a prop $hasPosts para determinar o layout -  Essa parte sobescreve o display flex */
+  ${({ $hasPosts }) =>
+    $hasPosts &&
+    `
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    align-items: start; /* Importante para cards não esticarem se tiverem alturas diferentes */
+  `}
+`;
 export const Card = styled.div`
-  border: 1px solid #ccc;
   border-radius: 8px;
   padding: 15px;
+  max-width: 500px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background-color: #171d1f;
+  transition: transform 0.3s ease;
+`;
+
+export const ImgCard = styled.img`
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+`;
+
+export const NoPostsContainer = styled.div`
+  text-align: center;
+  font-size: 18px;
+  background-color: #171d1f;
+  padding: 40px; /* Um pouco mais de respiro */
+  border-radius: 8px;
+  color: #fff;
+  width: 100%;
+  max-width: 600px; /* Para não ficar muito largo em telas grandes */
 `;

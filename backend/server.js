@@ -6,23 +6,22 @@ import postRoutes from "./routes/postRoutes.js";
 import express from "express";
 import cors from "cors";
 
-
 import prisma from "./lib/prisma.js";
-
 
 const app = express();
 
 const PORT = process.env.PORT || 51213;
 
 app.use(cors());
-app.use(express.json());
+// Aumentamos o limite para aceitar as imagens pesadas
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-    //Rotas de  autenticação
+//Rotas de  autenticação
 app.use("/api/auth", authRoutes);
 
-    //Rotas de posts
+//Rotas de posts
 app.use("/api/posts", postRoutes);
-
 
 app.listen(PORT, () => {
   console.log(`Servidor está rodando na porta ${PORT}`);

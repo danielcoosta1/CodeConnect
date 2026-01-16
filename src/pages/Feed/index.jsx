@@ -1,7 +1,15 @@
 import { useEffect } from "react";
 import { usePost } from "../../hooks/usePost"; // Importe o hook
 import { LuLoader } from "react-icons/lu";
-import { Card, FeedContainerMain, FeedFilterContainer, FeedGrid, InputSearch } from "./style";
+import {
+  Card,
+  FeedContainerMain,
+  FeedFilterContainer,
+  FeedGrid,
+  ImgCard,
+  InputSearch,
+  NoPostsContainer,
+} from "./style";
 
 const Feed = () => {
   const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
@@ -10,6 +18,8 @@ const Feed = () => {
   useEffect(() => {
     carregarPostsDoBanco();
   }, []);
+
+  const hasPosts = allPosts && allPosts.length > 0; // Verifica se há posts
 
   // 3. Renderização Condicional baseada no estado Global
   if (loadingPosts) {
@@ -32,12 +42,11 @@ const Feed = () => {
         <InputSearch type="search" placeholder="Buscar posts..." />
       </FeedFilterContainer>
       <FeedGrid>
-        {allPosts && allPosts.length > 0 ? (
+        {hasPosts ? (
           allPosts.map((post) => (
             <Card key={post.id}>
-              {/* Tratamento da Imagem: Se for base64 puro ou URL */}
               {post.image && (
-                <img
+                <ImgCard
                   src={`data:image/png;base64,${post.image}`}
                   alt={post.title}
                   style={{ maxWidth: "100%", height: "auto" }}
@@ -68,7 +77,9 @@ const Feed = () => {
             </Card>
           ))
         ) : (
-          <p>Nenhum post encontrado. Seja o primeiro a publicar!</p>
+          <NoPostsContainer>
+            <p>Nenhum post encontrado. Seja o primeiro a publicar!</p>
+          </NoPostsContainer>
         )}
       </FeedGrid>
     </FeedContainerMain>
