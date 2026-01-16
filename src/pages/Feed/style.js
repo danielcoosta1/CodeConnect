@@ -45,22 +45,16 @@ export const FeedGrid = styled.section`
 export const Card = styled.div`
   border-radius: 8px;
   padding: 15px;
+  max-width: 500px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background-color: #171d1f;
   transition: transform 0.3s ease;
 `;
 
-export const ImgCard = styled.div`
+export const ImgCard = styled.img`
   width: 100%;
-  height: 200px;
-  overflow: hidden;
+  height: auto;
   border-radius: 8px;
-  margin-bottom: 10px;
-  img {
-    width: 100%;
-    height: auto;
-    min-width: 70px;
-  }
 `;
 
 export const NoPostsContainer = styled.div`

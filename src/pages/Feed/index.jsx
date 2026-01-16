@@ -46,13 +46,11 @@ const Feed = () => {
           allPosts.map((post) => (
             <Card key={post.id}>
               {post.image && (
-                <ImgCard>
-                  <img
-                    src={`data:image/png;base64,${post.image}`}
-                    alt={post.title}
-                    style={{ maxWidth: "100%", height: "auto" }}
-                  />
-                </ImgCard>
+                <ImgCard
+                  src={`data:image/png;base64,${post.image}`}
+                  alt={post.title}
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
               )}
 
               <h2>{post.title}</h2>
