@@ -3,12 +3,14 @@ import { usePost } from "../../hooks/usePost"; // Importe o hook
 import { LuLoader } from "react-icons/lu";
 import {
   ActionIcons,
+  AuthorInfo,
   Card,
   CardFooter,
   Description,
   FeedContainerMain,
   FeedFilterContainer,
   FeedGrid,
+  IconGroup,
   ImgCard,
   InputSearch,
   LoadingContainer,
@@ -16,6 +18,7 @@ import {
   TitleCard,
 } from "./style";
 import { FaCode, FaRegComment } from "react-icons/fa";
+import { FaShareNodes } from "react-icons/fa6";
 
 const Feed = () => {
   const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
@@ -63,13 +66,26 @@ const Feed = () => {
 
               <CardFooter>
                 <ActionIcons>
-                  {/* Ícones meramente visuais por enquanto */}
-                  <FaCode size={20} title="Ver código" />
-                  <FaRegComment size={20} title="Comentários" />
+                  <IconGroup>
+                    <FaCode size={25} title="Ver código" />
+                    <span>0</span> {/* Contador de lines of code ou cliques */}
+                  </IconGroup>
+                  <IconGroup>
+                    <FaShareNodes size={25} />
+                    <span>0</span> {/* Contador de compartilhamentos */}
+                  </IconGroup>
+                  <IconGroup>
+                    <FaRegComment size={25} title="Comentários" />
+                    <span>0</span> {/* Contador de comentários */}
+                  </IconGroup>
                 </ActionIcons>
-                <small>
-                  Por : {post.author ? post.author.nome : "Autor Desconhecido"}
-                </small>
+                <AuthorInfo>
+                  {/* Placeholder para foto do usuário. Depois virá do post.author.avatar */}
+                  <img src="https://via.placeholder.com/30" alt="Avatar" />
+                  <small>
+                    {post.author ? post.author.nome : "Autor Desconhecido"}
+                  </small>
+                </AuthorInfo>
               </CardFooter>
             </Card>
           ))

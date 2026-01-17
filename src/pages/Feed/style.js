@@ -137,6 +137,42 @@ export const ActionIcons = styled.div`
   }
 `;
 
+export const AuthorInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%; /* Deixa a imagem redonda */
+    object-fit: cover;
+    background-color: #2d3538; /* Cor de fundo se não tiver foto */
+  }
+
+  small {
+    color: #818388;
+    font-size: 14px;
+  }
+`;
+
+export const IconGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px; /* Espaço entre o ícone e o número */
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #88F2DB;
+  }
+
+  span {
+    font-size: 15px;
+  }
+`;
+
 export const NoPostsContainer = styled.div`
   text-align: center;
   font-size: 18px;
