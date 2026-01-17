@@ -51,10 +51,23 @@ export const Card = styled.div`
   transition: transform 0.3s ease;
 `;
 
-export const ImgCard = styled.img`
+export const ImgCard = styled.div`
   width: 100%;
-  height: auto;
-  border-radius: 8px;
+  height: 180px; /* Altura fixa para alinhar o grid */
+  background-color: #2d3538; /* Cor de fundo caso a imagem demore ou seja png transparente */
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* A MÁGICA: Corta a imagem para preencher sem distorcer */
+    object-position: center;
+  }
+`;
+
+export const TitleCard = styled.h2`
+margin: 1rem 0 0.5rem;
+  font-size: 1.2rem;
+  color: #fff;
 `;
 
 export const NoPostsContainer = styled.div`
