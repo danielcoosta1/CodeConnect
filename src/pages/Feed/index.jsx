@@ -1,19 +1,31 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePost } from "../../hooks/usePost"; // Importe o hook
 import { LuLoader } from "react-icons/lu";
 import {
+  ActionIcons,
+  AuthorInfo,
   Card,
+  CardFooter,
+  Description,
   FeedContainerMain,
   FeedFilterContainer,
   FeedGrid,
+  IconGroup,
   ImgCard,
   InputSearch,
+  LoadingContainer,
   NoPostsContainer,
+  TitleCard,
 } from "./style";
+import { FaCode, FaRegComment } from "react-icons/fa";
+import { FaShareNodes } from "react-icons/fa6";
 
 const Feed = () => {
   const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
     usePost();
+
+  const [termoBusca, setTermoBusca] = useState("");
+  const [tagsFiltro, setTagsFiltro] = useState([]);
 
   useEffect(() => {
     carregarPostsDoBanco();
@@ -24,11 +36,9 @@ const Feed = () => {
   // 3. Renderização Condicional baseada no estado Global
   if (loadingPosts) {
     return (
-      <div
-        style={{ display: "flex", justifyContent: "center", marginTop: "50px" }}
-      >
-        <LuLoader className="spin" size={60} /> Carregando feed...
-      </div>
+      <LoadingContainer>
+        <LuLoader className="spin" size={40} /> Carregando feed...
+      </LoadingContainer>
     );
   }
 
@@ -39,41 +49,52 @@ const Feed = () => {
   return (
     <FeedContainerMain>
       <FeedFilterContainer>
-        <InputSearch type="search" placeholder="Buscar posts..." />
+        <InputSearch
+          type="search"
+          placeholder="Digite o que você procura..."
+          value={termoBusca}
+          onChange={(e) => setTermoBusca(e.target.value)}
+        />
       </FeedFilterContainer>
       <FeedGrid>
         {hasPosts ? (
           allPosts.map((post) => (
             <Card key={post.id}>
               {post.image && (
-                <ImgCard
-                  src={`data:image/png;base64,${post.image}`}
-                  alt={post.title}
-                  style={{ maxWidth: "100%", height: "auto" }}
-                />
+                <ImgCard>
+                  <img
+                    src={`data:image/png;base64,${post.image}`}
+                    alt={post.title}
+                  />
+                </ImgCard>
               )}
 
-              <h2>{post.title}</h2>
-              <p>{post.content}</p>
+              <TitleCard>{post.title}</TitleCard>
+              <Description>{post.content}</Description>
 
-              {/* Aqui validamos se author existe para não quebrar */}
-              <small>
-                Por: {post.author ? post.author.nome : "Autor Desconhecido"}
-              </small>
-
-              {/* Opcional: Mostrar tags */}
-              {post.tags && post.tags.length > 0 && (
-                <div style={{ marginTop: "5px" }}>
-                  {post.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      style={{ marginRight: "5px", color: "blue" }}
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              )}
+              <CardFooter>
+                <ActionIcons>
+                  <IconGroup>
+                    <FaCode size={25} title="Ver código" />
+                    <span>0</span> {/* Contador de lines of code ou cliques */}
+                  </IconGroup>
+                  <IconGroup>
+                    <FaShareNodes size={25} />
+                    <span>0</span> {/* Contador de compartilhamentos */}
+                  </IconGroup>
+                  <IconGroup>
+                    <FaRegComment size={25} title="Comentários" />
+                    <span>0</span> {/* Contador de comentários */}
+                  </IconGroup>
+                </ActionIcons>
+                <AuthorInfo>
+                  {/* Placeholder para foto do usuário. Depois virá do post.author.avatar */}
+                  <img src="https://via.placeholder.com/30" alt="Avatar" />
+                  <small>
+                    {post.author ? post.author.nome : "Autor Desconhecido"}
+                  </small>
+                </AuthorInfo>
+              </CardFooter>
             </Card>
           ))
         ) : (
