@@ -68,9 +68,11 @@ export const FeedGrid = styled.section`
   `}
 `;
 export const Card = styled.div`
+  display: flex;
+  flex-direction: column;
   border-radius: 8px;
   padding: 15px;
-  max-width: 500px;
+  width: 100%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background-color: #171d1f;
   transition: transform 0.3s ease;
