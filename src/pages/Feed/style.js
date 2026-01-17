@@ -40,6 +40,17 @@ export const FeedFilterContainer = styled.section`
 export const InputSearch = styled.input`
   padding: 10px;
   font-size: 16px;
+  background-color: #171D1F;
+  font-size: 20px;
+  color: #FFFFFF;
+  border: none    ;
+  padding: 12px 15px;
+  ::placeholder {
+    color: #BCBCBC;
+    opacity: 1; /* Para garantir que a cor do placeholder seja aplicada */
+    font-size: 25px;
+  }
+
 `;
 
 export const TagsFilterContainer = styled.div`

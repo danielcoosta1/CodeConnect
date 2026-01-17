@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePost } from "../../hooks/usePost"; // Importe o hook
 import { LuLoader } from "react-icons/lu";
 import {
@@ -24,6 +24,9 @@ const Feed = () => {
   const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
     usePost();
 
+  const [termoBusca, setTermoBusca] = useState("");
+  const [tagsFiltro, setTagsFiltro] = useState([]);
+
   useEffect(() => {
     carregarPostsDoBanco();
   }, []);
@@ -46,7 +49,12 @@ const Feed = () => {
   return (
     <FeedContainerMain>
       <FeedFilterContainer>
-        <InputSearch type="search" placeholder="Buscar posts..." />
+        <InputSearch
+          type="search"
+          placeholder="Digite o que você procura..."
+          value={termoBusca}
+          onChange={(e) => setTermoBusca(e.target.value)}
+        />
       </FeedFilterContainer>
       <FeedGrid>
         {hasPosts ? (
