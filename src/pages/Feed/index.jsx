@@ -2,7 +2,10 @@ import { useEffect } from "react";
 import { usePost } from "../../hooks/usePost"; // Importe o hook
 import { LuLoader } from "react-icons/lu";
 import {
+  ActionIcons,
   Card,
+  CardFooter,
+  Description,
   FeedContainerMain,
   FeedFilterContainer,
   FeedGrid,
@@ -10,7 +13,9 @@ import {
   InputSearch,
   LoadingContainer,
   NoPostsContainer,
+  TitleCard,
 } from "./style";
+import { FaCode, FaRegComment } from "react-icons/fa";
 
 const Feed = () => {
   const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
@@ -53,27 +58,19 @@ const Feed = () => {
                 </ImgCard>
               )}
 
-              <h2>{post.title}</h2>
-              <p>{post.content}</p>
+              <TitleCard>{post.title}</TitleCard>
+              <Description>{post.content}</Description>
 
-              {/* Aqui validamos se author existe para não quebrar */}
-              <small>
-                Por: {post.author ? post.author.nome : "Autor Desconhecido"}
-              </small>
-
-              {/* Opcional: Mostrar tags */}
-              {post.tags && post.tags.length > 0 && (
-                <div style={{ marginTop: "5px" }}>
-                  {post.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      style={{ marginRight: "5px", color: "blue" }}
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              )}
+              <CardFooter>
+                <ActionIcons>
+                  {/* Ícones meramente visuais por enquanto */}
+                  <FaCode size={20} title="Ver código" />
+                  <FaRegComment size={20} title="Comentários" />
+                </ActionIcons>
+                <small>
+                  Por : {post.author ? post.author.nome : "Autor Desconhecido"}
+                </small>
+              </CardFooter>
             </Card>
           ))
         ) : (

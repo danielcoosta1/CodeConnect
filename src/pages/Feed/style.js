@@ -51,6 +51,7 @@ export const TagsFilterContainer = styled.div`
 export const FeedGrid = styled.section`
   /* Comportamento padrão: Flex (para centralizar quando vazio) */
   display: flex;
+  gap: 24px;
   justify-content: center;
   align-items: center;
   padding: 10px;
@@ -72,10 +73,12 @@ export const Card = styled.div`
   flex-direction: column;
   border-radius: 8px;
   padding: 15px;
+  min-height: 400px;
   width: 100%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background-color: #171d1f;
   transition: transform 0.3s ease;
+  color: #bcbcbc;
 `;
 
 export const ImgCard = styled.div`
@@ -94,7 +97,44 @@ export const ImgCard = styled.div`
 export const TitleCard = styled.h2`
   margin: 1rem 0 0.5rem;
   font-size: 1.2rem;
-  color: #fff;
+`;
+
+export const Description = styled.p`
+  font-size: 14px;
+
+  line-height: 1.5;
+  margin-top: 8px; /* Espaço entre título e texto */
+
+  /* A MÁGICA DO CSS PARA LIMITAR LINHAS: */
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limita a exatas 3 linhas */
+  -webkit-box-orient: vertical;
+  overflow: hidden; /* Esconde o que passar de 3 linhas */
+  text-overflow: ellipsis; /* Adiciona o "..." no final */
+`;
+
+export const CardFooter = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; /* Autor na ponta esquerda, ícones na ponta direita */
+  align-items: center;
+  margin-top: auto; /* Isso empurra o rodapé para o fundo do card, mesmo se o texto for curto */
+  padding-top: 15px;
+`;
+
+export const ActionIcons = styled.div`
+  display: flex;
+  gap: 12px; /* Espaço entre o ícone de código e o de comentário */
+  color: #818388;
+
+  /* Estilo para os ícones */
+  svg {
+    cursor: pointer;
+    transition: color 0.2s;
+    &:hover {
+      color: #88f2db; /* Cor de destaque ao passar o mouse */
+    }
+  }
 `;
 
 export const NoPostsContainer = styled.div`
