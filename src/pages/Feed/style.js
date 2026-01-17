@@ -1,4 +1,29 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+export const LoadingContainer = styled.div`
+  display: flex;
+  height: 60vh;
+  align-items: center;
+  border-radius: 8px;
+  gap: 15px;
+  font-size: 30px;
+  color: #bcbcbc;
+  justify-content: center;
+  background-color: #171d1f;
+  margin-top: 50px;
+  .spin {
+    animation: ${rotate} 3s linear infinite;
+  }
+`;
 
 export const FeedContainerMain = styled.main`
   display: flex;
@@ -55,7 +80,7 @@ export const ImgCard = styled.div`
   width: 100%;
   height: 180px; /* Altura fixa para alinhar o grid */
   background-color: #2d3538; /* Cor de fundo caso a imagem demore ou seja png transparente */
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -65,7 +90,7 @@ export const ImgCard = styled.div`
 `;
 
 export const TitleCard = styled.h2`
-margin: 1rem 0 0.5rem;
+  margin: 1rem 0 0.5rem;
   font-size: 1.2rem;
   color: #fff;
 `;

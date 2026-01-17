@@ -8,6 +8,7 @@ import {
   FeedGrid,
   ImgCard,
   InputSearch,
+  LoadingContainer,
   NoPostsContainer,
 } from "./style";
 
@@ -24,11 +25,9 @@ const Feed = () => {
   // 3. Renderização Condicional baseada no estado Global
   if (loadingPosts) {
     return (
-      <div
-        style={{ display: "flex", justifyContent: "center", marginTop: "50px" }}
-      >
-        <LuLoader className="spin" size={60} /> Carregando feed...
-      </div>
+      <LoadingContainer>
+        <LuLoader className="spin" size={40} /> Carregando feed...
+      </LoadingContainer>
     );
   }
 
