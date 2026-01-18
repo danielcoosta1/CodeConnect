@@ -30,30 +30,64 @@ export const FeedContainerMain = styled.main`
   flex-direction: column;
   gap: 30px;
   padding: 20px;
-
 `;
 
 export const FeedFilterContainer = styled.section`
   display: flex;
   flex-direction: column;
+`;
 
+export const TagsFiltersContainer = styled.section`
+  display: flex;
+  gap: 10px;
+`;
+
+export const TagList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+`;
+
+export const TagItem = styled.li`
+  background-color: #888888;
+  padding: 0.3em 0.5em;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+
+  span {
+    font-size: 0.85rem;
+    color: #171d1f;
+    margin-right: 0.5rem;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+`;
+
+export const TagRemoveButton = styled.button`
+  background: none;
+  border: none;
+  color: #171d1f;
+  cursor: pointer;
+  font-size: 1rem;
 `;
 
 export const InputSearch = styled.input`
   padding: 10px;
   font-size: 16px;
   margin-top: 10px;
-  background-color: #171D1F;
+  background-color: #171d1f;
   font-size: 20px;
-  color: #FFFFFF;
-  border: none    ;
+  color: #ffffff;
+  border: 1px solid #444c4e;
   padding: 12px 15px;
-  ::placeholder {
-    color: #BCBCBC;
-    opacity: 1; /* Para garantir que a cor do placeholder seja aplicada */
-    font-size: 25px;
-  }
 
+  &:focus {
+    outline: none;
+    border-color: #81fe88;
+  }
 `;
 
 export const TagsFilterContainer = styled.div`
@@ -68,7 +102,7 @@ export const FeedGrid = styled.section`
   gap: 24px;
   justify-content: center;
   align-items: center;
- 
+
   width: 100%;
 
   /* SE tiver posts ($hasPosts for true), vira Grid */
@@ -179,7 +213,7 @@ export const IconGroup = styled.div`
   transition: color 0.2s;
 
   &:hover {
-    color: #88F2DB;
+    color: #88f2db;
   }
 
   span {
