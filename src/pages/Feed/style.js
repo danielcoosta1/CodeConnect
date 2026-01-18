@@ -28,18 +28,21 @@ export const LoadingContainer = styled.div`
 export const FeedContainerMain = styled.main`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 30px;
+  padding: 20px;
+
 `;
 
 export const FeedFilterContainer = styled.section`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+
 `;
 
 export const InputSearch = styled.input`
   padding: 10px;
   font-size: 16px;
+  margin-top: 10px;
   background-color: #171D1F;
   font-size: 20px;
   color: #FFFFFF;
@@ -65,7 +68,7 @@ export const FeedGrid = styled.section`
   gap: 24px;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+ 
   width: 100%;
 
   /* SE tiver posts ($hasPosts for true), vira Grid */
