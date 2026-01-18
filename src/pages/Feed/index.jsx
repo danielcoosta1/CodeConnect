@@ -15,6 +15,8 @@ import {
   InputSearch,
   LoadingContainer,
   NoPostsContainer,
+  TagItem,
+  TagList,
   TagRemoveButton,
   TagsFiltersContainer,
   TitleCard,
@@ -76,7 +78,7 @@ const Feed = () => {
           onChange={(e) => setTermoBusca(e.target.value)}
           onKeyDown={lidarComKeyDown}
         />
-        {erroLocal && <p style={{ color: "red" }}>{erroLocal}</p>}
+        {erroLocal && <p style={{ color: "red", marginTop: "10px" }}>{erroLocal}</p>}
         <TagsFiltersContainer>
           {tagsFiltroAtivos.length > 0 && (
             <TagList>
