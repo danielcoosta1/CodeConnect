@@ -59,6 +59,29 @@ const Feed = () => {
 
   const hasPosts = allPosts && allPosts.length > 0; // Verifica se há posts
 
+  const postsFiltrados = useMemo(() => {
+    //1.ATALHG  - SHOT CIRCUIT
+    if (tagsFiltroAtivos.length === 0 && termoBusca.trim() === "") {
+      return allPosts;
+    }
+
+    return allPosts.filter((post) => {
+      //2. O FILTRO PRINCIPAL
+      return tagsFiltroAtivos.every((termo) => {
+        
+        const termoLimpo = termo.toLowerCase(); //NORMALIZAÇÃO
+
+        const noTitulo = post.title.toLowerCase().includes(termoLimpo);
+        const naDescricao = post.content.toLowerCase().includes(termoLimpo);
+        const nasTags =
+          post.tags &&
+          post.tags.some((tag) => tag.toLowerCase().includes(termoLimpo));
+
+        return noTitulo || naDescricao || nasTags;
+      });
+    });
+  }, [allPosts, tagsFiltroAtivos, termoBusca]);
+
   // 3. Renderização Condicional baseada no estado Global
   if (loadingPosts) {
     return (
@@ -115,7 +138,7 @@ const Feed = () => {
       </FeedFilterContainer>
       <FeedGrid>
         {hasPosts ? (
-          allPosts.map((post) => (
+          postsFiltrados.map((post) => (
             <Card key={post.id}>
               {post.image && (
                 <ImgCard>
