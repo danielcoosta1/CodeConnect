@@ -7,6 +7,7 @@ import {
   Card,
   CardFooter,
   Description,
+  ExcluirTudoButton,
   FeedContainerMain,
   FeedFilterContainer,
   FeedGrid,
@@ -45,10 +46,15 @@ const Feed = () => {
     if (novaTagFiltros && !tagsFiltroAtivos.includes(novaTagFiltros)) {
       setTagsFiltros([...tagsFiltroAtivos, novaTagFiltros]);
       setErroLocal("");
-      e.target.value = ""; // Limpa o campo de entrada
+      setTermoBusca(""); // Limpa o campo de entrada
     } else if (tagsFiltroAtivos.includes(novaTagFiltros)) {
       setErroLocal("Essa tag já está aplicada como filtro.");
     }
+  };
+
+  const limparFiltros = () => {
+    setTagsFiltros([]);
+    setErroLocal("");
   };
 
   const hasPosts = allPosts && allPosts.length > 0; // Verifica se há posts
@@ -78,19 +84,32 @@ const Feed = () => {
           onChange={(e) => setTermoBusca(e.target.value)}
           onKeyDown={lidarComKeyDown}
         />
-        {erroLocal && <p style={{ color: "red", marginTop: "10px" }}>{erroLocal}</p>}
+        {erroLocal && (
+          <p style={{ color: "red", marginTop: "10px" }}>{erroLocal}</p>
+        )}
         <TagsFiltersContainer>
           {tagsFiltroAtivos.length > 0 && (
-            <TagList>
-              {tagsFiltroAtivos.map((tag, index) => (
-                <TagItem key={index}>
-                  <span>{tag}</span>
-                  <TagRemoveButton>
-                    <IoMdClose />
-                  </TagRemoveButton>
-                </TagItem>
-              ))}
-            </TagList>
+            <>
+              <TagList>
+                {tagsFiltroAtivos.map((tag, index) => (
+                  <TagItem key={index}>
+                    <span>{tag}</span>
+                    <TagRemoveButton
+                      onClick={() =>
+                        setTagsFiltros(
+                          tagsFiltroAtivos.filter((_, i) => i !== index),
+                        )
+                      }
+                    >
+                      <IoMdClose />
+                    </TagRemoveButton>
+                  </TagItem>
+                ))}
+              </TagList>
+              <ExcluirTudoButton onClick={limparFiltros}>
+                Limpar tudo
+              </ExcluirTudoButton>
+            </>
           )}
         </TagsFiltersContainer>
       </FeedFilterContainer>

@@ -40,6 +40,8 @@ export const FeedFilterContainer = styled.section`
 export const TagsFiltersContainer = styled.section`
   display: flex;
   gap: 10px;
+  margin-top: 10px;
+  justify-content: space-between;
 `;
 
 export const TagList = styled.div`
@@ -90,12 +92,20 @@ export const InputSearch = styled.input`
   }
 `;
 
-export const TagsFilterContainer = styled.div`
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-`;
+export const ExcluirTudoButton = styled.button`
+  background-color: transparent;
+  color: white;
+  border: none;
 
+  cursor: pointer;
+  font-size: 20px;
+
+  &:hover {
+    border: 1px solid #81fe88;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+`;
 export const FeedGrid = styled.section`
   /* Comportamento padrão: Flex (para centralizar quando vazio) */
   display: flex;
