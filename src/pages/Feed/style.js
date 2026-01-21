@@ -131,8 +131,8 @@ export const Card = styled.div`
   flex-direction: column;
   border-radius: 8px;
   padding: 15px;
-  
-  min-height: 400px;
+  gap: 10px;
+  min-height:450px;
   width: 100%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background-color: #171d1f;
