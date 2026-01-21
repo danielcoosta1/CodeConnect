@@ -60,25 +60,41 @@ const Feed = () => {
   const hasPosts = allPosts && allPosts.length > 0; // Verifica se há posts
 
   const postsFiltrados = useMemo(() => {
-    //1.ATALHG  - SHOT CIRCUIT
+    // 1. ATALHO DE PERFORMANCE (Short Circuit)
+    // Se não tem nada digitado E nenhuma tag selecionada, não perca tempo filtrando.
     if (tagsFiltroAtivos.length === 0 && termoBusca.trim() === "") {
       return allPosts;
     }
 
     return allPosts.filter((post) => {
-      //2. O FILTRO PRINCIPAL
-      return tagsFiltroAtivos.every((termo) => {
-        
-        const termoLimpo = termo.toLowerCase(); //NORMALIZAÇÃO
+      // --- PORTÃO 1: VERIFICA AS TAGS FIXAS (O que você já fez) ---
+      const atendeTags =
+        tagsFiltroAtivos.length === 0 ||
+        tagsFiltroAtivos.every((termo) => {
+          const termoLimpo = termo.toLowerCase();
+          return (
+            post.title.toLowerCase().includes(termoLimpo) ||
+            post.content.toLowerCase().includes(termoLimpo) ||
+            (post.tags &&
+              post.tags.some((tag) => tag.toLowerCase().includes(termoLimpo)))
+          );
+        });
 
-        const noTitulo = post.title.toLowerCase().includes(termoLimpo);
-        const naDescricao = post.content.toLowerCase().includes(termoLimpo);
-        const nasTags =
-          post.tags &&
-          post.tags.some((tag) => tag.toLowerCase().includes(termoLimpo));
+      // --- PORTÃO 2: VERIFICA A BUSCA AO VIVO (O que faltava) ---
+      // Se o termoBusca estiver vazio, assumimos "true" (passa direto).
+      // Se tiver texto, fazemos a mesma varredura que fizemos nas tags.
+      const termoBuscaLimpo = termoBusca.toLowerCase().trim();
 
-        return noTitulo || naDescricao || nasTags;
-      });
+      const atendeBusca =
+        termoBuscaLimpo === "" ||
+        post.title.toLowerCase().includes(termoBuscaLimpo) ||
+        post.content.toLowerCase().includes(termoBuscaLimpo) ||
+        (post.tags &&
+          post.tags.some((tag) => tag.toLowerCase().includes(termoBuscaLimpo)));
+
+      // --- O VEREDITO FINAL ---
+      // O post precisa atender às tags E atender à busca atual
+      return atendeTags && atendeBusca;
     });
   }, [allPosts, tagsFiltroAtivos, termoBusca]);
 
@@ -179,7 +195,7 @@ const Feed = () => {
           ))
         ) : (
           <NoPostsContainer>
-            <p>Nenhum post encontrado. Seja o primeiro a publicar!</p>
+            <p>Nenhum post encontrado</p>
           </NoPostsContainer>
         )}
       </FeedGrid>
