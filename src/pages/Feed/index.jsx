@@ -52,12 +52,14 @@ const Feed = () => {
     }
   };
 
-  const limparFiltros = () => {
+  // Função que limpa TUDO (Texto + Tags)
+  const limparBuscaTotal = () => {
     setTagsFiltros([]);
+    setTermoBusca("");
     setErroLocal("");
   };
 
-  const hasPosts = allPosts && allPosts.length > 0; // Verifica se há posts
+  // Verifica se há posts
 
   const postsFiltrados = useMemo(() => {
     // 1. ATALHO DE PERFORMANCE (Short Circuit)
@@ -111,6 +113,10 @@ const Feed = () => {
     return <div>{errorPosts}</div>;
   }
 
+  // Lógica para saber se TEMOS RESULTADOS PARA MOSTRAR
+  // O hasPosts original só checava o banco. Agora precisamos saber se sobrou algo do filtro.
+  const temResultados = postsFiltrados.length > 0;
+
   return (
     <FeedContainerMain>
       <FeedFilterContainer>
@@ -145,15 +151,18 @@ const Feed = () => {
                   </TagItem>
                 ))}
               </TagList>
-              <ExcluirTudoButton onClick={limparFiltros}>
-                Limpar tudo
+              <ExcluirTudoButton onClick={() => setTagsFiltros([])}>
+                {" "}
+                // Apenas limpa as tags(estado local ) Limpar tudo
               </ExcluirTudoButton>
             </>
           )}
         </TagsFiltersContainer>
       </FeedFilterContainer>
-      <FeedGrid>
-        {hasPosts ? (
+
+      <FeedGrid $hasPosts={temResultados}>
+        {temResultados ? (
+          // CENÁRIO 1: Temos posts filtrados para mostrar
           postsFiltrados.map((post) => (
             <Card key={post.id}>
               {post.image && (
@@ -194,8 +203,33 @@ const Feed = () => {
             </Card>
           ))
         ) : (
+          // CENÁRIO 2: Não sobrou nada (ou banco vazio ou filtro zerou tudo)
           <NoPostsContainer>
-            <p>Nenhum post encontrado</p>
+            {allPosts.length === 0 ? (
+              // Banco vazio
+              <p>Nenhum post encontrado no sistema.</p>
+            ) : (
+              // Filtro não encontrou nada
+              <>
+                <p>Nenhum post encontrado para essa busca.</p>
+                {/* BOTÃO DE RESGATE: Limpa texto E tags */}
+                <button
+                  onClick={limparBuscaTotal}
+                  style={{
+                    marginTop: "15px",
+                    background: "transparent",
+                    color: "#88F2DB",
+                    border: "1px solid #88F2DB",
+                    padding: "8px 16px",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Limpar busca
+                </button>
+              </>
+            )}
           </NoPostsContainer>
         )}
       </FeedGrid>

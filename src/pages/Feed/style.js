@@ -121,7 +121,7 @@ export const FeedGrid = styled.section`
     $hasPosts &&
     `
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
     align-items: start; /* Importante para cards não esticarem se tiverem alturas diferentes */
   `}
