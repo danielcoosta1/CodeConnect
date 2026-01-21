@@ -121,7 +121,7 @@ export const FeedGrid = styled.section`
     $hasPosts &&
     `
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
     gap: 20px;
     align-items: start; /* Importante para cards não esticarem se tiverem alturas diferentes */
   `}
@@ -131,6 +131,7 @@ export const Card = styled.div`
   flex-direction: column;
   border-radius: 8px;
   padding: 15px;
+  
   min-height: 400px;
   width: 100%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -154,12 +155,11 @@ export const ImgCard = styled.div`
 
 export const TitleCard = styled.h2`
   margin: 1rem 0 0.5rem;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
 `;
 
 export const Description = styled.p`
-  font-size: 14px;
-
+  font-size: 1.1rem;
   line-height: 1.5;
   margin-top: 8px; /* Espaço entre título e texto */
 
@@ -210,7 +210,7 @@ export const AuthorInfo = styled.div`
 
   small {
     color: #818388;
-    font-size: 14px;
+    font-size: 1rem;
   }
 `;
 
