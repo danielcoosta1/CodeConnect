@@ -5,6 +5,9 @@ import {
   ItemListaNav,
   Nav,
   ListaNav,
+  UserProfile,
+  Avatar,
+  UserInfo,
 } from "./style.js";
 import logoImg from "./assets/Logo.svg";
 
@@ -21,7 +24,7 @@ import infoIconWhite from "./assets/infowhite.svg";
 import { useAuth } from "../../hooks/useAuth.js";
 
 const SideBar = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const links = [
     {
       name: "Feed",
@@ -77,6 +80,19 @@ const SideBar = () => {
           ))}
         </ListaNav>
       </Nav>
+      {/* 2. Feedback Visual: Perfil do Usuário Logado (Lá embaixo) */}
+      {user && (
+        <UserProfile>
+          <Avatar
+            src={user.imagem || "https://via.placeholder.com/40"}
+            alt="Avatar"
+          />
+          <UserInfo>
+            <h3>{user.nome || "Dev"}</h3>
+            <p>@{user.usuario || "usuario"}</p>
+          </UserInfo>
+        </UserProfile>
+      )}
     </SidebarContainer>
   );
 };
