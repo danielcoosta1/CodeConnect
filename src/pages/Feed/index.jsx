@@ -152,8 +152,8 @@ const Feed = () => {
                 ))}
               </TagList>
               <ExcluirTudoButton onClick={() => setTagsFiltros([])}>
-                {" "}
-                // Apenas limpa as tags(estado local ) Limpar tudo
+                Limpar tudo
+           
               </ExcluirTudoButton>
             </>
           )}
