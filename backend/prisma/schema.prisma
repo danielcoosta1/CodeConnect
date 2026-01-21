@@ -19,17 +19,22 @@ model User {
   email         String  @unique
   senha         String
   nomeDeUsuario String?
+
+  // --- NOVOS CAMPOS PARA O PERFIL---
+  imagem String? // URL ou Base64 da foto de perfil
+  bio    String? // Pequeno texto sobre o dev
+  funcao String? // Ex: "Front-end Developer", "Fullstack"
   // A relação inversa: um usuário pode ter múltiplos posts
-  posts         Post[]
+  posts  Post[]
 }
 
 // O novo model, baseado na sua ideia do Figma
 model Post {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  title         String   // Equivalente ao "nome" da publicação
-  content       String   // Equivalente à "descricao"
-  image        String?   // Equivalente à "imagem" (será a URL da imagem)
-  imageFileName String?   // Equivalente ao "nomeArquivo"
+  title         String // Equivalente ao "nome" da publicação
+  content       String // Equivalente à "descricao"
+  image         String? // Equivalente à "imagem" (será a URL da imagem)
+  imageFileName String? // Equivalente ao "nomeArquivo"
   tags          String[] // Lista de strings para as tags
   createdAt     DateTime @default(now())
 
