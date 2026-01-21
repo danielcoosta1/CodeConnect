@@ -28,44 +28,91 @@ export const LoadingContainer = styled.div`
 export const FeedContainerMain = styled.main`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 30px;
+  padding: 20px;
 `;
 
 export const FeedFilterContainer = styled.section`
   display: flex;
   flex-direction: column;
+`;
+
+export const TagsFiltersContainer = styled.section`
+  display: flex;
   gap: 10px;
+  margin-top: 10px;
+  justify-content: space-between;
+`;
+
+export const TagList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+`;
+
+export const TagItem = styled.li`
+  background-color: #888888;
+  padding: 0.3em 0.5em;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+
+  span {
+    font-size: 0.85rem;
+    color: #171d1f;
+    margin-right: 0.5rem;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+`;
+
+export const TagRemoveButton = styled.button`
+  background: none;
+  border: none;
+  color: #171d1f;
+  cursor: pointer;
+  font-size: 1rem;
 `;
 
 export const InputSearch = styled.input`
   padding: 10px;
   font-size: 16px;
-  background-color: #171D1F;
+  margin-top: 10px;
+  background-color: #171d1f;
   font-size: 20px;
-  color: #FFFFFF;
-  border: none    ;
+  color: #ffffff;
+  border: 1px solid #444c4e;
   padding: 12px 15px;
-  ::placeholder {
-    color: #BCBCBC;
-    opacity: 1; /* Para garantir que a cor do placeholder seja aplicada */
-    font-size: 25px;
+
+  &:focus {
+    outline: none;
+    border-color: #81fe88;
   }
-
 `;
 
-export const TagsFilterContainer = styled.div`
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-`;
+export const ExcluirTudoButton = styled.button`
+  background-color: transparent;
+  color: white;
+  border: none;
 
+  cursor: pointer;
+  font-size: 20px;
+
+  &:hover {
+    border: 1px solid #81fe88;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+`;
 export const FeedGrid = styled.section`
   /* Comportamento padrão: Flex (para centralizar quando vazio) */
   display: flex;
   gap: 24px;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+
   width: 100%;
 
   /* SE tiver posts ($hasPosts for true), vira Grid */
@@ -74,7 +121,7 @@ export const FeedGrid = styled.section`
     $hasPosts &&
     `
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
     align-items: start; /* Importante para cards não esticarem se tiverem alturas diferentes */
   `}
@@ -176,7 +223,7 @@ export const IconGroup = styled.div`
   transition: color 0.2s;
 
   &:hover {
-    color: #88F2DB;
+    color: #88f2db;
   }
 
   span {
