@@ -72,27 +72,28 @@ export const ItemListaNav = styled.li`
   }
 `;
 
-
-export const UserProfile = styled.div`
+export const UserProfile = styled(NavLink)`
   display: flex;
   align-items: center;
   gap: 12px;
   width: 100%;
   padding: 14px;
-  background-color: #2d3538; /* Um fundo sutil para destacar do resto */
+  background-color: #2d3538;
   border-radius: 8px;
-  margin-top: auto; /* A MÁGICA: Empurra este bloco para o final da Sidebar */
+  margin-top: auto;
   margin-bottom: 4rem;
-  
-  
+  cursor: pointer;
+
+  /* Importante: Como virou um link (a), precisamos tirar o sublinhado padrão */
+  text-decoration: none;
+  border: none; /* Caso tenha sobrado borda de botão */
+
   transition: background-color 0.2s;
-  cursor: default;
 
   &:hover {
     background-color: #3a4448;
   }
 `;
-
 
 export const Avatar = styled.img`
   width: 60px;

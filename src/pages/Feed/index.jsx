@@ -153,7 +153,6 @@ const Feed = () => {
               </TagList>
               <ExcluirTudoButton onClick={() => setTagsFiltros([])}>
                 Limpar tudo
-           
               </ExcluirTudoButton>
             </>
           )}

@@ -82,7 +82,7 @@ const SideBar = () => {
       </Nav>
       {/* 2. Feedback Visual: Perfil do Usuário Logado (Lá embaixo) */}
       {user && (
-        <UserProfile>
+        <UserProfile to="/perfil">
           <Avatar
             src={user.imagem || "https://via.placeholder.com/40"}
             alt="Avatar"
