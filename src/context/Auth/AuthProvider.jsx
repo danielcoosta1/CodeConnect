@@ -34,7 +34,7 @@ const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post(
         "http://localhost:51213/api/auth/login",
-        { email, senha }
+        { email, senha },
       );
 
       // Desestruturação da resposta para obter user e token
@@ -66,11 +66,26 @@ const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
   };
+
+  const atuliazarUserLocalmente = (novosDados) => {
+    const usuarioAtualizado = { ...user, ...novosDados };
+    setUser(usuarioAtualizado);
+    localStorageService.salvar("user", usuarioAtualizado);
+  };
+
   // Condicionamos a renderização dos filhos
   // Isso previne que a aplicação renderize as rotas protegidas antes da verificação terminar
   return (
     <AuthContext.Provider
-      value={{ user, token, login, logout, isAuthenticated: !!token, loading }}
+      value={{
+        user,
+        token,
+        login,
+        logout,
+        atuliazarUserLocalmente,
+        isAuthenticated: !!token,
+        loading,
+      }}
     >
       {!loading && children}
     </AuthContext.Provider>
