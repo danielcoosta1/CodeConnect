@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import {
   PerfilContainer,
@@ -12,12 +12,20 @@ import {
   ProfileTab,
 } from "./style";
 import { FaPen } from "react-icons/fa";
+import { usePost } from "../../hooks/usePost";
 
 const Perfil = () => {
   const { user } = useAuth();
+  const {allPosts} = usePost();
 
   // Estado para controlar qual aba está selecionada
   const [abaAtiva, setAbaAtiva] = useState("projetos"); // 'projetos' | 'compartilhados' | 'aprovados'
+
+  // 3. Filtramos apenas os posts que são MEUS (onde authorId == meu id)
+  const meusProjetos = useMemo(() => {
+    if (!user || !allPosts) return [];
+    return allPosts.filter((post) => post.authorId === user.id);
+  }, [user, allPosts]);
 
   const handleAbrirModal = () => {
     alert("Em breve: Modal de Edição com integração ao Backend!");
