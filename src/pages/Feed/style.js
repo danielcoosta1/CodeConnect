@@ -132,7 +132,7 @@ export const Card = styled.div`
   border-radius: 8px;
   padding: 15px;
   gap: 10px;
-  min-height:450px;
+  min-height: 450px;
   width: 100%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background-color: #171d1f;
@@ -173,11 +173,9 @@ export const Description = styled.p`
 
 export const CardFooter = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: space-between; /* Autor na ponta esquerda, ícones na ponta direita */
+  justify-content: space-between;
   align-items: center;
-  margin-top: auto; /* Isso empurra o rodapé para o fundo do card, mesmo se o texto for curto */
-  padding-top: 15px;
+  margin-top: auto;
 `;
 
 export const ActionIcons = styled.div`
