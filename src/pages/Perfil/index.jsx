@@ -12,11 +12,14 @@ import {
   ProfileTab,
 } from "./style";
 import { FaPen } from "react-icons/fa";
+
+import { CardGrid } from "../../components/CardGrid/style.js";
+import Card from "../../components/Card";
 import { usePost } from "../../hooks/usePost";
 
 const Perfil = () => {
   const { user } = useAuth();
-  const {allPosts} = usePost();
+  const { allPosts } = usePost();
 
   // Estado para controlar qual aba está selecionada
   const [abaAtiva, setAbaAtiva] = useState("projetos"); // 'projetos' | 'compartilhados' | 'aprovados'
@@ -29,6 +32,7 @@ const Perfil = () => {
 
   const handleAbrirModal = () => {
     alert("Em breve: Modal de Edição com integração ao Backend!");
+    
   };
 
   if (!user) return null;
@@ -97,8 +101,12 @@ const Perfil = () => {
       {/* CONTEÚDO QUE MUDA CONFORME A ABA */}
       <div style={{ marginTop: "20px" }}>
         {abaAtiva === "projetos" && (
-          <p style={{ color: "#888" }}>Lista dos meus projetos publicados...</p>
-          // Aqui futuramente entra o <FeedGrid> filtrado pelo ID do user
+          // AQUI A MÁGICA ACONTECE:
+          <CardGrid>
+            {meusProjetos.map((post) => (
+              <Card key={post.id} post={post} />
+            ))}
+          </CardGrid>
         )}
 
         {abaAtiva === "compartilhados" && (
