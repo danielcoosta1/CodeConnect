@@ -1,13 +1,13 @@
-import { 
-  CardContainer, 
-  ImgCard, 
-  ContentCard, 
-  TitleCard, 
-  Description, 
-  CardFooter, 
-  AuthorInfo, 
-  ActionIcons, 
-  IconGroup 
+import {
+  CardContainer,
+  ImgCard,
+  ContentCard,
+  TitleCard,
+  Description,
+  CardFooter,
+  AuthorInfo,
+  ActionIcons,
+  IconGroup,
 } from "./style";
 import { FaCode, FaRegComment, FaShareNodes } from "react-icons/fa6";
 
@@ -27,26 +27,25 @@ const Card = ({ post }) => {
 
         <CardFooter>
           {post.author && (
-            <AuthorInfo>
-              <img 
-                src={post.author.imagem || "https://via.placeholder.com/40"} 
-                alt={post.author.nome} 
-              />
-              <small>{post.author.nome}</small>
-            </AuthorInfo>
+            <ActionIcons>
+              <IconGroup>
+                <FaCode size={20} /> 0
+              </IconGroup>
+              <IconGroup>
+                <FaShareNodes size={20} /> 0
+              </IconGroup>
+              <IconGroup>
+                <FaRegComment size={20} /> 0
+              </IconGroup>
+            </ActionIcons>
           )}
-
-          <ActionIcons>
-            <IconGroup>
-              <FaCode size={16} /> 0
-            </IconGroup>
-            <IconGroup>
-              <FaShareNodes size={16} /> 0
-            </IconGroup>
-            <IconGroup>
-              <FaRegComment size={16} /> 0
-            </IconGroup>
-          </ActionIcons>
+          <AuthorInfo>
+            <img
+              src={post.author.imagem || "https://via.placeholder.com/40"}
+              alt={post.author.nome}
+            />
+            <small>{post.author.nome}</small>
+          </AuthorInfo>
         </CardFooter>
       </ContentCard>
     </CardContainer>
