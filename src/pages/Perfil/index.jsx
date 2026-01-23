@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import {
   PerfilContainer,
@@ -16,10 +16,19 @@ import { FaPen } from "react-icons/fa";
 import { CardGrid } from "../../components/CardGrid/style.js";
 import Card from "../../components/Card";
 import { usePost } from "../../hooks/usePost";
+import { all } from "axios";
 
 const Perfil = () => {
   const { user } = useAuth();
-  const { allPosts } = usePost();
+  const { allPosts, carregarPostsDoBanco } = usePost();
+
+  useEffect(() => {
+    // Só vai no banco SE a lista de posts estiver vazia.
+    // Se o usuário veio do Feed, a lista já tá cheia e ele economiza internet/processamento.
+    if (!allPosts || allPosts.length === 0) {
+      carregarPostsDoBanco();
+    }
+  }, []);
 
   // Estado para controlar qual aba está selecionada
   const [abaAtiva, setAbaAtiva] = useState("projetos"); // 'projetos' | 'compartilhados' | 'aprovados'
@@ -32,7 +41,6 @@ const Perfil = () => {
 
   const handleAbrirModal = () => {
     alert("Em breve: Modal de Edição com integração ao Backend!");
-    
   };
 
   if (!user) return null;
