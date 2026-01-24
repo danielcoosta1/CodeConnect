@@ -62,3 +62,25 @@ export const createPost = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
+export const getMyPosts = async (req, res) => {
+  try {
+    // O req.user.id veio do seu authMiddleware!
+    const meuId = req.user.id; 
+
+    const meusPosts = await prisma.post.findMany({
+      where: {
+        authorId: meuId // Filtra só os posts que o authorId for igual ao seu ID
+      },
+      orderBy: {
+        createdAt: 'desc' // Mostra os mais recentes primeiro
+      }
+    });
+
+    res.status(200).json(meusPosts);
+  } catch (error) {
+    console.error("Erro ao buscar meus posts:", error);
+    res.status(500).json({ error: "Erro ao buscar seus posts." });
+  }
+};

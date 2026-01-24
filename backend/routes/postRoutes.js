@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPost, getAllPosts } from "../controllers/postController.js";
+import { createPost, getAllPosts, getMyPosts } from "../controllers/postController.js";
 import { authMiddleware } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
@@ -8,6 +8,9 @@ router.get('/', getAllPosts);
 
 // Rota para criar um novo post
 router.post('/', authMiddleware, createPost);
+
+router.get("/me", authMiddleware, getMyPosts )
+
 
 
 export default router;
