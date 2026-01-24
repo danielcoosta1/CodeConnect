@@ -16,28 +16,17 @@ import { FaPen } from "react-icons/fa";
 import { CardGrid } from "../../components/CardGrid/style.js";
 import Card from "../../components/Card";
 import { usePost } from "../../hooks/usePost";
-import { all } from "axios";
 
 const Perfil = () => {
   const { user } = useAuth();
-  const { allPosts, carregarPostsDoBanco } = usePost();
+  const { carregarMeusPostsDoBanco, myPosts, loadingMyPosts } = usePost();
 
   useEffect(() => {
-    // Só vai no banco SE a lista de posts estiver vazia.
-    // Se o usuário veio do Feed, a lista já tá cheia e ele economiza internet/processamento.
-    if (!allPosts || allPosts.length === 0) {
-      carregarPostsDoBanco();
-    }
+    carregarMeusPostsDoBanco(); // Zero parâmetros. O token cuida de tudo!
   }, []);
 
   // Estado para controlar qual aba está selecionada
   const [abaAtiva, setAbaAtiva] = useState("projetos"); // 'projetos' | 'compartilhados' | 'aprovados'
-
-  // 3. Filtramos apenas os posts que são MEUS (onde authorId == meu id)
-  const meusProjetos = useMemo(() => {
-    if (!user || !allPosts) return [];
-    return allPosts.filter((post) => post.authorId === user.id);
-  }, [user, allPosts]);
 
   const handleAbrirModal = () => {
     alert("Em breve: Modal de Edição com integração ao Backend!");
@@ -109,9 +98,11 @@ const Perfil = () => {
       {/* CONTEÚDO QUE MUDA CONFORME A ABA */}
       <div style={{ marginTop: "20px" }}>
         {abaAtiva === "projetos" && (
+
+          
           // AQUI A MÁGICA ACONTECE:
           <CardGrid>
-            {meusProjetos.map((post) => (
+            {myPosts.map((post) => (
               <Card key={post.id} post={post} />
             ))}
           </CardGrid>
