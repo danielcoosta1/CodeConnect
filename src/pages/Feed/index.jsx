@@ -23,7 +23,7 @@ const Feed = () => {
     usePost();
 
   const [termoBusca, setTermoBusca] = useState("");
-  const [tagsFiltroAtivos, setTagsFiltros] = useState([]);
+  const [tagsFiltrosAtivos, setTagsFiltrosAtivos] = useState([]);
   const [erroLocal, setErroLocal] = useState("");
 
   useEffect(() => {
@@ -35,18 +35,18 @@ const Feed = () => {
     e.preventDefault();
 
     const novaTagFiltros = e.target.value.trim();
-    if (novaTagFiltros && !tagsFiltroAtivos.includes(novaTagFiltros)) {
-      setTagsFiltros([...tagsFiltroAtivos, novaTagFiltros]);
+    if (novaTagFiltros && !tagsFiltrosAtivos.includes(novaTagFiltros)) {
+      setTagsFiltrosAtivos([...tagsFiltrosAtivos, novaTagFiltros]);
       setErroLocal("");
       setTermoBusca(""); // Limpa o campo de entrada
-    } else if (tagsFiltroAtivos.includes(novaTagFiltros)) {
+    } else if (tagsFiltrosAtivos.includes(novaTagFiltros)) {
       setErroLocal("Essa tag já está aplicada como filtro.");
     }
   };
 
   // Função que limpa TUDO (Texto + Tags)
   const limparBuscaTotal = () => {
-    setTagsFiltros([]);
+    setTagsFiltrosAtivos([]);
     setTermoBusca("");
     setErroLocal("");
   };
@@ -56,15 +56,15 @@ const Feed = () => {
   const postsFiltrados = useMemo(() => {
     // 1. ATALHO DE PERFORMANCE (Short Circuit)
     // Se não tem nada digitado E nenhuma tag selecionada, não perca tempo filtrando.
-    if (tagsFiltroAtivos.length === 0 && termoBusca.trim() === "") {
+    if (tagsFiltrosAtivos.length === 0 && termoBusca.trim() === "") {
       return allPosts;
     }
 
     return allPosts.filter((post) => {
       // --- PORTÃO 1: VERIFICA AS TAGS FIXAS (O que você já fez) ---
       const atendeTags =
-        tagsFiltroAtivos.length === 0 ||
-        tagsFiltroAtivos.every((termo) => {
+        tagsFiltrosAtivos.length === 0 ||
+        tagsFiltrosAtivos.every((termo) => {
           const termoLimpo = termo.toLowerCase();
           return (
             post.title.toLowerCase().includes(termoLimpo) ||
@@ -90,7 +90,7 @@ const Feed = () => {
       // O post precisa atender às tags E atender à busca atual
       return atendeTags && atendeBusca;
     });
-  }, [allPosts, tagsFiltroAtivos, termoBusca]);
+  }, [allPosts, tagsFiltrosAtivos, termoBusca]);
 
   // 3. Renderização Condicional baseada no estado Global
   if (loadingPosts) {
@@ -125,16 +125,16 @@ const Feed = () => {
           <p style={{ color: "red", marginTop: "10px" }}>{erroLocal}</p>
         )}
         <TagsFiltersContainer>
-          {tagsFiltroAtivos.length > 0 && (
+          {tagsFiltrosAtivos.length > 0 && (
             <>
               <TagList>
-                {tagsFiltroAtivos.map((tag, index) => (
+                {tagsFiltrosAtivos.map((tag, index) => (
                   <TagItem key={index}>
                     <span>{tag}</span>
                     <TagRemoveButton
                       onClick={() =>
-                        setTagsFiltros(
-                          tagsFiltroAtivos.filter((_, i) => i !== index),
+                        setTagsFiltrosAtivos(
+                          tagsFiltrosAtivos.filter((_, i) => i !== index),
                         )
                       }
                     >
@@ -143,7 +143,7 @@ const Feed = () => {
                   </TagItem>
                 ))}
               </TagList>
-              <ExcluirTudoButton onClick={() => setTagsFiltros([])}>
+              <ExcluirTudoButton onClick={() => setTagsFiltrosAtivos([])}>
                 Limpar tudo
               </ExcluirTudoButton>
             </>
@@ -189,6 +189,7 @@ const Feed = () => {
             </>
           )}
         </NoPostsContainer>
+        
       )}
     </FeedContainerMain>
   );
