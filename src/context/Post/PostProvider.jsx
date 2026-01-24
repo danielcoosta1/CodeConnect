@@ -3,7 +3,7 @@ import { PostContext } from "./PostContext";
 import { postReducer } from "./postReducer";
 
 import { toastErro, toastSucesso } from "../../utils/toast";
-import { createPostRequest, fetchPosts } from "./postService";
+import { createPostRequest, fetchMyPosts, fetchPosts } from "./postService";
 import { localStorageService } from "../../services/localStorageService";
 import { postInicialState } from "./inicialState";
 
@@ -134,6 +134,17 @@ export const PostProvider = ({ children }) => {
     }
   };
 
+  const carregarMeusPostsDoBanco = async () => {
+    dispatch({ type: "CARREGAR_MEUS_POSTS_INICIO" });
+    try {
+      const myPosts = await fetchMyPosts();
+      dispatch({ type: "CARREGAR_MEUS_POSTS_SUCESSO", payload: myPosts });
+    } catch (error) {
+      dispatch({ type: "CARREGAR_MEUS_POSTS_ERRO", payload: error.message });
+      toastErro("Não foi possível carregar seus posts.");
+    }
+  };
+
   return (
     <PostContext.Provider
       value={{
@@ -150,6 +161,10 @@ export const PostProvider = ({ children }) => {
         success: state.success,
         loadingPosts: state.loadingPosts,
         errorPosts: state.errorPosts,
+        myPosts: state.myPosts,
+        loagingMyPosts: state.loagingMyPosts,
+        errorMyPosts: state.errorMyPosts,
+
         atualizarDado,
         atualizarTagInput,
         adicionarTag,
@@ -159,6 +174,7 @@ export const PostProvider = ({ children }) => {
         limparFormulario,
         publicarPost,
         carregarPostsDoBanco,
+        carregarMeusPostsDoBanco,
       }}
     >
       {" "}

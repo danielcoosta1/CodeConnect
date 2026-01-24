@@ -10,11 +10,14 @@ export const ESTADO_LIMPO = {
   image: null,
   imageFileName: "",
   allPosts: [],
+  myPosts: [],
   loading: false,
   error: null,
   success: false,
   loadingPosts: false,
   errorPosts: null,
+  loagingMyPosts: false,
+  errorMyPosts: null,
 };
 
 // 2. Tenta ler o rascunho
