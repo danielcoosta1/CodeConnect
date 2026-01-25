@@ -17,10 +17,11 @@ import { CardGrid } from "../../components/CardGrid/style.js";
 import Card from "../../components/Card";
 import { usePost } from "../../hooks/usePost";
 import LoadingState from "../../components/LoadingState/index.jsx";
+import ErrorState from "../../components/ErrorState/index.jsx";
 
 const Perfil = () => {
   const { user } = useAuth();
-  const { carregarMeusPostsDoBanco, myPosts, loadingMyPosts } = usePost();
+  const { carregarMeusPostsDoBanco, myPosts, loadingMyPosts, errorMyPosts } = usePost();
 
   useEffect(() => {
     carregarMeusPostsDoBanco(); // Zero parâmetros. O token cuida de tudo!
@@ -99,6 +100,7 @@ const Perfil = () => {
       </ProfileNav>
 
       {/* CONTEÚDO QUE MUDA CONFORME A ABA */}
+    
       <div style={{ marginTop: "20px" }}>
         {abaAtiva === "projetos" && (
           <>
@@ -106,6 +108,9 @@ const Perfil = () => {
             {loadingMyPosts ? (
               // 1. SE ESTÁ CARREGANDO, mostra SOMENTE o Loading
               <LoadingState texto="Carregando seus projetos..." size={45} />
+            ) : errorMyPosts ? (
+              // 2. SE HOUVE ERRO, mostra o ErrorState
+              <ErrorState mensagem={errorMyPosts} onRetry={carregarMeusPostsDoBanco} />
             ) : myPosts.length > 0 ? (
               // 2. SE NÃO ESTÁ CARREGANDO E TEM POSTS, mostra a Grid
               <CardGrid>

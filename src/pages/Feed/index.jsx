@@ -17,6 +17,7 @@ import {
 import { CardGrid } from "../../components/CardGrid/style";
 import Card from "../../components/Card";
 import LoadingState from "../../components/LoadingState";
+import ErrorState from "../../components/ErrorState";
 
 const Feed = () => {
   const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
@@ -97,23 +98,7 @@ const Feed = () => {
     return <LoadingState texto="Carregando feed..." size={45} />;
   }
   if (errorPosts) {
-    return (
-      <FeedContainerMain
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          color: "#e74c3c",
-        }}
-      >
-        <p>Ops! Tivemos um problema: {errorPosts}</p>
-        <button
-          onClick={carregarPostsDoBanco}
-          style={{ marginTop: "10px", cursor: "pointer" }}
-        >
-          Tentar Novamente
-        </button>
-      </FeedContainerMain>
-    );
+    return <ErrorState mensagem={errorPosts} onRetry={carregarPostsDoBanco} />;
   }
 
   // Lógica para saber se TEMOS RESULTADOS PARA MOSTRAR
