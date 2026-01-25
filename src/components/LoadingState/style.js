@@ -11,13 +11,14 @@ const rotate = keyframes`
 
 export const LoadingContainer = styled.div`
   display: flex;
-  flex-direction: column;
+
   align-items: center;
   justify-content: center;
   padding: 40px;
   color: #88f2db;
   gap: 10px;
   background-color: #171d1f;
+  height: 60vh;
   .spin {
     animation: ${rotate} 2s linear infinite;
   }
