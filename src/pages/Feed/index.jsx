@@ -16,7 +16,7 @@ import {
 
 import { CardGrid } from "../../components/CardGrid/style";
 import Card from "../../components/Card";
-
+import LoadingState from "../../components/LoadingState";
 
 const Feed = () => {
   const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
@@ -94,15 +94,26 @@ const Feed = () => {
 
   // 3. Renderização Condicional baseada no estado Global
   if (loadingPosts) {
-    return (
-      <LoadingContainer>
-        <LuLoader className="spin" size={40} /> Carregando feed...
-      </LoadingContainer>
-    );
+    return <LoadingState texto="Carregando feed..." size={45} />;
   }
-
   if (errorPosts) {
-    return <div>{errorPosts}</div>;
+    return (
+      <FeedContainerMain
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          color: "#e74c3c",
+        }}
+      >
+        <p>Ops! Tivemos um problema: {errorPosts}</p>
+        <button
+          onClick={carregarPostsDoBanco}
+          style={{ marginTop: "10px", cursor: "pointer" }}
+        >
+          Tentar Novamente
+        </button>
+      </FeedContainerMain>
+    );
   }
 
   // Lógica para saber se TEMOS RESULTADOS PARA MOSTRAR
@@ -189,7 +200,6 @@ const Feed = () => {
             </>
           )}
         </NoPostsContainer>
-        
       )}
     </FeedContainerMain>
   );
