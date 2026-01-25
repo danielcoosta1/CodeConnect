@@ -21,7 +21,8 @@ import ErrorState from "../../components/ErrorState/index.jsx";
 
 const Perfil = () => {
   const { user } = useAuth();
-  const { carregarMeusPostsDoBanco, myPosts, loadingMyPosts, errorMyPosts } = usePost();
+  const { carregarMeusPostsDoBanco, myPosts, loadingMyPosts, errorMyPosts } =
+    usePost();
 
   useEffect(() => {
     carregarMeusPostsDoBanco(); // Zero parâmetros. O token cuida de tudo!
@@ -60,7 +61,7 @@ const Perfil = () => {
           {/* NOVOS DADOS ESTATÍSTICOS */}
           <StatsContainer>
             <StatItem>
-              <strong>0</strong>
+              <strong>{myPosts.length}</strong>
               <span>Projetos</span>
             </StatItem>
             <StatItem>
@@ -100,7 +101,7 @@ const Perfil = () => {
       </ProfileNav>
 
       {/* CONTEÚDO QUE MUDA CONFORME A ABA */}
-    
+
       <div style={{ marginTop: "20px" }}>
         {abaAtiva === "projetos" && (
           <>
@@ -110,7 +111,10 @@ const Perfil = () => {
               <LoadingState texto="Carregando seus projetos..." size={45} />
             ) : errorMyPosts ? (
               // 2. SE HOUVE ERRO, mostra o ErrorState
-              <ErrorState mensagem={errorMyPosts} onRetry={carregarMeusPostsDoBanco} />
+              <ErrorState
+                mensagem={errorMyPosts}
+                onRetry={carregarMeusPostsDoBanco}
+              />
             ) : myPosts.length > 0 ? (
               // 2. SE NÃO ESTÁ CARREGANDO E TEM POSTS, mostra a Grid
               <CardGrid>
