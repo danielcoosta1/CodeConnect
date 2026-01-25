@@ -112,21 +112,22 @@ export const postReducer = (state, action) => {
     case "CARREGAR_MEUS_POSTS_INICIO":
       return {
         ...state,
-        loagingMyPosts: true,
+        loadingMyPosts: true,
         errorMyPosts: null,
       };
 
     case "CARREGAR_MEUS_POSTS_SUCESSO":
       return {
         ...state,
-        loagingMyPosts: false,
+
         myPosts: action.payload,
+        loadingMyPosts: false,
       };
 
     case "CARREGAR_MEUS_POSTS_ERRO":
       return {
         ...state,
-        loagingMyPosts: false,
+        loadingMyPosts: false,
         errorMyPosts: action.payload,
       };
 

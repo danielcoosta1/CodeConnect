@@ -162,7 +162,7 @@ export const PostProvider = ({ children }) => {
         loadingPosts: state.loadingPosts,
         errorPosts: state.errorPosts,
         myPosts: state.myPosts,
-        loagingMyPosts: state.loagingMyPosts,
+        loadingMyPosts: state.loadingMyPosts,
         errorMyPosts: state.errorMyPosts,
 
         atualizarDado,

@@ -14,9 +14,9 @@ export const ESTADO_LIMPO = {
   loading: false,
   error: null,
   success: false,
-  loadingPosts: false,
+  loadingPosts: true,
   errorPosts: null,
-  loagingMyPosts: false,
+  loadingMyPosts: true,
   errorMyPosts: null,
 };
 
