@@ -2,17 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { usePost } from "../../hooks/usePost"; // Importe o hook
 import { LuLoader } from "react-icons/lu";
 import {
-  ActionIcons,
-  AuthorInfo,
-  Card,
-  CardFooter,
-  Description,
   ExcluirTudoButton,
   FeedContainerMain,
   FeedFilterContainer,
-  FeedGrid,
-  IconGroup,
-  ImgCard,
   InputSearch,
   LoadingContainer,
   NoPostsContainer,
@@ -20,18 +12,18 @@ import {
   TagList,
   TagRemoveButton,
   TagsFiltersContainer,
-  TitleCard,
 } from "./style";
-import { FaCode, FaRegComment } from "react-icons/fa";
-import { FaShareNodes } from "react-icons/fa6";
-import { IoMdClose } from "react-icons/io";
+
+import { CardGrid } from "../../components/CardGrid/style";
+import Card from "../../components/Card";
+import LoadingState from "../../components/LoadingState";
 
 const Feed = () => {
   const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
     usePost();
 
   const [termoBusca, setTermoBusca] = useState("");
-  const [tagsFiltroAtivos, setTagsFiltros] = useState([]);
+  const [tagsFiltrosAtivos, setTagsFiltrosAtivos] = useState([]);
   const [erroLocal, setErroLocal] = useState("");
 
   useEffect(() => {
@@ -43,18 +35,18 @@ const Feed = () => {
     e.preventDefault();
 
     const novaTagFiltros = e.target.value.trim();
-    if (novaTagFiltros && !tagsFiltroAtivos.includes(novaTagFiltros)) {
-      setTagsFiltros([...tagsFiltroAtivos, novaTagFiltros]);
+    if (novaTagFiltros && !tagsFiltrosAtivos.includes(novaTagFiltros)) {
+      setTagsFiltrosAtivos([...tagsFiltrosAtivos, novaTagFiltros]);
       setErroLocal("");
       setTermoBusca(""); // Limpa o campo de entrada
-    } else if (tagsFiltroAtivos.includes(novaTagFiltros)) {
+    } else if (tagsFiltrosAtivos.includes(novaTagFiltros)) {
       setErroLocal("Essa tag já está aplicada como filtro.");
     }
   };
 
   // Função que limpa TUDO (Texto + Tags)
   const limparBuscaTotal = () => {
-    setTagsFiltros([]);
+    setTagsFiltrosAtivos([]);
     setTermoBusca("");
     setErroLocal("");
   };
@@ -64,15 +56,15 @@ const Feed = () => {
   const postsFiltrados = useMemo(() => {
     // 1. ATALHO DE PERFORMANCE (Short Circuit)
     // Se não tem nada digitado E nenhuma tag selecionada, não perca tempo filtrando.
-    if (tagsFiltroAtivos.length === 0 && termoBusca.trim() === "") {
+    if (tagsFiltrosAtivos.length === 0 && termoBusca.trim() === "") {
       return allPosts;
     }
 
     return allPosts.filter((post) => {
       // --- PORTÃO 1: VERIFICA AS TAGS FIXAS (O que você já fez) ---
       const atendeTags =
-        tagsFiltroAtivos.length === 0 ||
-        tagsFiltroAtivos.every((termo) => {
+        tagsFiltrosAtivos.length === 0 ||
+        tagsFiltrosAtivos.every((termo) => {
           const termoLimpo = termo.toLowerCase();
           return (
             post.title.toLowerCase().includes(termoLimpo) ||
@@ -98,19 +90,30 @@ const Feed = () => {
       // O post precisa atender às tags E atender à busca atual
       return atendeTags && atendeBusca;
     });
-  }, [allPosts, tagsFiltroAtivos, termoBusca]);
+  }, [allPosts, tagsFiltrosAtivos, termoBusca]);
 
   // 3. Renderização Condicional baseada no estado Global
   if (loadingPosts) {
-    return (
-      <LoadingContainer>
-        <LuLoader className="spin" size={40} /> Carregando feed...
-      </LoadingContainer>
-    );
+    return <LoadingState texto="Carregando feed..." size={45} />;
   }
-
   if (errorPosts) {
-    return <div>{errorPosts}</div>;
+    return (
+      <FeedContainerMain
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          color: "#e74c3c",
+        }}
+      >
+        <p>Ops! Tivemos um problema: {errorPosts}</p>
+        <button
+          onClick={carregarPostsDoBanco}
+          style={{ marginTop: "10px", cursor: "pointer" }}
+        >
+          Tentar Novamente
+        </button>
+      </FeedContainerMain>
+    );
   }
 
   // Lógica para saber se TEMOS RESULTADOS PARA MOSTRAR
@@ -133,16 +136,16 @@ const Feed = () => {
           <p style={{ color: "red", marginTop: "10px" }}>{erroLocal}</p>
         )}
         <TagsFiltersContainer>
-          {tagsFiltroAtivos.length > 0 && (
+          {tagsFiltrosAtivos.length > 0 && (
             <>
               <TagList>
-                {tagsFiltroAtivos.map((tag, index) => (
+                {tagsFiltrosAtivos.map((tag, index) => (
                   <TagItem key={index}>
                     <span>{tag}</span>
                     <TagRemoveButton
                       onClick={() =>
-                        setTagsFiltros(
-                          tagsFiltroAtivos.filter((_, i) => i !== index),
+                        setTagsFiltrosAtivos(
+                          tagsFiltrosAtivos.filter((_, i) => i !== index),
                         )
                       }
                     >
@@ -151,7 +154,7 @@ const Feed = () => {
                   </TagItem>
                 ))}
               </TagList>
-              <ExcluirTudoButton onClick={() => setTagsFiltros([])}>
+              <ExcluirTudoButton onClick={() => setTagsFiltrosAtivos([])}>
                 Limpar tudo
               </ExcluirTudoButton>
             </>
@@ -159,79 +162,45 @@ const Feed = () => {
         </TagsFiltersContainer>
       </FeedFilterContainer>
 
-      <FeedGrid $hasPosts={temResultados}>
-        {temResultados ? (
-          // CENÁRIO 1: Temos posts filtrados para mostrar
-          postsFiltrados.map((post) => (
-            <Card key={post.id}>
-              {post.image && (
-                <ImgCard>
-                  <img
-                    src={`data:image/png;base64,${post.image}`}
-                    alt={post.title}
-                  />
-                </ImgCard>
-              )}
-
-              <TitleCard>{post.title}</TitleCard>
-              <Description>{post.content}</Description>
-
-              <CardFooter>
-                <ActionIcons>
-                  <IconGroup>
-                    <FaCode size={25} title="Ver código" />
-                    <span>0</span> {/* Contador de lines of code ou cliques */}
-                  </IconGroup>
-                  <IconGroup>
-                    <FaShareNodes size={25} />
-                    <span>0</span> {/* Contador de compartilhamentos */}
-                  </IconGroup>
-                  <IconGroup>
-                    <FaRegComment size={25} title="Comentários" />
-                    <span>0</span> {/* Contador de comentários */}
-                  </IconGroup>
-                </ActionIcons>
-                <AuthorInfo>
-                  {/* Placeholder para foto do usuário. Depois virá do post.author.avatar */}
-                  <img src="https://via.placeholder.com/30" alt="Avatar" />
-                  <small>
-                    {post.author ? post.author.nome : "Autor Desconhecido"}
-                  </small>
-                </AuthorInfo>
-              </CardFooter>
-            </Card>
-          ))
-        ) : (
-          // CENÁRIO 2: Não sobrou nada (ou banco vazio ou filtro zerou tudo)
-          <NoPostsContainer>
-            {allPosts.length === 0 ? (
-              // Banco vazio
-              <p>Nenhum post encontrado no sistema.</p>
-            ) : (
-              // Filtro não encontrou nada
-              <>
-                <p>Nenhum post encontrado para essa busca.</p>
-                {/* BOTÃO DE RESGATE: Limpa texto E tags */}
-                <button
-                  onClick={limparBuscaTotal}
-                  style={{
-                    marginTop: "15px",
-                    background: "transparent",
-                    color: "#88F2DB",
-                    border: "1px solid #88F2DB",
-                    padding: "8px 16px",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Limpar busca
-                </button>
-              </>
-            )}
-          </NoPostsContainer>
-        )}
-      </FeedGrid>
+      {temResultados ? (
+        <CardGrid>
+          {postsFiltrados.map((post) => (
+            <Card
+              key={post.id}
+              post={post} // Passamos o objeto inteiro, o Card cuida do resto!
+            />
+          ))}
+        </CardGrid>
+      ) : (
+        // CENÁRIO 2: Não sobrou nada (ou banco vazio ou filtro zerou tudo)
+        <NoPostsContainer>
+          {allPosts.length === 0 ? (
+            // Banco vazio
+            <p>Nenhum post encontrado no sistema.</p>
+          ) : (
+            // Filtro não encontrou nada
+            <>
+              <p>Nenhum post encontrado para essa busca.</p>
+              {/* BOTÃO DE RESGATE: Limpa texto E tags */}
+              <button
+                onClick={limparBuscaTotal}
+                style={{
+                  marginTop: "15px",
+                  background: "transparent",
+                  color: "#88F2DB",
+                  border: "1px solid #88F2DB",
+                  padding: "8px 16px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                Limpar busca
+              </button>
+            </>
+          )}
+        </NoPostsContainer>
+      )}
     </FeedContainerMain>
   );
 };

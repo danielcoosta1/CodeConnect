@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import {
   PerfilContainer,
@@ -13,9 +13,21 @@ import {
 } from "./style";
 import { FaPen } from "react-icons/fa";
 
+import { CardGrid } from "../../components/CardGrid/style.js";
+import Card from "../../components/Card";
+import { usePost } from "../../hooks/usePost";
+import LoadingState from "../../components/LoadingState/index.jsx";
+
 const Perfil = () => {
   const { user } = useAuth();
+  const { carregarMeusPostsDoBanco, myPosts, loadingMyPosts } = usePost();
 
+  useEffect(() => {
+    carregarMeusPostsDoBanco(); // Zero parâmetros. O token cuida de tudo!
+  }, []);
+
+  console.log("loadingMyPosts:", loadingMyPosts);
+  console.log("Posts do usuário:", myPosts);
   // Estado para controlar qual aba está selecionada
   const [abaAtiva, setAbaAtiva] = useState("projetos"); // 'projetos' | 'compartilhados' | 'aprovados'
 
@@ -89,18 +101,34 @@ const Perfil = () => {
       {/* CONTEÚDO QUE MUDA CONFORME A ABA */}
       <div style={{ marginTop: "20px" }}>
         {abaAtiva === "projetos" && (
-          <p style={{ color: "#888" }}>Lista dos meus projetos publicados...</p>
-          // Aqui futuramente entra o <FeedGrid> filtrado pelo ID do user
+          <>
+            {/* LÓGICA DE RENDERIZAÇÃO CONDICIONAL MUTUAMENTE EXCLUSIVA */}
+            {loadingMyPosts ? (
+              // 1. SE ESTÁ CARREGANDO, mostra SOMENTE o Loading
+              <LoadingState texto="Carregando seus projetos..." size={45} />
+            ) : myPosts.length > 0 ? (
+              // 2. SE NÃO ESTÁ CARREGANDO E TEM POSTS, mostra a Grid
+              <CardGrid>
+                {myPosts.map((post) => (
+                  <Card key={post.id} post={post} />
+                ))}
+              </CardGrid>
+            ) : (
+              // 3. SE NÃO ESTÁ CARREGANDO E NÃO TEM POSTS, mostra a mensagem de Vazio
+              <div
+                style={{ textAlign: "center", padding: "40px", color: "#888" }}
+              >
+                <p>Você ainda não publicou nenhum projeto.</p>
+              </div>
+            )}
+          </>
         )}
 
         {abaAtiva === "compartilhados" && (
-          <p style={{ color: "#888" }}>Projetos que eu compartilhei...</p>
+          <p style={{ color: "#888" }}>Projetos compartilhados...</p>
         )}
-
         {abaAtiva === "aprovados" && (
-          <p style={{ color: "#888" }}>
-            Projetos que receberam selo de aprovação...
-          </p>
+          <p style={{ color: "#888" }}>Projetos aprovados...</p>
         )}
       </div>
     </PerfilContainer>

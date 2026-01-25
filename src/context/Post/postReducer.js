@@ -80,7 +80,7 @@ export const postReducer = (state, action) => {
         loadingPosts: false,
         errorPosts: action.payload,
       };
-      
+
     // O usuário clicou em "Publicar"
     case "INICIAR_PUBLICACAO":
       return {
@@ -107,6 +107,28 @@ export const postReducer = (state, action) => {
         loading: false,
         success: false,
         error: action.payload, // A mensagem de erro
+      };
+
+    case "CARREGAR_MEUS_POSTS_INICIO":
+      return {
+        ...state,
+        loadingMyPosts: true,
+        errorMyPosts: null,
+      };
+
+    case "CARREGAR_MEUS_POSTS_SUCESSO":
+      return {
+        ...state,
+
+        myPosts: action.payload,
+        loadingMyPosts: false,
+      };
+
+    case "CARREGAR_MEUS_POSTS_ERRO":
+      return {
+        ...state,
+        loadingMyPosts: false,
+        errorMyPosts: action.payload,
       };
 
     // --- GRUPO 3: Limpeza ---

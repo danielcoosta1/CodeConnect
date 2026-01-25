@@ -12,3 +12,9 @@ export const createPostRequest = async (postData) => {
   const response = await axios.post(API_URL, postData);
   return response.data;
 };
+
+export const fetchMyPosts = async () => {
+  // O middleware de autenticação já adiciona o token automaticamente - user.id
+  const response = await axios.get(`${API_URL}/me`);
+  return response.data;
+};
