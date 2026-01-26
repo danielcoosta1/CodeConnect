@@ -18,11 +18,14 @@ import Card from "../../components/Card";
 import { usePost } from "../../hooks/usePost";
 import LoadingState from "../../components/LoadingState/index.jsx";
 import ErrorState from "../../components/ErrorState/index.jsx";
+import ModalEditarPerfil from "../../components/ModalEditarPerfil/index.jsx";
 
 const Perfil = () => {
   const { user } = useAuth();
   const { carregarMeusPostsDoBanco, myPosts, loadingMyPosts, errorMyPosts } =
     usePost();
+
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   useEffect(() => {
     carregarMeusPostsDoBanco(); // Zero parâmetros. O token cuida de tudo!
@@ -33,14 +36,15 @@ const Perfil = () => {
   // Estado para controlar qual aba está selecionada
   const [abaAtiva, setAbaAtiva] = useState("projetos"); // 'projetos' | 'compartilhados' | 'aprovados'
 
-  const handleAbrirModal = () => {
-    alert("Em breve: Modal de Edição com integração ao Backend!");
-  };
-
   if (!user) return null;
 
   return (
     <PerfilContainer>
+      <ModalEditarPerfil
+        isOpen={modalIsOpen}
+        onClose={() => setModalIsOpen(false)}
+      />
+
       <PerfilHeader>
         <AvatarGrande
           src={user.imagem || "https://via.placeholder.com/150"}
@@ -71,7 +75,7 @@ const Perfil = () => {
           </StatsContainer>
         </InfoContainer>
 
-        <BtnEditar onClick={handleAbrirModal}>
+        <BtnEditar onClick={() => setModalIsOpen(true)}>
           <FaPen size={12} /> Editar Perfil
         </BtnEditar>
       </PerfilHeader>
