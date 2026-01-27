@@ -14,12 +14,12 @@ export const ModalContainer = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  background-color: #fff;
+  background-color: #171d1f;
   border-radius: 8px;
-  
+
   padding: 20px;
   width: 90%;
-  max-width: 500px;
+  max-width: 900px;
 `;
 
 export const ModalHeader = styled.div`
@@ -27,10 +27,10 @@ export const ModalHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  
+
   h3 {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 1.8rem;
   }
 
   button {
@@ -38,12 +38,12 @@ export const ModalHeader = styled.div`
     border: none;
     color: #fff;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 2rem;
     padding: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     &:hover {
       opacity: 0.8;
     }
@@ -53,34 +53,43 @@ export const ModalHeader = styled.div`
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 3rem;
+  margin-top: 5rem;
 `;
 
 export const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
 
-  label { font-size: 0.9rem; color: #ccc; }
-  
-  input, textarea {
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #444;
-    background: #2a2a2a;
-    color: #fff;
-    font-family: inherit;
-    resize: vertical;
-    
-    &:focus {
-      outline: 2px solid #007bff;
-      border-color: transparent;
-    }
+  label {
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
   }
-  
-  input:disabled, textarea:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+
+  textarea {
+    background-color: #888888;
+    border-radius: 4px;
+
+    padding: 1em 1.5em;
+    font-size: 1rem;
+  }
+
+  input {
+    padding: 0.8rem;
+    border: 1px solid #333;
+    border-radius: 0.25rem;
+    background-color: #888888;
+    font-size: 1.5rem;
+
+    &::placeholder {
+      color: #171d1f;
+      font-size: 1.2rem;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #81fe88;
+    }
   }
 `;
 
@@ -104,10 +113,19 @@ export const ModalFooter = styled.div`
     cursor: not-allowed;
   }
 
-  .btn-cancel { background: #444; color: #fff; }
-  .btn-cancel:hover:not(:disabled) { background: #555; }
+  .btn-cancel {
+    background: #444;
+    color: #fff;
+  }
+  .btn-cancel:hover:not(:disabled) {
+    background: #555;
+  }
 
-  .btn-save { background: #007bff; color: #fff; }
-  .btn-save:hover:not(:disabled) { background: #0056b3; }
+  .btn-save {
+    background: #007bff;
+    color: #fff;
+  }
+  .btn-save:hover:not(:disabled) {
+    background: #0056b3;
+  }
 `;
-

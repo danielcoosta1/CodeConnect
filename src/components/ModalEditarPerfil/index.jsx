@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Form, InputGroup, ModalContainer, ModalContent, ModalFooter, ModalHeader } from "./style";
+import {
+  Form,
+  InputGroup,
+  ModalContainer,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "./style";
 import { useAuth } from "../../hooks/useAuth";
 import { FaTimes } from "react-icons/fa";
 
@@ -72,19 +79,17 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
               type="text"
               value={funcao}
               onChange={(e) => setFuncao(e.target.value)}
-              placeholder="Ex: Desenvolvedor Front-end"
               disabled={loading}
+              placeholder="Desenvolvedor Front-End"
             />
           </InputGroup>
 
           <InputGroup>
             <label>Bio</label>
             <textarea
-              rows="3"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="Fale um pouco sobre você..."
-              disabled={loading}
+             
             />
           </InputGroup>
 
