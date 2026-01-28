@@ -96,7 +96,7 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
       <ModalContent>
         <ModalHeader>
           <h3>Editar Perfil</h3>
-          <button onClick={onClose} disabled={loading}>
+          <button type="button" onClick={onClose} disabled={loading}>
             <FaTimes />
           </button>
         </ModalHeader>
@@ -112,7 +112,10 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
             )}
 
             <ContainerButton>
-              <ButtonUploadImg onClick={() => inputRef.current.click()}>
+              <ButtonUploadImg
+                type="button"
+                onClick={() => inputRef.current.click()}
+              >
                 <p>Carregar nova foto</p>
                 <input
                   type="file"
@@ -153,7 +156,7 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
           </InputGroup>
 
           <ModalFooter>
-            <BotaoCancelar onClick={onClose} type="button" disabled={loading}>
+            <BotaoCancelar type="button" onClick={onClose} disabled={loading}>
               Cancelar
             </BotaoCancelar>
             <BotaoSalvar type="submit" disabled={loading}>
