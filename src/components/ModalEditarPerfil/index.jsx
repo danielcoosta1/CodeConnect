@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
+  BotaoCancelar,
+  BotaoSalvar,
+  ButtonUploadImg,
+  ContainerButton,
+  ContainerImg,
+  ContainerUploadImg,
   Form,
+  Img,
   InputGroup,
   ModalContainer,
   ModalContent,
@@ -8,7 +15,9 @@ import {
   ModalHeader,
 } from "./style";
 import { useAuth } from "../../hooks/useAuth";
-import { FaTimes } from "react-icons/fa";
+import { FaTimes, FaUserCircle } from "react-icons/fa";
+import { FaUpload } from "react-icons/fa";
+import { toastErro, toastSucesso } from "../../utils/toast";
 
 const ModalEditarPerfil = ({ isOpen, onClose }) => {
   // 2. PEGANDO OS DADOS E A FUNÇÃO DIRETO DA FONTE
@@ -40,10 +49,11 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
     try {
       // Chama a função que criamos no AuthProvider
       await atualizarPerfilNoBanco({ nome, funcao, bio, imagem });
+      toastSucesso("Perfil atualizado com sucesso!");
       onClose(); // Se deu tudo certo, fecha o modal sozinho
     } catch (error) {
       console.error("Erro ao salvar:", error);
-      alert("Houve um erro ao atualizar os dados. Tente novamente.");
+      toastErro("Erro ao atualizar o perfil. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -62,6 +72,24 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
           </button>
         </ModalHeader>
         <Form onSubmit={handleSubmit}>
+          <ContainerUploadImg>
+            <ContainerImg>
+              {imagem ? (
+                <Img
+                  src={`data:image/png;base64,${imagem}`}
+                  alt="Imagem de perfil"
+                />
+              ) : (
+                <FaUserCircle size={150} color="#888888" />
+              )}
+            </ContainerImg>
+            <ContainerButton>
+              <ButtonUploadImg>
+                <FaUpload />
+                Upload Imagem
+              </ButtonUploadImg>
+            </ContainerButton>
+          </ContainerUploadImg>
           <InputGroup>
             <label>Nome</label>
             <input
@@ -86,36 +114,16 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
 
           <InputGroup>
             <label>Bio</label>
-            <textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-             
-            />
-          </InputGroup>
-
-          <InputGroup>
-            <label>URL da Imagem de Perfil</label>
-            <input
-              type="url"
-              value={imagem}
-              onChange={(e) => setImagem(e.target.value)}
-              placeholder="https://..."
-              disabled={loading}
-            />
+            <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
           </InputGroup>
 
           <ModalFooter>
-            <button
-              type="button"
-              className="btn-cancel"
-              onClick={onClose}
-              disabled={loading}
-            >
+            <BotaoCancelar onClick={onClose} type="button" disabled={loading}>
               Cancelar
-            </button>
-            <button type="submit" className="btn-save" disabled={loading}>
+            </BotaoCancelar>
+            <BotaoSalvar type="submit" disabled={loading}>
               {loading ? "Salvando..." : "Salvar Alterações"}
-            </button>
+            </BotaoSalvar>
           </ModalFooter>
         </Form>
       </ModalContent>

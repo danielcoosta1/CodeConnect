@@ -46,6 +46,7 @@ export const ModalHeader = styled.div`
 
     &:hover {
       opacity: 0.8;
+      color: #81fe88;
     }
   }
 `;
@@ -98,34 +99,119 @@ export const ModalFooter = styled.div`
   justify-content: flex-end;
   gap: 10px;
   margin-top: 15px;
+`;
 
-  button {
-    padding: 10px 15px;
-    border-radius: 4px;
+export const BotaoCancelar = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #81fe88;
+  color: #81fe88;
+  background-color: transparent;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  font-size: 1rem;
+
+  &:hover {
+    background-color: rgba(129, 254, 136, 0.1);
+  }
+
+  &:active {
+    background-color: rgba(129, 254, 136, 0.2);
+    transform: scale(0.98);
+  }
+
+  &:focus {
+    outline: 2px solid #81fe88;
+    outline-offset: 2px;
+  }
+`;
+
+export const BotaoSalvar = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  font-size: 1rem;
+
+  background-color: #81fe88;
+  color: #132e35;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+
+  &:hover {
+    background-color: #6be276;
+  }
+
+  &:active {
+    background-color: #5acd66;
+    transform: scale(0.98);
+  }
+
+  &:focus {
+    outline: 2px solid #132e35;
+    outline-offset: 2px;
+  }
+`;
+
+export const ContainerUploadImg = styled.div`
+  display: flex;
+
+  gap: 1rem;
+  margin-bottom: 2rem;
+`;
+
+export const ContainerImg = styled.div``;
+
+export const Img = styled.img`
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+`;
+
+export const ContainerButton = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+export const ButtonUploadImg = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  font-size: 1rem;
+  color: #888888;
+  padding: 1em 1.5em;
+  background-color: transparent;
+  border: 2px solid #888888;
+  border-radius: 8px;
+  margin-top: 2rem;
+`;
+
+export const ContainerSubtittle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #888888;
+  margin-top: 1rem;
+  p {
+    font-size: 0.9rem;
+  }
+  img {
     cursor: pointer;
-    font-weight: bold;
-    border: none;
-    transition: 0.2s;
-  }
-
-  button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .btn-cancel {
-    background: #444;
-    color: #fff;
-  }
-  .btn-cancel:hover:not(:disabled) {
-    background: #555;
-  }
-
-  .btn-save {
-    background: #007bff;
-    color: #fff;
-  }
-  .btn-save:hover:not(:disabled) {
-    background: #0056b3;
+    margin-bottom: 1em;
   }
 `;
