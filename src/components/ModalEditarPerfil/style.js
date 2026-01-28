@@ -6,51 +6,69 @@ export const ModalContainer = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); //fundo semi-transparente
+  background-color: rgba(0, 0, 0, 0.75);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; //garante que fique por cima de outros elementos
+  z-index: 1000;
+  backdrop-filter: blur(4px); // Efeito de vidro desfocado no fundo
 `;
 
 export const ModalContent = styled.div`
   background-color: #171d1f;
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 1px solid #333; // Borda sutil para separar do fundo
+  padding: 40px;
+  width: 95%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto; // Garante que em telas menores o modal role
+  position: relative;
 
-  padding: 20px;
-  width: 90%;
-  max-width: 900px;
+  /* Custom Scrollbar para manter o visual dark */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #171d1f;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 10px;
+  }
 `;
 
 export const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 
   h3 {
     margin: 0;
     font-size: 1.8rem;
+    color: #fff;
+    font-weight: 600;
   }
 
   button {
-    background: none;
+    background: transparent;
     border: none;
-    color: #fff;
+    color: #888;
     cursor: pointer;
-    font-size: 2rem;
-    padding: 5px;
+    transition: all 0.2s ease;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 8px;
+    border-radius: 50%;
+    font-size: 1.5rem;
 
     &:hover {
-      opacity: 0.8;
+      background-color: rgba(255, 255, 255, 0.05);
       color: #81fe88;
+      transform: rotate(90deg); // Efeito moderno ao hover
     }
   }
 `;
-
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -167,24 +185,26 @@ export const BotaoSalvar = styled.button`
 
 export const ContainerUploadImg = styled.div`
   display: flex;
-
-  gap: 1rem;
-  margin-bottom: 2rem;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #333;
 `;
 
-export const ContainerImg = styled.div``;
-
 export const Img = styled.img`
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
+  border: 3px solid #81fe88; // Anel verde ao redor da foto
+  padding: 3px;
 `;
 
 export const ContainerButton = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 8px;
 `;
 
 export const ButtonUploadImg = styled.button`

@@ -31,8 +31,6 @@ const Perfil = () => {
     carregarMeusPostsDoBanco(); // Zero parâmetros. O token cuida de tudo!
   }, []);
 
-  console.log("loadingMyPosts:", loadingMyPosts);
-  console.log("Posts do usuário:", myPosts);
   // Estado para controlar qual aba está selecionada
   const [abaAtiva, setAbaAtiva] = useState("projetos"); // 'projetos' | 'compartilhados' | 'aprovados'
 

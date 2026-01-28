@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   BotaoCancelar,
   BotaoSalvar,
   ButtonUploadImg,
   ContainerButton,
-  ContainerImg,
   ContainerUploadImg,
   Form,
   Img,
@@ -25,12 +24,15 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
   // 'atualizarPerfilNoBanco' serve para salvar no Backend.
   const { user, atualizarPerfilNoBanco } = useAuth();
 
+  const inputRef = useRef();
+
   // Estados locais dos inputs do formulário
   const [nome, setNome] = useState("");
   const [funcao, setFuncao] = useState("");
   const [bio, setBio] = useState("");
   const [imagem, setImagem] = useState("");
   const [loading, setLoading] = useState(false);
+  const [localErro, setLocalErro] = useState("");
 
   // 3. EFEITO INTELIGENTE: Preenche o formulário assim que o modal abrir
   useEffect(() => {
@@ -41,6 +43,33 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
       setImagem(user.imagem || "");
     }
   }, [user, isOpen]);
+
+  const handleImageChange = (e) => {
+    e.preventDefault();
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const tiposAceitos = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
+    if (!tiposAceitos.includes(file.type)) {
+      setLocalErro(
+        "Tipo de arquivo não suportado. Por favor, envie uma imagem.",
+      );
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      // 5MB
+      setLocalErro("O tamanho do arquivo excede o limite de 5MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result.split(",")[1];
+      setImagem(base64String);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,20 +102,26 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
         </ModalHeader>
         <Form onSubmit={handleSubmit}>
           <ContainerUploadImg>
-            <ContainerImg>
-              {imagem ? (
-                <Img
-                  src={`data:image/png;base64,${imagem}`}
-                  alt="Imagem de perfil"
-                />
-              ) : (
-                <FaUserCircle size={150} color="#888888" />
-              )}
-            </ContainerImg>
+            {imagem ? (
+              <Img
+                src={`data:image/png;base64,${imagem}`}
+                alt="Imagem de perfil"
+              />
+            ) : (
+              <FaUserCircle size={150} color="#888888" />
+            )}
+
             <ContainerButton>
-              <ButtonUploadImg>
+              <ButtonUploadImg onClick={() => inputRef.current.click()}>
+                <p>Carregar nova foto</p>
+                <input
+                  type="file"
+                  accept="image/"
+                  style={{ display: "none" }}
+                  ref={inputRef}
+                  onChange={handleImageChange}
+                />
                 <FaUpload />
-                Upload Imagem
               </ButtonUploadImg>
             </ContainerButton>
           </ContainerUploadImg>
