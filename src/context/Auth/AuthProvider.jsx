@@ -84,16 +84,12 @@ const AuthProvider = ({ children }) => {
       const response = await updateProfileRequest(novosDados);
 
       // O backend retorna o user atualizado
-      const usuarioAtualizado = response.data;
+      const usuarioAtualizado = response;
 
       // 2. ATUALIZA O ESTADO (Com imagem, para refletir na tela agora)
       setUser(usuarioAtualizado);
 
-      // 3. SALVA NO LOCALSTORAGE (Sem a imagem)
-      // Usamos a desestruturação para "separar" a imagem do resto
-      const { imagem: _imagem, ...dadosLeves } = usuarioAtualizado;
-
-      localStorageService.salvar("user", dadosLeves);
+      localStorageService.salvar("user", usuarioAtualizado);
     } catch (error) {
       console.error("Erro ao atualizar o perfil:", error);
       throw error;
