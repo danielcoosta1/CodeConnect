@@ -17,28 +17,32 @@ import { CardGrid } from "../../components/CardGrid/style.js";
 import Card from "../../components/Card";
 import { usePost } from "../../hooks/usePost";
 import LoadingState from "../../components/LoadingState/index.jsx";
+import ErrorState from "../../components/ErrorState/index.jsx";
+import ModalEditarPerfil from "../../components/ModalEditarPerfil/index.jsx";
 
 const Perfil = () => {
   const { user } = useAuth();
-  const { carregarMeusPostsDoBanco, myPosts, loadingMyPosts } = usePost();
+  const { carregarMeusPostsDoBanco, myPosts, loadingMyPosts, errorMyPosts } =
+    usePost();
+
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   useEffect(() => {
     carregarMeusPostsDoBanco(); // Zero parâmetros. O token cuida de tudo!
   }, []);
 
-  console.log("loadingMyPosts:", loadingMyPosts);
-  console.log("Posts do usuário:", myPosts);
   // Estado para controlar qual aba está selecionada
   const [abaAtiva, setAbaAtiva] = useState("projetos"); // 'projetos' | 'compartilhados' | 'aprovados'
-
-  const handleAbrirModal = () => {
-    alert("Em breve: Modal de Edição com integração ao Backend!");
-  };
 
   if (!user) return null;
 
   return (
     <PerfilContainer>
+      <ModalEditarPerfil
+        isOpen={modalIsOpen}
+        onClose={() => setModalIsOpen(false)}
+      />
+
       <PerfilHeader>
         <AvatarGrande
           src={user.imagem || "https://via.placeholder.com/150"}
@@ -59,7 +63,7 @@ const Perfil = () => {
           {/* NOVOS DADOS ESTATÍSTICOS */}
           <StatsContainer>
             <StatItem>
-              <strong>0</strong>
+              <strong>{myPosts.length}</strong>
               <span>Projetos</span>
             </StatItem>
             <StatItem>
@@ -69,7 +73,7 @@ const Perfil = () => {
           </StatsContainer>
         </InfoContainer>
 
-        <BtnEditar onClick={handleAbrirModal}>
+        <BtnEditar onClick={() => setModalIsOpen(true)}>
           <FaPen size={12} /> Editar Perfil
         </BtnEditar>
       </PerfilHeader>
@@ -99,6 +103,7 @@ const Perfil = () => {
       </ProfileNav>
 
       {/* CONTEÚDO QUE MUDA CONFORME A ABA */}
+
       <div style={{ marginTop: "20px" }}>
         {abaAtiva === "projetos" && (
           <>
@@ -106,6 +111,12 @@ const Perfil = () => {
             {loadingMyPosts ? (
               // 1. SE ESTÁ CARREGANDO, mostra SOMENTE o Loading
               <LoadingState texto="Carregando seus projetos..." size={45} />
+            ) : errorMyPosts ? (
+              // 2. SE HOUVE ERRO, mostra o ErrorState
+              <ErrorState
+                mensagem={errorMyPosts}
+                onRetry={carregarMeusPostsDoBanco}
+              />
             ) : myPosts.length > 0 ? (
               // 2. SE NÃO ESTÁ CARREGANDO E TEM POSTS, mostra a Grid
               <CardGrid>

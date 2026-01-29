@@ -3,7 +3,7 @@ import { PostContext } from "./PostContext";
 import { postReducer } from "./postReducer";
 
 import { toastErro, toastSucesso } from "../../utils/toast";
-import { createPostRequest, fetchMyPosts, fetchPosts } from "./postService";
+import { createPostRequest, fetchMyPosts, fetchPosts } from "../../services/postService";
 import { localStorageService } from "../../services/localStorageService";
 import { postInicialState } from "./inicialState";
 

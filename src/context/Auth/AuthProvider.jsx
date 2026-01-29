@@ -4,6 +4,9 @@ import axios from "axios";
 import { localStorageService } from "../../services/localStorageService";
 import { useNavigate } from "react-router-dom";
 
+import { loginRequest } from "../../services/authService";
+import { updateProfileRequest } from "../../services/userService";
+
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
@@ -32,12 +35,7 @@ const AuthProvider = ({ children }) => {
 
   const login = async (email, senha) => {
     try {
-      const response = await axios.post(
-        "http://localhost:51213/api/auth/login",
-        { email, senha },
-      );
-
-      // Desestruturação da resposta para obter user e token
+      const response = await loginRequest(email, senha);
       const { user: userData, token: authToken } = response.data;
       // Salva os dados no localStorage
       localStorageService.salvar("token", authToken);
@@ -67,10 +65,22 @@ const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const atuliazarUserLocalmente = (novosDados) => {
-    const usuarioAtualizado = { ...user, ...novosDados };
-    setUser(usuarioAtualizado);
-    localStorageService.salvar("user", usuarioAtualizado);
+  // 3. NOVA FUNÇÃO DE ATUALIZAR PERFIL (Substituindo a local)
+  const atualizarPerfilNoBanco = async (novosDados) => {
+    try {
+      // Chama o serviço de USER (Bate em /api/users/perfil)
+      await updateProfileRequest(novosDados);
+
+      // Se não deu erro no backend, atualizamos o Front-end
+      const usuarioAtualizado = { ...user, ...novosDados };
+      setUser(usuarioAtualizado);
+
+      // Atualizamos o LocalStorage para não perder no F5
+      localStorageService.salvar("user", usuarioAtualizado);
+    } catch (error) {
+      console.error("Erro ao atualizar o perfil:", error);
+      throw error; // Devolvemos o erro para o Modal exibir
+    }
   };
 
   // Condicionamos a renderização dos filhos
@@ -82,7 +92,7 @@ const AuthProvider = ({ children }) => {
         token,
         login,
         logout,
-        atuliazarUserLocalmente,
+        atualizarPerfilNoBanco,
         isAuthenticated: !!token,
         loading,
       }}
