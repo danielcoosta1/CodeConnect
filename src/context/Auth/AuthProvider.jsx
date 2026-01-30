@@ -5,7 +5,7 @@ import { localStorageService } from "../../services/localStorageService";
 import { useNavigate } from "react-router-dom";
 
 import { loginRequest } from "../../services/authService";
-import { updateProfileRequest } from "../../services/userService";
+import { getUserProfile, updateProfileRequest } from "../../services/userService";
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -17,20 +17,35 @@ const AuthProvider = ({ children }) => {
 
   //Restaura o estado de autenticação ao carregar o aplicativo
   useEffect(() => {
-    const storedUser = localStorageService.ler("user");
-    const storedToken = localStorageService.ler("token");
+    const carregarSessao = async () => {
+      const storedUser = localStorageService.ler("user");
+      const storedToken = localStorageService.ler("token");
 
-    // ATIVA O CRACHÁ ao restaurar a sessão
+      if (storedToken && storedUser) {
+        // 1. PASSO RÁPIDO: Restaura o que temos no bolso (Sem foto)
+        // O usuário já vê o nome e o site carrega.
+        setToken(storedToken);
+        setUser(storedUser);
+        axios.defaults.headers.common["Authorization"] =
+          `Bearer ${storedToken}`;
 
-    if (storedToken && storedUser) {
-      //Automaticamente adiciona o token a todas as requisições axios
-      axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+        // 2. PASSO COMPLETO: Vai no banco buscar a foto (Usando o Token)
+        try {
+          console.log("Buscando dados atualizados (foto) no servidor...");
+          const dadosCompletos = await getUserProfile();
 
-      // Restaura o estado de autenticação
-      setToken(storedToken);
-      setUser(storedUser); // AQUI: VIRÁ SEM FOTO DO LOCALSTORAGE
-    }
-    setLoading(false);
+          // Quando chegar, atualiza o estado com a FOTO!
+          setUser(dadosCompletos);
+        } catch (error) {
+          console.error("Token expirado ou erro de rede:", error);
+          // Opcional: se o token não vale mais, desloga
+          // logout();
+        }
+      }
+      setLoading(false);
+    };
+
+    carregarSessao();
   }, []);
 
   const login = async (email, senha) => {
