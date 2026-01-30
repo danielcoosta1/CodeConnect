@@ -29,7 +29,7 @@ const AuthProvider = ({ children }) => {
         axios.defaults.headers.common["Authorization"] =
           `Bearer ${storedToken}`;
 
-        // 2. PASSO COMPLETO: Vai no banco buscar a foto (Usando o Token)
+        // 2. PASSO COMPLETO: Vai no banco buscar os dados do usuário ATUALIZADOS (com foto)
         try {
           console.log("Buscando dados atualizados (foto) no servidor...");
           const dadosCompletos = await getUserProfile();
