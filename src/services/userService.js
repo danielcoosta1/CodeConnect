@@ -9,3 +9,9 @@ export const updateProfileRequest = async (novosDados) => {
   const response = await axios.put(`${API_URL}/perfil`, novosDados);
   return response.data;
 };
+
+export const getUserProfile = async () => {
+  // Bate exatamente em: GET /api/users/me
+  const response = await axios.get(`${API_URL}/me`);
+  return response.data;
+};

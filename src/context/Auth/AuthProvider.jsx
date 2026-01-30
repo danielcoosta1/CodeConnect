@@ -28,41 +28,36 @@ const AuthProvider = ({ children }) => {
 
       // Restaura o estado de autenticação
       setToken(storedToken);
-      setUser(storedUser);
+      setUser(storedUser); // AQUI: VIRÁ SEM FOTO DO LOCALSTORAGE
     }
     setLoading(false);
   }, []);
 
   const login = async (email, senha) => {
     try {
-      // 1. O 'response' aqui já é o objeto { user, token } que vem do authService
       const response = await loginRequest(email, senha);
-
-      // Log para você ver no console que o objeto chegou "limpo"
       console.log("Resposta do servidor:", response);
 
-      // 2. Desestruturamos direto do response (sem o .data)
       const { user: userData, token: authToken } = response;
 
-      // 3. Verificação de segurança
       if (!userData || !authToken) {
-        throw new Error("Usuário ou Token não encontrados na resposta.");
+        throw new Error("Usuário ou Token não encontrados.");
       }
 
-      // 4. Salva no localStorage
-      localStorageService.salvar("token", authToken);
-      localStorageService.salvar("user", userData);
-
-      // 5. Atualiza o estado global
+      // 1. ATUALIZA A TELA (Com a foto completa que veio do banco)
       setUser(userData);
       setToken(authToken);
 
-      // 6. Configura o Axios para as próximas chamadas
+      // 2. CONFIGURA AXIOS
       axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
+
+      // 3. SALVA NO STORAGE (SEM A FOTO - PARA NÃO DAR ERRO 431)
+      const { imagem: _imagem, ...userSemPeso } = userData;
+      localStorageService.salvar("token", authToken);
+      localStorageService.salvar("user", userSemPeso); //
 
       navigation("/feed");
     } catch (error) {
-      // Esse log detalhado que você viu é ótimo para debug!
       console.error("ERRO DETALHADO DO LOGIN:", error);
       throw error;
     }
@@ -80,16 +75,23 @@ const AuthProvider = ({ children }) => {
   // 3. NOVA FUNÇÃO DE ATUALIZAR PERFIL (Substituindo a local)
   const atualizarPerfilNoBanco = async (novosDados) => {
     try {
-      // 1. Envia para o Back-end (com imagem)
+      // 1. Envia para o Back-end
       const response = await updateProfileRequest(novosDados);
 
-      // O backend retorna o user atualizado
+      // O backend retorna o user atualizado (response já é o objeto correto agora)
       const usuarioAtualizado = response;
 
-      // 2. ATUALIZA O ESTADO (Com imagem, para refletir na tela agora)
+      // 2. ATUALIZA O ESTADO (Com imagem, para a foto mudar na tela agora mesmo)
       setUser(usuarioAtualizado);
 
-      localStorageService.salvar("user", usuarioAtualizado);
+      // 3. SALVA NO LOCALSTORAGE (Sem a imagem para evitar o erro 431)
+      if (usuarioAtualizado) {
+        // A sintaxe abaixo cria uma variável 'userSemPeso' com tudo, MENOS a imagem
+        // O '_imagem' é só um nome para a variável descartada
+        const { imagem: _imagem, ...userSemPeso } = usuarioAtualizado;
+
+        localStorageService.salvar("user", userSemPeso);
+      }
     } catch (error) {
       console.error("Erro ao atualizar o perfil:", error);
       throw error;
