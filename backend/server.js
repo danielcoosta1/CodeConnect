@@ -23,6 +23,8 @@ app.use("/api/auth", authRoutes);
 
 //Rotas de posts
 app.use("/api/posts", postRoutes);
+
+//Rotas de usuários
 app.use("/api/users", userRoutes);
 
 app.listen(PORT, () => {

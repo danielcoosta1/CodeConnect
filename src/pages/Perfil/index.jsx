@@ -19,6 +19,7 @@ import { usePost } from "../../hooks/usePost";
 import LoadingState from "../../components/LoadingState/index.jsx";
 import ErrorState from "../../components/ErrorState/index.jsx";
 import ModalEditarPerfil from "../../components/ModalEditarPerfil/index.jsx";
+import ProfileAvatar from "../../components/ProfileAvatar/index.jsx";
 
 const Perfil = () => {
   const { user } = useAuth();
@@ -44,10 +45,7 @@ const Perfil = () => {
       />
 
       <PerfilHeader>
-        <AvatarGrande
-          src={user.imagem || "https://via.placeholder.com/150"}
-          alt={user.nome}
-        />
+        <ProfileAvatar src={user.imagem} size={120} hasBorder={true} />
 
         <InfoContainer>
           <h2>{user.nome}</h2>

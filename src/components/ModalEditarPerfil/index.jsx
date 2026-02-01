@@ -134,7 +134,6 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
               type="text"
               value={nome}
               onChange={(e) => setNome(e.target.value)}
-              required
               disabled={loading}
             />
           </InputGroup>

@@ -1,32 +1,56 @@
 import styled from "styled-components";
 
+// --- WRAPPER GERAL ---
 export const ContainerWrapper = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
+  min-height: 100vh; // Garante que ocupe a altura da tela
   background-color: #171d1f;
-  padding: 2rem;
-  gap: 2rem;
+  padding: 3rem 4rem; // Mantido o espaçamento maior nas bordas
+  gap: 4rem; // Mantido o afastamento maior
+  box-sizing: border-box;
+
+  @media (max-width: 1200px) {
+    flex-direction: column;
+    padding: 2rem;
+    gap: 2rem;
+    align-items: center; // Centraliza em telas menores
+  }
 `;
 
+// --- COLUNA DA ESQUERDA (IMAGEM) ---
 export const ContainerUploadImg = styled.div`
   display: flex;
-
   flex-direction: column;
+  // Removido o flex: 1 e max-width para deixar a imagem ditar o tamanho
 `;
 
 export const ContainerImg = styled.div`
   background-color: #888888;
-  border-radius: 8px;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // Removida min-height fixa pois a imagem de 600px vai ditar a altura
 `;
 
 export const Img = styled.img`
-  width: 450px;
+  width: 520px; // RESTAURADO: Largura fixa de 600px como no original
+  height: auto;
+  object-fit: cover;
+  display: block;
+
+  // Segurança para telas menores que 600px
+  @media (max-width: 650px) {
+    width: 100%;
+  }
 `;
 
 export const ContainerButton = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: 1.5rem;
 `;
 
 export const ButtonUploadImg = styled.button`
@@ -34,37 +58,99 @@ export const ButtonUploadImg = styled.button`
   align-items: center;
   justify-content: center;
   gap: 1em;
-  font-size: 1rem;
-  color: #888888;
-  padding: 1em 1.5em;
-  background-color: transparent;
-  border: 2px solid #888888;
+  font-size: 1.1rem; // Mantido tamanho maior
+  font-weight: 600;
+  color: #c1c1c1;
+  padding: 1.2em;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 2px solid #888888; // RESTAURADO: Borda SÓLIDA, não dashed
   border-radius: 8px;
-  margin-top: 2rem;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #e1e1e1;
+    color: #fff;
+  }
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
 `;
 
 export const ContainerSubtittle = styled.div`
   display: flex;
-  gap: 0.5em;
-  color: #888888;
-  margin-top: 1rem;
+  justify-content: space-between;
   align-items: center;
+  color: #b0b0b0;
+  margin-top: 1rem;
+  font-size: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.8rem;
+  border-radius: 6px;
+
   img {
-    margin-bottom: 1em;
     cursor: pointer;
+    width: 20px;
+    height: 20px;
+    transition: 0.2s;
+    &:hover {
+      opacity: 0.8;
+    }
   }
 `;
 
+// --- COLUNA DA DIREITA (FORMULÁRIO) ---
 export const ContainerForm = styled.div`
+  flex: 1; // Ocupa o resto do espaço disponível
   width: 100%;
   color: #e1e1e1;
+
+  h2 {
+    font-size: 2.5rem; // Mantido título maior
+    margin-bottom: 2rem;
+    font-weight: 700;
+  }
 `;
 
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-top: 2.5rem;
+  gap: 2.5rem; // Mantido espaço maior
+`;
+
+// --- PADRONIZAÇÃO DOS INPUTS  ---
+const InputStyles = `
+  width: 100%;
+  padding: 1.2rem;
+  font-size: 1.2rem; // Fonte maior digitada
+  color: #171d1f; // Texto escuro para contraste com fundo cinza
+  background-color: #888888;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-family: inherit;
+  transition: 0.2s;
+
+  &::placeholder {
+    color: #333;
+    opacity: 0.7;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #81fe88;
+    background-color: #999;
+  }
+`;
+
+const LabelStyles = `
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem; // Label grande e legível
+
+  color: #e1e1e1;
 `;
 
 export const CampoInput = styled.div`
@@ -72,44 +158,27 @@ export const CampoInput = styled.div`
   flex-direction: column;
 
   label {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
+    ${LabelStyles}
   }
 
   input {
-    padding: 0.8rem;
-    border: 1px solid #333;
-    border-radius: 0.25rem;
-    background-color: #888888;
-
-    &::placeholder {
-      color: #171d1f;
-    }
-
-    &:focus {
-      outline: none;
-      border-color: #81fe88;
-    }
+    ${InputStyles}
   }
 `;
 
 export const ContainerInputDescricao = styled.div`
   display: flex;
   flex-direction: column;
-  textarea {
-    background-color: #888888;
-    border-radius: 4px;
-    min-height: 60px;
-    padding: 1em 1.5em;
-    font-size: 1rem;
-    &::placeholder {
-      color: #171d1f;
-    }
 
-    &:focus {
-      outline: none;
-      border-color: #81fe88;
-    }
+  label {
+    ${LabelStyles}
+  }
+
+  textarea {
+    ${InputStyles}
+    min-height: 250px; // Mantido textarea alto
+    resize: vertical;
+    line-height: 1.5;
   }
 `;
 
@@ -118,128 +187,102 @@ export const ContainerTags = styled.div`
   flex-direction: column;
 
   label {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
+    ${LabelStyles}
   }
 
   input {
-    padding: 0.8rem;
-    border: 1px solid #333;
-    border-radius: 0.25rem;
-    background-color: #888888;
-
-    &::placeholder {
-      color: #171d1f;
-    }
-
-    &:focus {
-      outline: none;
-      border-color: #81fe88;
-    }
+    ${InputStyles}
   }
 `;
 
+// --- TAGS VISUAIS ---
 export const TagList = styled.ul`
   display: flex;
-
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  gap: 1rem;
+  margin-top: 1rem;
 `;
 
 export const TagItem = styled.li`
-  background-color: #888888;
-  padding: 0.3em 0.5em;
-  border-radius: 8px;
-  justify-content: center;
-  align-items: center;
+  background-color: #81fe88;
+  color: #132e35;
+  padding: 0.6em 1em;
+  border-radius: 30px;
   display: flex;
-
-  span {
-    font-size: 0.85rem;
-    color: #171d1f;
-    margin-right: 0.5rem;
-    text-transform: uppercase;
-    font-weight: bold;
-  }
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  font-size: 1rem;
 `;
 
 export const TagRemoveButton = styled.button`
   background: none;
   border: none;
-  color: #171d1f;
+  color: #132e35;
   cursor: pointer;
-  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+
+  &:hover {
+    color: #000;
+  }
 `;
 
+// --- BOTÕES DE AÇÃO ---
 export const ContainerBotoes = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-
-  width: 100%;
-  font-weight: bold;
+  gap: 2rem;
+  margin-top: 2rem;
 `;
 
 export const BotaoDescartar = styled.button`
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5em;
-  border: 1px solid #81fe88;
+  gap: 0.8em;
+  // RESTAURADO: Cor verde original
+  border: 2px solid #81fe88;
   color: #81fe88;
   background-color: transparent;
-  padding: 1rem 1.5rem;
+
+  padding: 1.2rem; // Mantido padding maior
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  width: 100%;
-  font-size: 1rem;
+  font-size: 1.1rem; // Mantido fonte maior
+  font-weight: bold;
+  transition: 0.2s;
 
   &:hover {
     background-color: rgba(129, 254, 136, 0.1);
   }
-
-  &:active {
-    background-color: rgba(129, 254, 136, 0.2);
-    transform: scale(0.98);
-  }
-
-  &:focus {
-    outline: 2px solid #81fe88;
-    outline-offset: 2px;
-  }
 `;
 
 export const BotaoPublicar = styled.button`
-  width: 100%;
+  flex: 2; // Mantido maior destaque
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5em;
-  font-size: 1rem;
-
+  gap: 0.8em;
+  font-size: 1.1rem; // Mantido fonte maior
   background-color: #81fe88;
   color: #132e35;
-  padding: 1rem 1.5rem;
+  padding: 1.2rem; // Mantido padding maior
   border-radius: 8px;
   border: none;
   cursor: pointer;
   font-weight: bold;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: 0.2s;
 
   &:hover {
     background-color: #6be276;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(129, 254, 136, 0.3);
   }
 
   &:active {
-    background-color: #5acd66;
-    transform: scale(0.98);
-  }
-
-  &:focus {
-    outline: 2px solid #132e35;
-    outline-offset: 2px;
+    transform: translateY(0);
   }
 `;

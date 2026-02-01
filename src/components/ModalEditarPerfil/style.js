@@ -1,36 +1,72 @@
 import styled from "styled-components";
 
+// --- VARIÁVEIS DE PADRONIZAÇÃO (IGUAIS AO PUBLICAR) ---
+// Isso garante que se você mudar lá, é só copiar e colar aqui.
+
+const InputStyles = `
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  color: #171d1f;
+  background-color: #888888;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-family: inherit;
+  transition: 0.2s;
+
+  &::placeholder {
+    color: #333;
+    opacity: 0.7;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #81fe88;
+    background-color: #999;
+  }
+`;
+
+const LabelStyles = `
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #e1e1e1;
+`;
+
+// --- ESTRUTURA DO MODAL ---
+
 export const ModalContainer = styled.div`
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.85); // Um pouco mais escuro para foco
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  backdrop-filter: blur(4px); // Efeito de vidro desfocado no fundo
+  backdrop-filter: blur(5px);
 `;
 
 export const ModalContent = styled.div`
   background-color: #171d1f;
-  border-radius: 12px;
-  border: 1px solid #333; // Borda sutil para separar do fundo
+  border-radius: 16px; // Bordas mais arredondadas
+  border: 1px solid #333;
   padding: 40px;
   width: 95%;
-  max-width: 800px;
+  max-width: 600px; // Um pouco mais estreito para parecer "Modal" e não página
   max-height: 90vh;
-  overflow-y: auto; // Garante que em telas menores o modal role
+  overflow-y: auto;
   position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 
-  /* Custom Scrollbar para manter o visual dark */
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
   &::-webkit-scrollbar-track {
-    background: #171d1f;
+    background: transparent;
   }
   &::-webkit-scrollbar-thumb {
     background: #333;
@@ -43,12 +79,14 @@ export const ModalHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+  border-bottom: 1px solid #333; // Linha sutil separando header
+  padding-bottom: 20px;
 
   h3 {
     margin: 0;
     font-size: 1.8rem;
     color: #fff;
-    font-weight: 600;
+    font-weight: 700;
   }
 
   button {
@@ -63,175 +101,152 @@ export const ModalHeader = styled.div`
     font-size: 1.5rem;
 
     &:hover {
-      background-color: rgba(255, 255, 255, 0.05);
-      color: #81fe88;
-      transform: rotate(90deg); // Efeito moderno ao hover
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #ff6b6b; // Vermelho ao fechar
+      transform: rotate(90deg);
     }
   }
 `;
+
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 3rem;
-  margin-top: 5rem;
+  gap: 1.5rem; // Mesmo gap do Publicar
 `;
+
+// --- INPUTS PADRONIZADOS ---
 
 export const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
 
   label {
-    font-size: 1.2rem;
-    margin-bottom: 0.25rem;
-  }
-
-  textarea {
-    background-color: #888888;
-    border-radius: 4px;
-
-    padding: 1em 1.5em;
-    font-size: 1rem;
+    ${LabelStyles}
   }
 
   input {
-    padding: 0.8rem;
-    border: 1px solid #333;
-    border-radius: 0.25rem;
-    background-color: #888888;
-    font-size: 1.5rem;
+    ${InputStyles}
+  }
 
-    &::placeholder {
-      color: #171d1f;
-      font-size: 1.2rem;
-    }
-
-    &:focus {
-      outline: none;
-      border-color: #81fe88;
-    }
+  textarea {
+    ${InputStyles}
+    min-height: 120px; // Bio não precisa ser tão grande quanto post
+    resize: vertical;
+    line-height: 1.5;
   }
 `;
 
-export const ModalFooter = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 15px;
-`;
-
-export const BotaoCancelar = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid #81fe88;
-  color: #81fe88;
-  background-color: transparent;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-  font-size: 1rem;
-
-  &:hover {
-    background-color: rgba(129, 254, 136, 0.1);
-  }
-
-  &:active {
-    background-color: rgba(129, 254, 136, 0.2);
-    transform: scale(0.98);
-  }
-
-  &:focus {
-    outline: 2px solid #81fe88;
-    outline-offset: 2px;
-  }
-`;
-
-export const BotaoSalvar = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
-  font-size: 1rem;
-
-  background-color: #81fe88;
-  color: #132e35;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease;
-
-  &:hover {
-    background-color: #6be276;
-  }
-
-  &:active {
-    background-color: #5acd66;
-    transform: scale(0.98);
-  }
-
-  &:focus {
-    outline: 2px solid #132e35;
-    outline-offset: 2px;
-  }
-`;
+// --- ÁREA DA IMAGEM (ESPECÍFICA DE PERFIL) ---
 
 export const ContainerUploadImg = styled.div`
   display: flex;
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 40px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #333;
+  flex-direction: column; // Mudei para coluna para centralizar
+  align-items: center;    // Centraliza tudo
+  gap: 1.5rem;
+  margin-bottom: 10px;
 `;
 
 export const Img = styled.img`
-  width: 120px;
-  height: 120px;
+  width: 150px; // Um pouco maior
+  height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #81fe88; // Anel verde ao redor da foto
-  padding: 3px;
+  border: 4px solid #171d1f; // Borda interna simulada
+  outline: 3px solid #81fe88; // Anel verde externo
+  box-shadow: 0 0 20px rgba(129, 254, 136, 0.2);
 `;
 
 export const ContainerButton = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+  align-items: center;
 `;
 
+// Reutilizando o estilo do botão de upload do Publicar, mas ajustado
 export const ButtonUploadImg = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1em;
-  font-size: 1rem;
-  color: #888888;
-  padding: 1em 1.5em;
-  background-color: transparent;
-  border: 2px solid #888888;
-  border-radius: 8px;
-  margin-top: 2rem;
+  gap: 0.8em;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #c1c1c1;
+  padding: 0.8em 1.5em;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid #888888;
+  border-radius: 30px; // Botão arredondado combina mais com avatar
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #81fe88;
+    color: #fff;
+  }
 `;
 
-export const ContainerSubtittle = styled.div`
+// --- RODAPÉ E BOTÕES DE AÇÃO ---
+
+export const ModalFooter = styled.div`
+  display: flex;
+  justify-content: flex-end; // Botões à direita é padrão de modal
+  gap: 1rem;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #333; // Separação visual
+`;
+
+// Botão Cancelar = Botão Descartar (Visualmente)
+export const BotaoCancelar = styled.button`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: #888888;
-  margin-top: 1rem;
-  p {
-    font-size: 0.9rem;
+  justify-content: center;
+  border: 2px solid #81fe88;
+  color: #81fe88;
+  background-color: transparent;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: 0.2s;
+
+  &:hover {
+    background-color: rgba(129, 254, 136, 0.1);
   }
-  img {
-    cursor: pointer;
-    margin-bottom: 1em;
+`;
+
+// Botão Salvar = Botão Publicar (Visualmente)
+export const BotaoSalvar = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  font-size: 1rem;
+  background-color: #81fe88;
+  color: #132e35;
+  padding: 0.8rem 2rem; // Um pouco mais largo
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+
+  &:hover {
+    background-color: #6be276;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(129, 254, 136, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
   }
 `;

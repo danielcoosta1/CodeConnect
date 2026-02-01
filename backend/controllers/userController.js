@@ -1,6 +1,5 @@
 import prisma from "../lib/prisma.js";
 
-
 export const atualizarPerfil = async (req, res) => {
   try {
     // 1. Pegamos o ID de quem está logado (vem do token/middleware)
@@ -35,5 +34,27 @@ export const atualizarPerfil = async (req, res) => {
   } catch (error) {
     console.error("Erro ao atualizar perfil:", error);
     return res.status(500).json({ error: "Erro interno ao atualizar perfil." });
+  }
+};
+
+export const buscarPerfil = async (req, res) => {
+  try {
+    // Pegamos o ID de quem está logado (vem do token/middleware)
+    const userId = req.user.id;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
+    const { senha:_, ...userSemSenha } = user;
+
+    return res.status(200).json(userSemSenha);
+  } catch (error) {
+    console.error("Erro ao buscar perfil:", error);
+    return res.status(500).json({ error: "Erro interno ao buscar perfil." });
   }
 };

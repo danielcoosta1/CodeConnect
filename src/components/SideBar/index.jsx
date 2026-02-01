@@ -22,6 +22,7 @@ import feedIconWhite from "./assets/feedwhite.svg";
 import accountIconWhite from "./assets/account_circlewhite.svg";
 import infoIconWhite from "./assets/infowhite.svg";
 import { useAuth } from "../../hooks/useAuth.js";
+import ProfileAvatar from "../ProfileAvatar/index.jsx";
 
 const SideBar = () => {
   const { logout, user } = useAuth();
@@ -83,10 +84,7 @@ const SideBar = () => {
       {/* 2. Feedback Visual: Perfil do Usuário Logado (Lá embaixo) */}
       {user && (
         <UserProfile to="/perfil">
-          <Avatar
-            src={user.imagem || "https://via.placeholder.com/40"}
-            alt="Avatar"
-          />
+          <ProfileAvatar src={user.imagem} size={50} hasBorder={true} />
           <UserInfo>
             <h3>{user.nome || "Dev"}</h3>
             <p>@{user.usuario || "usuario"}</p>

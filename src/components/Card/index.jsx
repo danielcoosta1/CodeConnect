@@ -1,3 +1,4 @@
+import ProfileAvatar from "../ProfileAvatar";
 import {
   CardContainer,
   ImgCard,
@@ -40,9 +41,10 @@ const Card = ({ post }) => {
             </ActionIcons>
           )}
           <AuthorInfo>
-            <img
-              src={post.author.imagem || "https://via.placeholder.com/40"}
-              alt={post.author.nome}
+            <ProfileAvatar
+              src={post.author?.imagem}
+              size={40}
+              hasBorder={true}
             />
             <small>{post.author.nome}</small>
           </AuthorInfo>
