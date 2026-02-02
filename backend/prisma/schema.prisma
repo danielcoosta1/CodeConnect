@@ -18,8 +18,8 @@ model User {
   nome      String
   sobrenome String?
   email     String  @unique
-  senha     String
-  usuario   String?
+  senha     String    
+  usuario   String? @unique
 
   // --- NOVOS CAMPOS PARA O PERFIL---
   imagem String? // URL ou Base64 da foto de perfil
