@@ -4,7 +4,7 @@ import styled from "styled-components";
 // Ele assume que, se foi chamado, é porque existem posts para exibir.
 export const CardGrid = styled.section`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   gap: 20px;
   align-items: start;
 `;
