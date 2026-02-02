@@ -63,8 +63,6 @@ const Cadastro = () => {
         </ContainerImg>
         {}
         <ContainerForm>
-          <h1>Cadastro</h1>
-          {!cadastroSucesso ? <p>Preencha seus dados</p> : null}
           {cadastroSucesso ? (
             <ContainerSucesso>
               <p>Cadastro realizado com sucesso!</p>
@@ -77,6 +75,8 @@ const Cadastro = () => {
             </ContainerSucesso>
           ) : (
             <Form onSubmit={handleSubmit}>
+              <h1>Cadastro</h1>
+              <p>Preencha seus dados</p>
               <CampoInput>
                 <label htmlFor="nome">Nome</label>
                 <input
