@@ -19,7 +19,7 @@ model User {
   sobrenome     String?
   email         String  @unique
   senha         String
-  nomeDeUsuario String?
+  usuario String?
 
   // --- NOVOS CAMPOS PARA O PERFIL---
   imagem String? // URL ou Base64 da foto de perfil

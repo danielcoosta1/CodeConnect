@@ -14,7 +14,7 @@ export const atualizarPerfil = async (req, res) => {
       data: {
         nome,
         sobrenome,
-        nomeDeUsuario: usuario, // Lembra que no Schema é nomeDeUsuario?
+        usuario, // Lembra que no Schema é nomeDeUsuario?
         funcao,
         bio,
         imagem,
