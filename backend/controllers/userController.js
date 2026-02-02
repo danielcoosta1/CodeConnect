@@ -24,7 +24,7 @@ export const atualizarPerfil = async (req, res) => {
         id: true,
         nome: true,
         sobrenome: true,
-        nomeDeUsuario: true,
+        usuario: true,
         funcao: true,
         bio: true,
         imagem: true,
