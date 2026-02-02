@@ -54,7 +54,7 @@ export const authReducer = (state, action) => {
     case "SET_DADO":
       return {
         ...state,
-        [action.payload.field]: action.payload,
+        [action.field]: action.payload,
       };
 
     // Caso específico para imagem (opcional, poderia usar SET_DADO também)
