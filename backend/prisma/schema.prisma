@@ -14,12 +14,12 @@ datasource db {
 }
 
 model User {
-  id            String  @id @default(auto()) @map("_id") @db.ObjectId
-  nome          String
-  sobrenome     String?
-  email         String  @unique
-  senha         String
-  usuario String?
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  nome      String
+  sobrenome String?
+  email     String  @unique
+  senha     String
+  usuario   String?
 
   // --- NOVOS CAMPOS PARA O PERFIL---
   imagem String? // URL ou Base64 da foto de perfil
