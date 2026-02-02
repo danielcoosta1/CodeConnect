@@ -1,20 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
 import { localStorageService } from "../../services/localStorageService";
 import { useNavigate } from "react-router-dom";
 
 import { loginRequest } from "../../services/authService";
-import { getUserProfile, updateProfileRequest } from "../../services/userService";
+import {
+  getUserProfile,
+  updateProfileRequest,
+} from "../../services/userService";
+import { authReducer } from "./authReducer";
+import { authInicialState } from "./inicialState";
+import { toastErro, toastSucesso } from "../../utils/toast";
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-
-  const [loading, setLoading] = useState(true);
-
+  const [state, dispatch] = useReducer(authReducer, authInicialState);
   const navigation = useNavigate();
 
+  //EFEITO 1:
   //Restaura o estado de autenticação ao carregar o aplicativo
   useEffect(() => {
     const carregarSessao = async () => {
@@ -22,31 +25,47 @@ const AuthProvider = ({ children }) => {
       const storedToken = localStorageService.ler("token");
 
       if (storedToken && storedUser) {
-        // 1. PASSO RÁPIDO: Restaura o que temos no bolso (Sem foto)
-        // O usuário já vê o nome e o site carrega.
-        setToken(storedToken);
-        setUser(storedUser);
         axios.defaults.headers.common["Authorization"] =
           `Bearer ${storedToken}`;
 
-        // 2. PASSO COMPLETO: Vai no banco buscar os dados do usuário ATUALIZADOS (com foto)
-        try {
-          console.log("Buscando dados atualizados (foto) no servidor...");
-          const dadosCompletos = await getUserProfile();
+        dispatch({
+          type: "CARREGAR_SESSAO",
+          payload: { user: storedUser, token: storedToken },
+        });
 
-          // Quando chegar, atualiza o estado com a FOTO!
-          setUser(dadosCompletos);
+        // 2.  Re - hidratação dos dados completos do usuário
+        try {
+          const dadosCompletos = await getUserProfile();
+          dispatch({ type: "UPDATE_SUCCESS", payload: dadosCompletos });
         } catch (error) {
           console.error("Token expirado ou erro de rede:", error);
-          // Opcional: se o token não vale mais, desloga
-          // logout();
         }
+      } else {
+        // Avisa que terminou de carregar e não tem ninguém logado
+        dispatch({ type: "SESSAO_NAO_ENCONTRADA" });
       }
-      setLoading(false);
     };
 
     carregarSessao();
   }, []);
+
+  //EFEITO 2 - RASCUNHO
+
+  useEffect(() => {
+    // Monitora as mudanças nos inputs (state.nome, state.bio, etc...)
+    const rascunho = {
+      nome: state.nome,
+      sobrenome: state.sobrenome,
+      usuario: state.usuario,
+      funcao: state.funcao,
+      bio: state.bio,
+    };
+
+    // Salva no localStorage para não perder se der F5 com modal aberto
+    localStorageService.salvar("rascunho_perfil", rascunho);
+  }, [state.nome, state.sobrenome, state.usuario, state.funcao, state.bio]);
+
+  // FUNÇÕES DE SESSÃO
 
   const login = async (email, senha) => {
     try {
@@ -55,61 +74,86 @@ const AuthProvider = ({ children }) => {
 
       const { user: userData, token: authToken } = response;
 
-      if (!userData || !authToken) {
-        throw new Error("Usuário ou Token não encontrados.");
-      }
-
-      // 1. ATUALIZA A TELA (Com a foto completa que veio do banco)
-      setUser(userData);
-      setToken(authToken);
-
-      // 2. CONFIGURA AXIOS
+      // Configura Axios
       axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
 
-      // 3. SALVA NO STORAGE (SEM A FOTO - PARA NÃO DAR ERRO 431)
-      const { imagem: _imagem, ...userSemPeso } = userData;
+      // Salva no Storage (Sem imagem pesada)
+      const { imagem: _img, ...userSemPeso } = userData;
       localStorageService.salvar("token", authToken);
-      localStorageService.salvar("user", userSemPeso); //
+      localStorageService.salvar("user", userSemPeso);
+
+      // Atualiza Reducer
+      dispatch({
+        type: "LOGIN_SUCESSO",
+        payload: { user: userData, token: authToken },
+      });
+
+      toastSucesso("Login realizado com sucesso!");
 
       navigation("/feed");
     } catch (error) {
-      console.error("ERRO DETALHADO DO LOGIN:", error);
+      console.error("ERRO LOGIN:", error);
       throw error;
     }
   };
+
   const logout = () => {
     localStorageService.remover("token");
     localStorageService.remover("user");
+    localStorageService.remover("rascunho_perfil"); // Limpa rascunho
 
-    // REMOVE O CRACHÁ no logout
     delete axios.defaults.headers.common["Authorization"];
-    setToken(null);
-    setUser(null);
+
+    dispatch({ type: "LOGOUT" });
+    navigation("/");
+  };
+  // --- FUNÇÕES DO MODAL (FORMULÁRIO) ---
+
+  const iniciarEdicao = () => {
+    dispatch({ type: "INICIAR_EDICAO" });
   };
 
-  // 3. NOVA FUNÇÃO DE ATUALIZAR PERFIL (Substituindo a local)
-  const atualizarPerfilNoBanco = async (novosDados) => {
+  const atualizarDado = (field, value) => {
+    dispatch({ type: "SET_DADO", field, payload: value });
+  };
+
+  const definirImagemForm = (base64) => {
+    dispatch({ type: "SET_IMAGEM", payload: base64 });
+  };
+
+  const salvarPerfil = async () => {
+    dispatch({ type: "UPDATE_START" });
+
     try {
-      // 1. Envia para o Back-end
-      const response = await updateProfileRequest(novosDados);
+      // Monta objeto para enviar (pega direto do state)
+      const dadosParaEnviar = {
+        nome: state.nome,
+        sobrenome: state.sobrenome,
+        usuario: state.usuario,
+        funcao: state.funcao,
+        bio: state.bio,
+        imagem: state.imagem,
+      };
 
-      // O backend retorna o user atualizado (response já é o objeto correto agora)
-      const usuarioAtualizado = response;
+      const userAtualizado = await updateProfileRequest(dadosParaEnviar);
 
-      // 2. ATUALIZA O ESTADO (Com imagem, para a foto mudar na tela agora mesmo)
-      setUser(usuarioAtualizado);
+      // Atualiza Reducer
+      dispatch({ type: "UPDATE_SUCCESS", payload: userAtualizado });
 
-      // 3. SALVA NO LOCALSTORAGE (Sem a imagem para evitar o erro 431)
-      if (usuarioAtualizado) {
-        // A sintaxe abaixo cria uma variável 'userSemPeso' com tudo, MENOS a imagem
-        // O '_imagem' é só um nome para a variável descartada
-        const { imagem: _imagem, ...userSemPeso } = usuarioAtualizado;
+      // Atualiza Storage (User Diet)
+      const { imagem: _img, ...userSemPeso } = userAtualizado;
+      localStorageService.salvar("user", userSemPeso);
 
-        localStorageService.salvar("user", userSemPeso);
-      }
+      // Limpa rascunho
+      localStorageService.remover("rascunho_perfil");
+
+      toastSucesso("Perfil atualizado!");
+      return true; // Retorna true para o modal fechar
     } catch (error) {
-      console.error("Erro ao atualizar o perfil:", error);
-      throw error;
+      console.error("Erro update:", error);
+      dispatch({ type: "UPDATE_ERROR", payload: "Erro ao atualizar." });
+      toastErro("Erro ao atualizar perfil.");
+      return false;
     }
   };
 
@@ -118,16 +162,33 @@ const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        user,
-        token,
+        // Sessão
+        user: state.user,
+        token: state.token,
+        isAuthenticated: !!state.token, // Usa o token como verdade
+        loading: state.loading,
+
+        // Form
+        nome: state.nome,
+        sobrenome: state.sobrenome,
+        usuario: state.usuario,
+        funcao: state.funcao,
+        bio: state.bio,
+        imagem: state.imagem,
+
+        // UI
+        loadingUpdate: state.loadingUpdate,
+
+        // Ações
         login,
         logout,
-        atualizarPerfilNoBanco,
-        isAuthenticated: !!token,
-        loading,
+        iniciarEdicao,
+        atualizarDado,
+        definirImagemForm,
+        salvarPerfil,
       }}
     >
-      {!loading && children}
+      {!state.loading && children}
     </AuthContext.Provider>
   );
 };

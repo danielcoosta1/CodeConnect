@@ -29,9 +29,16 @@ export const authReducer = (state, action) => {
         isAuthenticated: true,
       };
 
+      case "SESSAO_NAO_ENCONTRADA":
+        return {
+            ...state,
+            loading: false,
+            isAuthenticated: false
+        }
+
     // GRUPO 2: Atualização do Perfil - FORMULÁRIO E UI
     // Quando abre o modal, copiamos os dados do user real para os inputs
-    case "INICIAR_SESSAO":
+    case "INICIAR_EDICAO":
       if (!state.user) return state;
       return {
         ...state,
