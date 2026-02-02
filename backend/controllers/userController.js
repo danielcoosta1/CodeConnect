@@ -6,13 +6,14 @@ export const atualizarPerfil = async (req, res) => {
     const userId = req.user.id;
 
     // 2. Pegamos os dados que o front-end enviou
-    const { nome, usuario, funcao, bio, imagem } = req.body;
+    const { nome, sobrenome, usuario, funcao, bio, imagem } = req.body;
 
     // 3. Atualizamos no Banco
     const userAtualizado = await prisma.user.update({
       where: { id: userId },
       data: {
         nome,
+        sobrenome,
         nomeDeUsuario: usuario, // Lembra que no Schema é nomeDeUsuario?
         funcao,
         bio,
@@ -22,6 +23,7 @@ export const atualizarPerfil = async (req, res) => {
       select: {
         id: true,
         nome: true,
+        sobrenome: true,
         nomeDeUsuario: true,
         funcao: true,
         bio: true,
@@ -50,7 +52,7 @@ export const buscarPerfil = async (req, res) => {
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
-    const { senha:_, ...userSemSenha } = user;
+    const { senha: _, ...userSemSenha } = user;
 
     return res.status(200).json(userSemSenha);
   } catch (error) {

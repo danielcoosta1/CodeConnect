@@ -1,6 +1,7 @@
 import { localStorageService } from "../../services/localStorageService";
 
 export const ESTADO_LIMPO = {
+  // DADOS DE AUTENTICAÇÃO
   user: null,
   token: null,
   loading: true,
