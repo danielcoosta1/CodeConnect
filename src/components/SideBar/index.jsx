@@ -87,7 +87,7 @@ const SideBar = () => {
           <ProfileAvatar src={user.imagem} size={50} hasBorder={true} />
           <UserInfo>
             <h3>{user.nome || "Dev"}</h3>
-            <p>@{user.usuario || "usuario"}</p>
+            <p>{user.usuario || "usuario"}</p>
           </UserInfo>
         </UserProfile>
       )}
