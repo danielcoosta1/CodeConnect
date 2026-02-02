@@ -49,7 +49,7 @@ const Perfil = () => {
 
         <InfoContainer>
           <h2>{user.nome}</h2>
-          <span>@{user.usuario || "usuario"}</span>
+          <span>{user.usuario || "usuario"}</span>
 
           {user.funcao && <p className="funcao">{user.funcao}</p>}
 
