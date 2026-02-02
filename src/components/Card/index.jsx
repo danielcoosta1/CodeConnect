@@ -46,7 +46,7 @@ const Card = ({ post }) => {
               size={40}
               hasBorder={true}
             />
-            <small>{post.author.nome}</small>
+            <small>@{post.author.usuario}</small>
           </AuthorInfo>
         </CardFooter>
       </ContentCard>
