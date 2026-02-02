@@ -48,7 +48,7 @@ const Cadastro = () => {
       console.error(error);
       setErro(
         error.response?.data?.error ||
-          "Não foi possível cadastrar. Tente novamente."
+          "Não foi possível cadastrar. Tente novamente.",
       );
     } finally {
       setLoading(false);
@@ -69,7 +69,10 @@ const Cadastro = () => {
             <ContainerSucesso>
               <p>Cadastro realizado com sucesso!</p>
               <ContainerLoginSucesso>
-                Você já pode fazer <LinkLoginSucesso to="/login">login <IoLogIn /></LinkLoginSucesso>
+                Você já pode fazer{" "}
+                <LinkLoginSucesso to="/login">
+                  login <IoLogIn />
+                </LinkLoginSucesso>
               </ContainerLoginSucesso>
             </ContainerSucesso>
           ) : (
@@ -113,7 +116,7 @@ const Cadastro = () => {
                 {loading ? <FiLoader /> : <CgArrowRight />}
               </Button>
               <ContainerLogin>
-                <p style={{ fontSize: "14px" }}> Já possui conta?</p>
+                <p> Já possui conta?</p>
                 <LinkLogin to="/login">
                   Login <IoLogIn />
                 </LinkLogin>
