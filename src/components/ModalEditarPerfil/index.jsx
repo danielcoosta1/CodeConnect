@@ -159,16 +159,49 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
             />
           </InputGroup>
           <InputGroup>
-            <label>Usuário (@)</label>
-            <input
-              type="text"
-              id="usuario"
-              name="usuario"
-              value={usuario || ""}
-              onChange={(e) => atualizarDado("usuario", e.target.value)}
-              disabled={loadingUpdate}
-              placeholder="@seu.usuario"
-            />
+            <label>Usuário</label>{" "}
+            {/* Tirei o (@) do label pra não ficar repetitivo */}
+            <div
+              style={{
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {/* O charmoso @ fixo do lado esquerdo */}
+              <span
+                style={{
+                  position: "absolute",
+                  left: "10px",
+                  color: "#171d1f",
+                  fontWeight: "bold",
+                  fontSize: "1.2rem",
+                  zIndex: 1,
+                }}
+              >
+                @
+              </span>
+
+              <input
+                type="text"
+                id="usuario"
+                name="usuario"
+                value={usuario || ""}
+                // AQUI ESTÁ A MÁGICA
+                onChange={(e) => {
+                  const valorLimpo = e.target.value
+                    .replace(/@/g, "") // Remove qualquer @ que ele tentar colar
+                    .replace(/\s/g, "") // Remove espaços (usuário não tem espaço)
+                    .toLowerCase(); // Força minúsculo (boa prática)
+
+                  atualizarDado("usuario", valorLimpo);
+                }}
+                disabled={loadingUpdate}
+                placeholder="seu.usuario" // Sem o @ no placeholder
+                // Um padding extra na esquerda para o texto não ficar em cima do @ estático
+                style={{ paddingLeft: "2rem" }}
+              />
+            </div>
           </InputGroup>
           <InputGroup>
             <label>Função / Cargo</label>
