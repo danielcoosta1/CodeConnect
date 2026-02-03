@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Cadastro from "../../pages/Cadastro";
 import Login from "../../pages/Login";
 import ContainerMain from "../ContainerMain";
@@ -22,14 +22,22 @@ const AppContent = () => {
         theme="colored"
       />
       <Routes>
+        {/* Rotas Públicas */}
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/login" element={<Login />} />
-        {/* Layout com Sidebar */}
+
+        {/* Rotas Protegidas (Layout com Sidebar) */}
         <Route path="/" element={<ProtectedLayout />}>
-          <Route path="publicar" element={<Publicar />} />
+          {/* 1. Redireciona a raiz '/' para '/feed' */}
+          <Route index element={<Navigate to="/feed" replace />} />
+
           <Route path="feed" element={<Feed />} />
+          <Route path="publicar" element={<Publicar />} />
           <Route path="perfil" element={<Perfil />} />
           <Route path="sobre-nos" element={<SobreNos />} />
+
+          {/* 2. PREPARAÇÃO: Aqui entrará a rota do Perfil de Outro Usuário */}
+          {/* <Route path="perfil/:id" element={<PerfilPublico />} /> */}
         </Route>
       </Routes>
     </>
