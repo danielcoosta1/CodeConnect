@@ -1,67 +1,57 @@
+import { useParams } from "react-router-dom";
+import { usePost } from "../../hooks/usePost";
 import { useEffect, useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
+import LoadingState from "../../components/LoadingState";
+import ErrorState from "../../components/ErrorState";
 import {
+  InfoContainer,
   PerfilContainer,
   PerfilHeader,
-  AvatarGrande,
-  InfoContainer,
-  BtnEditar,
-  StatsContainer,
-  StatItem,
   ProfileNav,
   ProfileTab,
+  StatItem,
+  StatsContainer,
 } from "./style";
-import { FaPen } from "react-icons/fa";
-
-import { CardGrid } from "../../components/CardGrid/style.js";
+import Perfil from "../Perfil";
+import ProfileAvatar from "../../components/ProfileAvatar";
+import { CardGrid } from "../../components/CardGrid/style";
 import Card from "../../components/Card";
-import { usePost } from "../../hooks/usePost";
-import LoadingState from "../../components/LoadingState/index.jsx";
-import ErrorState from "../../components/ErrorState/index.jsx";
-import ModalEditarPerfil from "../../components/ModalEditarPerfil/index.jsx";
-import ProfileAvatar from "../../components/ProfileAvatar/index.jsx";
 
-const Perfil = () => {
-  const { user } = useAuth();
-  const { carregarMeusPostsDoBanco, myPosts, loadingMyPosts, errorMyPosts } =
-    usePost();
+const PerfilPublico = () => {
+  const { id } = useParams();
 
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const {
+    carregarPerfilPublico,
+    userProfile,
+    userPosts,
+    loadingProfile,
+    errorProfile,
+  } = usePost();
 
   useEffect(() => {
-    carregarMeusPostsDoBanco(); // Zero parâmetros. O token cuida de tudo!
-  }, []);
+    if (id) {
+      carregarPerfilPublico(id);
+    }
+  }, [id]);
 
-  // Estado para controlar qual aba está selecionada
   const [abaAtiva, setAbaAtiva] = useState("projetos"); // 'projetos' | 'compartilhados' | 'aprovados'
 
-  if (!user) return null;
+  if (!userProfile) return null;
 
   return (
     <PerfilContainer>
-      <ModalEditarPerfil
-        isOpen={modalIsOpen}
-        onClose={() => setModalIsOpen(false)}
-      />
-
       <PerfilHeader>
-        <ProfileAvatar src={user.imagem} size={120} hasBorder={true} />
-
+        <ProfileAvatar src={userProfile.imagem} size={120} hasBorder={true} />
         <InfoContainer>
-          <h2>{user.nome}</h2>
-          <span>@{user.usuario || "usuario"}</span>
-
-          {user.funcao && <p className="funcao">{user.funcao}</p>}
-
+          <h2>{userProfile.nome}</h2>
+          <span>@{userProfile.usuario || "usuario"}</span>
+          {userProfile.funcao && <p className="funcao">{userProfile.funcao}</p>}
           <p className="bio">
-            {user.bio ||
-              "Olá! Eu estou usando o CodeConnect para compartilhar meus projetos."}
+            {userProfile.bio || "Este usuário ainda não adicionou uma bio."}
           </p>
-
-          {/* NOVOS DADOS ESTATÍSTICOS */}
           <StatsContainer>
             <StatItem>
-              <strong>{myPosts.length}</strong>
+              <strong>{userPosts.length}</strong>
               <span>Projetos</span>
             </StatItem>
             <StatItem>
@@ -70,21 +60,14 @@ const Perfil = () => {
             </StatItem>
           </StatsContainer>
         </InfoContainer>
-
-        <BtnEditar onClick={() => setModalIsOpen(true)}>
-          <FaPen size={12} /> Editar Perfil
-        </BtnEditar>
       </PerfilHeader>
-
       <div style={{ height: "1px", backgroundColor: "#333", width: "100%" }} />
-
-      {/* BARRA DE NAVEGAÇÃO (ABAS) */}
       <ProfileNav>
         <ProfileTab
           $active={abaAtiva === "projetos"}
           onClick={() => setAbaAtiva("projetos")}
         >
-          Meus Projetos
+          Projetos
         </ProfileTab>
         <ProfileTab
           $active={abaAtiva === "compartilhados"}
@@ -106,19 +89,19 @@ const Perfil = () => {
         {abaAtiva === "projetos" && (
           <>
             {/* LÓGICA DE RENDERIZAÇÃO CONDICIONAL MUTUAMENTE EXCLUSIVA */}
-            {loadingMyPosts ? (
+            {loadingProfile ? (
               // 1. SE ESTÁ CARREGANDO, mostra SOMENTE o Loading
-              <LoadingState texto="Carregando seus projetos..." size={45} />
-            ) : errorMyPosts ? (
+              <LoadingState texto="Carregando perfil..." size={45} />
+            ) : errorProfile ? (
               // 2. SE HOUVE ERRO, mostra o ErrorState
               <ErrorState
-                mensagem={errorMyPosts}
-                onRetry={carregarMeusPostsDoBanco}
+                mensagem={errorProfile}
+                onRetry={() => carregarPerfilPublico(id)}
               />
-            ) : myPosts.length > 0 ? (
+            ) : userPosts.length > 0 ? (
               // 2. SE NÃO ESTÁ CARREGANDO E TEM POSTS, mostra a Grid
               <CardGrid>
-                {myPosts.map((post) => (
+                {userPosts.map((post) => (
                   <Card key={post.id} post={post} />
                 ))}
               </CardGrid>
@@ -143,5 +126,4 @@ const Perfil = () => {
     </PerfilContainer>
   );
 };
-
-export default Perfil;
+export default PerfilPublico;

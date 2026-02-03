@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 
 export const SidebarContainer = styled.aside`
-  width: 240px;
+  width: 280px;
   height: 100vh;
   background-color: #171d1f;
   display: flex;
@@ -14,7 +14,7 @@ export const SidebarContainer = styled.aside`
 
 export const Nav = styled.nav`
   width: 100%;
-  margin-top: 3rem;
+  margin-top: 8rem;
 `;
 
 export const ListaNav = styled.ul`
@@ -25,7 +25,7 @@ export const ListaNav = styled.ul`
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
 `;
 
 export const LogoImg = styled.img``;
@@ -37,7 +37,7 @@ export const LinkPublicarEstilizado = styled(NavLink)`
   border-radius: 8px;
   cursor: pointer;
   text-align: center;
-  font-size: 1.25rem;
+  font-size: 1.6rem;
   &:hover {
     opacity: 0.6;
   }

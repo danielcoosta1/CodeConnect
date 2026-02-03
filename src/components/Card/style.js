@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const CardContainer = styled.article`
@@ -58,24 +59,6 @@ export const CardFooter = styled.div`
   margin-top: auto;
 `;
 
-export const AuthorInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  small {
-    color: #bcbcbc;
-    font-size: 0.85rem;
-  }
-`;
-
 export const ActionIcons = styled.div`
   display: flex;
   gap: 12px; /* Espaço entre o ícone de código e o de comentário */
@@ -105,5 +88,28 @@ export const IconGroup = styled.div`
 
   span {
     font-size: 15px;
+  }
+`;
+
+export const AuthorInfo = styled(Link)`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  text-decoration: none; // Remove sublinhado padrão de links
+  color: inherit; // Mantém a cor original do texto
+
+  padding: 5px 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #2d3538; // Um cinza um pouco mais claro que o fundo
+    cursor: pointer;
+  }
+
+  small {
+    color: #bcbcbc;
+    font-size: 1rem;
   }
 `;

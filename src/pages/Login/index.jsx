@@ -94,13 +94,13 @@ const Login = () => {
             </CampoInput>
             {erro && <p style={{ color: "red" }}>{erro}</p>}
             <Button type="submit">
-              <p>{loading ? "Carregando..." : "Entrar "}</p>
+              <p >{loading ? "Carregando..." : "Entrar "}</p>
               {loading ? <FiLoader /> : <CgArrowRight />}
             </Button>
           </Form>
 
           <ContainerCadastro>
-            <p style={{ fontSize: "14px" }}>Ainda não possui conta?</p>
+            <p style={{ fontSize: "1.2rem" }}>Ainda não possui conta?</p>
             <LinkCadastro to="/cadastro">
               Crie seu cadastro! <MdOutlineContentPaste />
             </LinkCadastro>

@@ -48,7 +48,7 @@ const Cadastro = () => {
       console.error(error);
       setErro(
         error.response?.data?.error ||
-          "Não foi possível cadastrar. Tente novamente."
+          "Não foi possível cadastrar. Tente novamente.",
       );
     } finally {
       setLoading(false);
@@ -63,17 +63,20 @@ const Cadastro = () => {
         </ContainerImg>
         {}
         <ContainerForm>
-          <h1>Cadastro</h1>
-          {!cadastroSucesso ? <p>Preencha seus dados</p> : null}
           {cadastroSucesso ? (
             <ContainerSucesso>
               <p>Cadastro realizado com sucesso!</p>
               <ContainerLoginSucesso>
-                Você já pode fazer <LinkLoginSucesso to="/login">login <IoLogIn /></LinkLoginSucesso>
+                Você já pode fazer{" "}
+                <LinkLoginSucesso to="/login">
+                  login <IoLogIn />
+                </LinkLoginSucesso>
               </ContainerLoginSucesso>
             </ContainerSucesso>
           ) : (
             <Form onSubmit={handleSubmit}>
+              <h1>Cadastro</h1>
+              <p>Preencha seus dados</p>
               <CampoInput>
                 <label htmlFor="nome">Nome</label>
                 <input
@@ -113,7 +116,7 @@ const Cadastro = () => {
                 {loading ? <FiLoader /> : <CgArrowRight />}
               </Button>
               <ContainerLogin>
-                <p style={{ fontSize: "14px" }}> Já possui conta?</p>
+                <p> Já possui conta?</p>
                 <LinkLogin to="/login">
                   Login <IoLogIn />
                 </LinkLogin>

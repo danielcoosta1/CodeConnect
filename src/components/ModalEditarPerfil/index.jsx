@@ -16,33 +16,40 @@ import {
 import { useAuth } from "../../hooks/useAuth";
 import { FaTimes, FaUserCircle } from "react-icons/fa";
 import { FaUpload } from "react-icons/fa";
-import { toastErro, toastSucesso } from "../../utils/toast";
 
 const ModalEditarPerfil = ({ isOpen, onClose }) => {
-  // 2. PEGANDO OS DADOS E A FUNÇÃO DIRETO DA FONTE
-  // 'user' serve para preencher os campos.
-  // 'atualizarPerfilNoBanco' serve para salvar no Backend.
-  const { user, atualizarPerfilNoBanco } = useAuth();
+  const {
+    // Dados do Formulário (Vêm do Reducer)
+    nome,
+    sobrenome,
+    usuario,
+    funcao,
+    bio,
+    imagem,
+
+    // Estados de Interface
+    loadingUpdate,
+
+    // Funções (Ações)
+    iniciarEdicao,
+    atualizarDado,
+    definirImagemForm,
+    salvarPerfil,
+  } = useAuth();
 
   const inputRef = useRef();
 
   // Estados locais dos inputs do formulário
-  const [nome, setNome] = useState("");
-  const [funcao, setFuncao] = useState("");
-  const [bio, setBio] = useState("");
-  const [imagem, setImagem] = useState("");
-  const [loading, setLoading] = useState(false);
+
   const [localErro, setLocalErro] = useState("");
 
-  // 3. EFEITO INTELIGENTE: Preenche o formulário assim que o modal abrir
+  // 2. EFEITO: Quando o modal abre (isOpen vira true), iniciamos a edição
   useEffect(() => {
-    if (user && isOpen) {
-      setNome(user.nome || "");
-      setFuncao(user.funcao || "");
-      setBio(user.bio || "");
-      setImagem(user.imagem || "");
+    if (isOpen) {
+      iniciarEdicao();
+      setLocalErro(""); // Limpa erros antigos de imagem
     }
-  }, [user, isOpen]);
+  }, [isOpen]);
 
   const handleImageChange = (e) => {
     e.preventDefault();
@@ -66,25 +73,19 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64String = reader.result.split(",")[1];
-      setImagem(base64String);
+      // Manda direto para o Global
+      definirImagemForm(base64String);
     };
     reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
-    try {
-      // Chama a função que criamos no AuthProvider
-      await atualizarPerfilNoBanco({ nome, funcao, bio, imagem });
-      toastSucesso("Perfil atualizado com sucesso!");
-      onClose(); // Se deu tudo certo, fecha o modal sozinho
-    } catch (error) {
-      console.error("Erro ao salvar:", error);
-      toastErro("Erro ao atualizar o perfil. Tente novamente.");
-    } finally {
-      setLoading(false);
+    // Chama a função global. Ela retorna true se deu certo.
+    const sucesso = await salvarPerfil();
+    if (sucesso) {
+      onClose();
     }
   };
 
@@ -96,7 +97,7 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
       <ModalContent>
         <ModalHeader>
           <h3>Editar Perfil</h3>
-          <button type="button" onClick={onClose} disabled={loading}>
+          <button type="button" onClick={onClose} disabled={loadingUpdate}>
             <FaTimes />
           </button>
         </ModalHeader>
@@ -126,40 +127,115 @@ const ModalEditarPerfil = ({ isOpen, onClose }) => {
                 />
                 <FaUpload />
               </ButtonUploadImg>
+              {localErro && (
+                <span
+                  style={{ color: "red", fontSize: "0.9rem", marginTop: "5px" }}
+                >
+                  {localErro}
+                </span>
+              )}
             </ContainerButton>
           </ContainerUploadImg>
           <InputGroup>
             <label>Nome</label>
             <input
+              id="nome"
+              name="nome"
               type="text"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              disabled={loading}
+              value={nome || ""}
+              onChange={(e) => atualizarDado("nome", e.target.value)}
+              disabled={loadingUpdate}
             />
           </InputGroup>
+          <InputGroup>
+            <label>Sobrenome</label>
+            <input
+              type="text"
+              id="sobrenome"
+              name="sobrenome"
+              value={sobrenome || ""}
+              onChange={(e) => atualizarDado("sobrenome", e.target.value)}
+              disabled={loadingUpdate}
+            />
+          </InputGroup>
+          <InputGroup>
+            <label>Usuário</label>{" "}
+            {/* Tirei o (@) do label pra não ficar repetitivo */}
+            <div
+              style={{
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {/* O charmoso @ fixo do lado esquerdo */}
+              <span
+                style={{
+                  position: "absolute",
+                  left: "10px",
+                  color: "#171d1f",
+                  fontWeight: "bold",
+                  fontSize: "1.2rem",
+                  zIndex: 1,
+                }}
+              >
+                @
+              </span>
 
+              <input
+                type="text"
+                id="usuario"
+                name="usuario"
+                value={usuario || ""}
+                // AQUI ESTÁ A MÁGICA
+                onChange={(e) => {
+                  const valorLimpo = e.target.value
+                    .replace(/@/g, "") // Remove qualquer @ que ele tentar colar
+                    .replace(/\s/g, "") // Remove espaços (usuário não tem espaço)
+                    .toLowerCase(); // Força minúsculo (boa prática)
+
+                  atualizarDado("usuario", valorLimpo);
+                }}
+                disabled={loadingUpdate}
+                placeholder="seu.usuario" // Sem o @ no placeholder
+                // Um padding extra na esquerda para o texto não ficar em cima do @ estático
+                style={{ paddingLeft: "2rem" }}
+              />
+            </div>
+          </InputGroup>
           <InputGroup>
             <label>Função / Cargo</label>
             <input
+              id="funcao"
+              name="funcao"
               type="text"
-              value={funcao}
-              onChange={(e) => setFuncao(e.target.value)}
-              disabled={loading}
-              placeholder="Desenvolvedor Front-End"
+              value={funcao || ""}
+              onChange={(e) => atualizarDado("funcao", e.target.value)}
+              disabled={loadingUpdate}
+              placeholder="Ex: Desenvolvedor Front-End"
+            />
+          </InputGroup>
+          <InputGroup>
+            <label>Bio</label>
+            <textarea
+              id="bio"
+              name="bio"
+              value={bio || ""}
+              onChange={(e) => atualizarDado("bio", e.target.value)}
+              disabled={loadingUpdate}
             />
           </InputGroup>
 
-          <InputGroup>
-            <label>Bio</label>
-            <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
-          </InputGroup>
-
           <ModalFooter>
-            <BotaoCancelar type="button" onClick={onClose} disabled={loading}>
+            <BotaoCancelar
+              type="button"
+              onClick={onClose}
+              disabled={loadingUpdate}
+            >
               Cancelar
             </BotaoCancelar>
-            <BotaoSalvar type="submit" disabled={loading}>
-              {loading ? "Salvando..." : "Salvar Alterações"}
+            <BotaoSalvar type="submit" disabled={loadingUpdate}>
+              {loadingUpdate ? "Salvando..." : "Salvar Alterações"}
             </BotaoSalvar>
           </ModalFooter>
         </Form>

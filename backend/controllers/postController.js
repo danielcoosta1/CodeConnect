@@ -86,3 +86,31 @@ export const getMyPosts = async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar seus posts." });
   }
 };
+
+//Busca todos os posts de um usuário específico
+export const getPostById = async (req, res) => {
+  try {
+    const { id } = req.params; // Pega o ID da URL
+
+    const post = await prisma.post.findMany({
+      where: { authorId: id },
+      include: {
+        author: {
+          select: {
+            id: true,
+            nome: true,
+            sobrenome: true,
+            usuario: true,
+            imagem: true,
+            funcao: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return res.status(200).json(post);
+  } catch (error) {
+    console.error("Erro ao buscar post por ID:", error);
+    return res.status(500).json({ error: "Erro interno ao buscar post." });
+  }
+};

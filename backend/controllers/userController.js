@@ -2,27 +2,46 @@ import prisma from "../lib/prisma.js";
 
 export const atualizarPerfil = async (req, res) => {
   try {
-    // 1. Pegamos o ID de quem está logado (vem do token/middleware)
     const userId = req.user.id;
+    const { nome, sobrenome, usuario, funcao, bio, imagem } = req.body;
 
-    // 2. Pegamos os dados que o front-end enviou
-    const { nome, usuario, funcao, bio, imagem } = req.body;
+    // --- BLOCO DE SEGURANÇA: Verificar se o @usuario já existe ---
+
+    if (usuario) {
+      // Buscamos se existe ALGUÉM com esse nome
+      const usuarioExistente = await prisma.user.findFirst({
+        where: {
+          usuario: usuario, // O nome que a pessoa quer usar
+          id: { not: userId }, // IMPORTANTE: Exclui a si mesmo da busca
+        },
+      });
+
+      // Se encontrou alguém (que não sou eu), bloqueia!
+      if (usuarioExistente) {
+        return res
+          .status(400)
+          .json({ error: "Este nome de usuário já está em uso." });
+      }
+    }
+
+    // --- FIM DO BLOCO DE SEGURANÇA ---
 
     // 3. Atualizamos no Banco
     const userAtualizado = await prisma.user.update({
       where: { id: userId },
       data: {
         nome,
-        nomeDeUsuario: usuario, // Lembra que no Schema é nomeDeUsuario?
+        sobrenome,
+        usuario,
         funcao,
         bio,
         imagem,
       },
-      // Selecionamos o que queremos devolver para o front (não devolva a senha!)
       select: {
         id: true,
         nome: true,
-        nomeDeUsuario: true,
+        sobrenome: true,
+        usuario: true,
         funcao: true,
         bio: true,
         imagem: true,
@@ -36,7 +55,6 @@ export const atualizarPerfil = async (req, res) => {
     return res.status(500).json({ error: "Erro interno ao atualizar perfil." });
   }
 };
-
 export const buscarPerfil = async (req, res) => {
   try {
     // Pegamos o ID de quem está logado (vem do token/middleware)
@@ -50,7 +68,7 @@ export const buscarPerfil = async (req, res) => {
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
-    const { senha:_, ...userSemSenha } = user;
+    const { senha: _, ...userSemSenha } = user;
 
     return res.status(200).json(userSemSenha);
   } catch (error) {
@@ -58,3 +76,33 @@ export const buscarPerfil = async (req, res) => {
     return res.status(500).json({ error: "Erro interno ao buscar perfil." });
   }
 };
+
+export const buscarUsuarioPorId = async (req, res) => {
+  try {
+    const { id } = req.params; // Pega o ID da URL
+
+    const user = await prisma.user.findUnique({
+      where: { id: id },
+      select: {
+        id: true,
+        nome: true,
+        sobrenome: true,
+        usuario: true,
+        funcao: true,
+        bio: true,
+        imagem: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error("Erro ao buscar usuário por ID:", error);
+    return res.status(500).json({ error: "Erro interno ao buscar usuário." });
+  }
+};
+
+

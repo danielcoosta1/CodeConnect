@@ -15,3 +15,10 @@ export const getUserProfile = async () => {
   const response = await axios.get(`${API_URL}/me`);
   return response.data;
 };
+
+
+export const getUserById = async (userId) => {
+  // Bate exatamente em: GET /api/users/:id
+  const response = await axios.get(`${API_URL}/${userId}`);
+  return response.data;
+}

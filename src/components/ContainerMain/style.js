@@ -4,7 +4,7 @@ export const ContainerEstilizado = styled.div`
   display: flex;
   min-height: 100vh;
   gap: 2rem;
-  max-width: 100rem;
+  max-width: 120rem;
   margin: 0 auto;
   padding: 5rem 0 0 0;
 

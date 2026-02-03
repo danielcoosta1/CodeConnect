@@ -3,9 +3,15 @@ import { PostContext } from "./PostContext";
 import { postReducer } from "./postReducer";
 
 import { toastErro, toastSucesso } from "../../utils/toast";
-import { createPostRequest, fetchMyPosts, fetchPosts } from "../../services/postService";
+import {
+  createPostRequest,
+  fetchMyPosts,
+  fetchPosts,
+  getPostsByUserId,
+} from "../../services/postService";
 import { localStorageService } from "../../services/localStorageService";
 import { postInicialState } from "./inicialState";
+import { getUserById } from "../../services/userService";
 
 export const PostProvider = ({ children }) => {
   const [state, dispatch] = useReducer(postReducer, postInicialState);
@@ -145,9 +151,32 @@ export const PostProvider = ({ children }) => {
     }
   };
 
+  const carregarPerfilPublico = async (userId) => {
+    dispatch({ type: "CARREGAR_PERFIL_INICIO" });
+
+    try {
+      const [userResponse, postsResponse] = await Promise.all([
+        getUserById(userId),
+        getPostsByUserId(userId),
+      ]);
+
+      dispatch({
+        type: "CARREGAR_PERFIL_SUCESSO",
+        payload: { user: userResponse, posts: postsResponse },
+      });
+    } catch (error) {
+      dispatch({
+        type: "CARREGAR_PERFIL_ERRO",
+        payload: "Não foi possível carregar o perfil do usuário.",
+      });
+      console.error(error);
+    }
+  };
+
   return (
     <PostContext.Provider
       value={{
+        //  Estado do formulário
         title: state.title,
         content: state.content,
         allTags: state.allTags,
@@ -155,16 +184,28 @@ export const PostProvider = ({ children }) => {
         tagInput: state.tagInput,
         image: state.image,
         imageFileName: state.imageFileName,
+
+        //Estado de posts
         allPosts: state.allPosts,
         loading: state.loading,
         error: state.error,
         success: state.success,
         loadingPosts: state.loadingPosts,
         errorPosts: state.errorPosts,
+
+        // Estado de meus posts
         myPosts: state.myPosts,
         loadingMyPosts: state.loadingMyPosts,
         errorMyPosts: state.errorMyPosts,
 
+        // Estado de perfil do usuário
+        userProfile: state.userProfile,
+        userPosts: state.userPosts,
+        loadingProfile: state.loadingProfile,
+        errorProfile: state.errorProfile,
+
+        //AÇÕES / FUNÇÕES
+        carregarPerfilPublico,
         atualizarDado,
         atualizarTagInput,
         adicionarTag,

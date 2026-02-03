@@ -40,13 +40,13 @@ const Card = ({ post }) => {
               </IconGroup>
             </ActionIcons>
           )}
-          <AuthorInfo>
+          <AuthorInfo to={`/perfil/${post.author.id}`}>
             <ProfileAvatar
               src={post.author?.imagem}
               size={40}
               hasBorder={true}
             />
-            <small>{post.author.nome}</small>
+            <small>@{post.author.usuario}</small>
           </AuthorInfo>
         </CardFooter>
       </ContentCard>
