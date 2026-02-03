@@ -40,7 +40,7 @@ const Card = ({ post }) => {
               </IconGroup>
             </ActionIcons>
           )}
-          <AuthorInfo>
+          <AuthorInfo to={`/perfil/${post.author.id}`}>
             <ProfileAvatar
               src={post.author?.imagem}
               size={40}

@@ -8,6 +8,7 @@ import Perfil from "../../pages/Perfil";
 import SobreNos from "../../pages/SobreNos";
 import { ToastContainer } from "react-toastify";
 import ProtectedLayout from "../ProtectedLayout";
+import PerfilPublico from "../../pages/PerfilPublico";
 
 const AppContent = () => {
   return (
@@ -35,9 +36,7 @@ const AppContent = () => {
           <Route path="publicar" element={<Publicar />} />
           <Route path="perfil" element={<Perfil />} />
           <Route path="sobre-nos" element={<SobreNos />} />
-
-          {/* 2. PREPARAÇÃO: Aqui entrará a rota do Perfil de Outro Usuário */}
-          {/* <Route path="perfil/:id" element={<PerfilPublico />} /> */}
+          <Route path="perfil/:id" element={<PerfilPublico />} />
         </Route>
       </Routes>
     </>
