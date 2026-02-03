@@ -92,7 +92,7 @@ export const getPostById = async (req, res) => {
   try {
     const { id } = req.params; // Pega o ID da URL
 
-    const post = await prisma.post.findUnique({
+    const post = await prisma.post.findMany({
       where: { authorId: id },
       include: {
         author: {
