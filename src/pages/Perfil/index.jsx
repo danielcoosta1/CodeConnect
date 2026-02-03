@@ -102,7 +102,7 @@ const Perfil = () => {
 
       {/* CONTEÚDO QUE MUDA CONFORME A ABA */}
 
-      <div style={{ marginTop: "20px" }}>
+      <>
         {abaAtiva === "projetos" && (
           <>
             {/* LÓGICA DE RENDERIZAÇÃO CONDICIONAL MUTUAMENTE EXCLUSIVA */}
@@ -139,7 +139,7 @@ const Perfil = () => {
         {abaAtiva === "aprovados" && (
           <p style={{ color: "#888" }}>Projetos aprovados...</p>
         )}
-      </div>
+      </>
     </PerfilContainer>
   );
 };
