@@ -105,7 +105,6 @@ const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common["Authorization"];
 
     dispatch({ type: "LOGOUT" });
-    navigation("/");
   };
   // --- FUNÇÕES DO MODAL (FORMULÁRIO) ---
 
