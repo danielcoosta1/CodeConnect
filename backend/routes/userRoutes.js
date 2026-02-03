@@ -2,6 +2,7 @@ import express from "express";
 import {
   atualizarPerfil,
   buscarPerfil,
+  buscarUsuarioPorId,
 } from "../controllers/userController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
@@ -11,5 +12,6 @@ const router = express.Router();
 // O middleware garante que req.user exista dentro do controller
 router.put("/perfil", authMiddleware, atualizarPerfil);
 router.get("/me", authMiddleware, buscarPerfil);
+router.get("/:id", authMiddleware, buscarUsuarioPorId);
 
 export default router;
