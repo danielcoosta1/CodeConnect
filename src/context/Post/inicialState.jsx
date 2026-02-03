@@ -18,6 +18,10 @@ export const ESTADO_LIMPO = {
   errorPosts: null,
   loadingMyPosts: true,
   errorMyPosts: null,
+  userProfile: null,
+  userPosts: [],
+  loadingProfile: true,
+  errorProfile: null,
 };
 
 // 2. Tenta ler o rascunho

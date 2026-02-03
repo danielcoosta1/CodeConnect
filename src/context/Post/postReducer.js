@@ -109,6 +109,8 @@ export const postReducer = (state, action) => {
         error: action.payload, // A mensagem de erro
       };
 
+    // GRUPO 3: Meus Posts
+
     case "CARREGAR_MEUS_POSTS_INICIO":
       return {
         ...state,
@@ -131,7 +133,33 @@ export const postReducer = (state, action) => {
         errorMyPosts: action.payload,
       };
 
-    // --- GRUPO 3: Limpeza ---
+    // GRUPO 4: Perfil do Usuário
+
+    case "CARREGAR_PERFIL_INICIO":
+      return {
+        ...state,
+        loadingProfile: true,
+        errorProfile: null,
+        userProfile: null, // Limpa o anterior para não mostrar dados velhos
+        userPosts: [],
+      };
+
+    case "CARREGAR_PERFIL_SUCESSO":
+      return {
+        ...state,
+        loadingProfile: false,
+        userProfile: action.payload.user, // Dados do usuário
+        userPosts: action.payload.posts, // Posts dele
+      };
+
+    case "CARREGAR_PERFIL_ERRO":
+      return {
+        ...state,
+        loadingProfile: false,
+        errorProfile: action.payload,
+      };
+
+    // --- GRUPO 5: Limpeza ---
 
     // Zera tudo para o estado original (usado após publicar ou ao clicar em descartar)
     case "RESET_FORM":

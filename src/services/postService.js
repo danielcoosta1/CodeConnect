@@ -18,3 +18,8 @@ export const fetchMyPosts = async () => {
   const response = await axios.get(`${API_URL}/me`);
   return response.data;
 };
+
+export const getPostsByUserId = async (userId) => {
+  const response = await axios.get(`${API_URL}/user/${userId}`);
+  return response.data;
+};
