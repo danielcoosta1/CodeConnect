@@ -93,6 +93,7 @@ const AuthProvider = ({ children }) => {
       navigation("/feed");
     } catch (error) {
       console.error("ERRO LOGIN:", error);
+      toastErro("Erro ao fazer login. Tente novamente.");
       throw error;
     }
   };

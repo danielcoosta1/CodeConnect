@@ -31,7 +31,7 @@ const Login = () => {
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const origem = location.state?.from?.pathname || "/feed"; //Caso não tenha vindo de lugar nenhum, redireciona para o feed
+  const origem = location.state?.from?.pathname || "/feed";
 
   useEffect(() => {
     if (location.state?.from) {
@@ -49,13 +49,11 @@ const Login = () => {
 
     try {
       await login(email, senha);
-      toastSucesso("Login realizado com sucesso!");
       navigate(origem, { replace: true }); //replace para não voltar para a página de login
     } catch (error) {
       setErro(
-        error.response?.data?.error || "Erro ao fazer login.Tente Novamente"
+        error.response?.data?.error || "Erro ao fazer login.Tente Novamente",
       );
-      toastErro("Erro ao fazer login.Tente Novamente");
     } finally {
       setLoading(false);
     }
@@ -94,7 +92,7 @@ const Login = () => {
             </CampoInput>
             {erro && <p style={{ color: "red" }}>{erro}</p>}
             <Button type="submit">
-              <p >{loading ? "Carregando..." : "Entrar "}</p>
+              <p>{loading ? "Carregando..." : "Entrar "}</p>
               {loading ? <FiLoader /> : <CgArrowRight />}
             </Button>
           </Form>
