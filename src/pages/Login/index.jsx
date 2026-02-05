@@ -19,6 +19,7 @@ import { FiLoader } from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
 import { toastErro, toastSucesso } from "../../utils/toast";
 import { useLocation, useNavigate } from "react-router-dom";
+import { localStorageService } from "../../services/localStorageService";
 
 const Login = () => {
   const { login } = useAuth();
@@ -34,11 +35,24 @@ const Login = () => {
   const origem = location.state?.from?.pathname || "/feed";
 
   useEffect(() => {
+    // 1. Verificamos se tem aviso de rota protegida
     if (location.state?.from) {
-      toastErro("Você precisa estar logado para acessar essa página.");
+      // 2. Verificamos se foi um logout por querer
+      const foiLogoutIntencional =
+        localStorageService.ler("logout_intencional");
 
-      // Limpa o estado para evitar loop infinito de toasts
-      navigate(location.pathname, { replace: true, state: {} }); //Substituimos a rota atual pela mesma sem estado
+      // Limpa a URL (tira o state) para não ficar sujo
+      navigate(location.pathname, { replace: true, state: {} });
+
+      // 3. A LÓGICA:
+      // Se NÃO foi intencional (ex: tentou entrar direto ou token venceu), mostra o erro.
+      // Se FOI intencional, fica quietinho.
+      if (!foiLogoutIntencional) {
+        toastErro("Você precisa estar logado para acessar essa página.");
+      }
+
+      // 4. Limpa a bandeira para as próximas vezes
+      localStorageService.remover("logout_intencional");
     }
   }, []);
 

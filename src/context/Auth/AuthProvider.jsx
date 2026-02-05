@@ -103,9 +103,11 @@ const AuthProvider = ({ children }) => {
     localStorageService.remover("user");
     localStorageService.remover("rascunho_perfil"); // Limpa rascunho
 
+    localStorageService.salvar("logout_intencional", "true");
     delete axios.defaults.headers.common["Authorization"];
 
     dispatch({ type: "LOGOUT" });
+    navigation("/login");
   };
   // --- FUNÇÕES DO MODAL (FORMULÁRIO) ---
 
