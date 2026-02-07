@@ -3,43 +3,56 @@ import { NavLink } from "react-router-dom";
 
 // 1. O Container principal
 export const SidebarContainer = styled.aside`
-  width: 280px; /* Padrão Desktop Grande */
-  height: 100vh;
   background-color: #171d1f;
 
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 2rem 1rem;
-  border-radius: 8px;
-
+  /* --- PADRÃO: DESKTOP (> 1024px) --- */
+  width: 280px;
+  height: 100vh;
   position: sticky;
   top: 0;
 
-  /* --- O SEGREDO DA FLUIDEZ 🌊 --- */
-  /* Isso faz a largura e o padding deslizarem suavemente */
-  transition: all 0.3s ease-in-out;
-  white-space: nowrap; /* Impede que o texto quebre de linha enquanto encolhe */
-  overflow: hidden; /* Garante que nada vaze */
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1rem;
+  border-radius: 8px;
+  z-index: 100;
 
-  /* --- NOVO: MODO LAPTOP (Intermediário) --- */
-  /* Entre 1000px e 1280px, a barra fica um pouco mais estreita */
-  @media (max-width: 1280px) {
-    width: 200px;
+  /* Transição suave para quando afinar no Tablet */
+  transition: all 0.3s ease;
+
+  /* --- MODO TABLET (Entre 768px e 1024px) --- */
+  /* Mantém na esquerda, mas fica fina */
+  @media (max-width: 1024px) {
+    width: 80px;
+    align-items: center;
     padding: 2rem 0.5rem;
   }
 
-  /* --- MODO TABLET/MOBILE (Barra Fina) --- */
-  @media (max-width: 1000px) {
-    width: 80px;
+  /* --- MODO MOBILE (< 768px) --- */
+  /* Sai da esquerda e vai para baixo */
+  @media (max-width: 768px) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    top: auto; /* Anula o sticky top */
+
+    width: 100%;
+    height: 70px; /* Altura da barra inferior */
+
+    flex-direction: row; /* Ícones lado a lado */
+    justify-content: space-around;
     align-items: center;
+    padding: 0 1rem;
+
+    border-radius: 16px 16px 0 0; /* Arredonda pontas de cima */
+    box-shadow: 0px -4px 20px rgba(0, 0, 0, 0.4); /* Sombra para destacar */
   }
 `;
 // 2. A Logo
 export const LogoImg = styled.img`
   transition: opacity 0.3s; /* Logo desaparece suavemente */
 
-  @media (max-width: 1000px) {
+  @media (max-width: 1024px) {
     display: none;
     opacity: 0;
   }
@@ -48,6 +61,11 @@ export const LogoImg = styled.img`
 export const Nav = styled.nav`
   width: 100%;
   margin-top: 4rem;
+
+  @media (max-width: 768px) {
+    margin-top: 0;
+    width: 100%;
+  }
 `;
 
 export const ListaNav = styled.ul`
@@ -56,43 +74,42 @@ export const ListaNav = styled.ul`
   gap: 2rem;
   width: 100%;
   padding: 0;
+
+  @media (max-width: 768px) {
+    flex-direction: row; /* Horizontal */
+    justify-content: space-between;
+    gap: 0;
+  }
 `;
 
 // 3. O Botão Publicar
 export const LinkPublicarEstilizado = styled(NavLink)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: #81fe88;
   border: 1px solid #81fe88;
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  cursor: pointer;
-  text-align: center;
+  text-decoration: none;
   font-size: 1.6rem;
 
-  /* Flex para alinhar ícone e texto */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  &:hover {
-    opacity: 0.6;
-  }
-
-  /* Controle de exibição Ícone vs Texto */
   .icone-mobile {
-    display: none; /* Esconde ícone no desktop */
+    display: none;
   }
 
-  @media (max-width: 1000px) {
-    border-radius: 50%; /* Vira uma bolinha */
+  /* TABLET: Vira Bolinha na Lateral */
+  @media (max-width: 1024px) {
+    border-radius: 50%;
     width: 50px;
     height: 50px;
     padding: 0;
 
     .texto-desktop {
-      display: none; /* Esconde texto */
+      display: none;
     }
     .icone-mobile {
-      display: block; /* Mostra ícone */
+      display: block;
     }
   }
 `;
@@ -101,6 +118,10 @@ export const LinkPublicarEstilizado = styled(NavLink)`
 export const ItemListaNav = styled.li`
   width: 100%;
   list-style: none;
+
+  @media (max-width: 768px) {
+    width: auto; /* No mobile, ocupa só o espaço do ícone */
+  }
 `;
 
 export const LinkNavegacao = styled(NavLink)`
@@ -144,15 +165,24 @@ export const LinkNavegacao = styled(NavLink)`
     }
   }
 
-  /* AJUSTE PARA O MODO TABLET (Só Ícone) */
-  @media (max-width: 1000px) {
-    justify-content: center; /* Centraliza o ícone */
-    padding: 12px;
-    gap: 0;
+  /* TABLET E MOBILE: Esconde texto, mostra só ícone */
+  @media (max-width: 1024px) {
+    justify-content: center;
+    padding: 10px;
 
     .texto-link {
-      display: none; /* Some com o texto */
-      opacity: 0;
+      display: none;
+    }
+  }
+
+  /* MOBILE ESPECÍFICO: Tira fundo do active para ficar mais limpo */
+  @media (max-width: 768px) {
+    &.active {
+      background-color: transparent;
+      color: #81fe88; /* Ícone verde */
+    }
+    &:hover {
+      background-color: transparent;
     }
   }
 `;
@@ -177,10 +207,14 @@ export const UserProfile = styled(NavLink)`
   }
 
   /* MODO FINO */
-  @media (max-width: 1000px) {
+  @media (max-width: 1024px) {
     justify-content: center; /* Centraliza o avatar */
     padding: 10px 0;
     background-color: transparent; /* Tira o fundo para ficar limpo */
+  }
+
+  @media (max-width: 768px) {
+    justify-content: end;
   }
 `;
 
@@ -211,7 +245,7 @@ export const UserInfo = styled.div`
   }
 
   /* ESCONDE TUDO NO MODO FINO */
-  @media (max-width: 1000px) {
+  @media (max-width: 1024px) {
     display: none;
   }
 `;
