@@ -11,8 +11,7 @@ import {
   ProfileTab,
   StatItem,
   StatsContainer,
-} from "./style";
-import Perfil from "../Perfil";
+} from "./style"; // Importando do Perfil original (ou do arquivo de estilos dessa pasta)
 import ProfileAvatar from "../../components/ProfileAvatar";
 import { CardGrid } from "../../components/CardGrid/style";
 import Card from "../../components/Card";
@@ -34,8 +33,24 @@ const PerfilPublico = () => {
     }
   }, [id]);
 
-  const [abaAtiva, setAbaAtiva] = useState("projetos"); // 'projetos' | 'compartilhados' | 'aprovados'
+  const [abaAtiva, setAbaAtiva] = useState("projetos");
 
+  // --- CORREÇÃO 1: Loading acontece ANTES de checar o userProfile ---
+  if (loadingProfile) {
+    return <LoadingState texto="Carregando perfil..." size={50} />;
+  }
+
+  // --- CORREÇÃO 2: Erro acontece ANTES de checar o userProfile ---
+  if (errorProfile) {
+    return (
+      <ErrorState
+        mensagem={errorProfile}
+        onRetry={() => carregarPerfilPublico(id)}
+      />
+    );
+  }
+
+  // Agora sim: Se não estiver carregando, não tiver erro e user for null, retorna null
   if (!userProfile) return null;
 
   return (
@@ -43,12 +58,19 @@ const PerfilPublico = () => {
       <PerfilHeader>
         <ProfileAvatar src={userProfile.imagem} size={120} hasBorder={true} />
         <InfoContainer>
-          <h2>{userProfile.nome}</h2>
+          {/* Mostra Nome e Sobrenome */}
+          <h2>
+            {userProfile.nome} {userProfile.sobrenome}
+          </h2>
+
           <span>@{userProfile.usuario || "usuario"}</span>
+
           {userProfile.funcao && <p className="funcao">{userProfile.funcao}</p>}
+
           <p className="bio">
             {userProfile.bio || "Este usuário ainda não adicionou uma bio."}
           </p>
+
           <StatsContainer>
             <StatItem>
               <strong>{userPosts.length}</strong>
@@ -61,7 +83,9 @@ const PerfilPublico = () => {
           </StatsContainer>
         </InfoContainer>
       </PerfilHeader>
+
       <div style={{ height: "1px", backgroundColor: "#333", width: "100%" }} />
+
       <ProfileNav>
         <ProfileTab
           $active={abaAtiva === "projetos"}
@@ -83,47 +107,39 @@ const PerfilPublico = () => {
         </ProfileTab>
       </ProfileNav>
 
-      {/* CONTEÚDO QUE MUDA CONFORME A ABA */}
-
       <>
         {abaAtiva === "projetos" && (
           <>
-            {/* LÓGICA DE RENDERIZAÇÃO CONDICIONAL MUTUAMENTE EXCLUSIVA */}
-            {loadingProfile ? (
-              // 1. SE ESTÁ CARREGANDO, mostra SOMENTE o Loading
-              <LoadingState texto="Carregando perfil..." size={45} />
-            ) : errorProfile ? (
-              // 2. SE HOUVE ERRO, mostra o ErrorState
-              <ErrorState
-                mensagem={errorProfile}
-                onRetry={() => carregarPerfilPublico(id)}
-              />
-            ) : userPosts.length > 0 ? (
-              // 2. SE NÃO ESTÁ CARREGANDO E TEM POSTS, mostra a Grid
+            {userPosts.length > 0 ? (
               <CardGrid>
                 {userPosts.map((post) => (
                   <Card key={post.id} post={post} />
                 ))}
               </CardGrid>
             ) : (
-              // 3. SE NÃO ESTÁ CARREGANDO E NÃO TEM POSTS, mostra a mensagem de Vazio
+              // --- CORREÇÃO 3: Texto de feedback ajustado (Você -> Ele) ---
               <div
                 style={{ textAlign: "center", padding: "40px", color: "#888" }}
               >
-                <p>Você ainda não publicou nenhum projeto.</p>
+                <p>{userProfile.nome} ainda não publicou nenhum projeto.</p>
               </div>
             )}
           </>
         )}
 
         {abaAtiva === "compartilhados" && (
-          <p style={{ color: "#888" }}>Projetos compartilhados...</p>
+          <p style={{ color: "#888", textAlign: "center", marginTop: "20px" }}>
+            Em breve...
+          </p>
         )}
         {abaAtiva === "aprovados" && (
-          <p style={{ color: "#888" }}>Projetos aprovados...</p>
+          <p style={{ color: "#888", textAlign: "center", marginTop: "20px" }}>
+            Em breve...
+          </p>
         )}
       </>
     </PerfilContainer>
   );
 };
+
 export default PerfilPublico;
