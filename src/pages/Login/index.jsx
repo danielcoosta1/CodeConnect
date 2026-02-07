@@ -17,8 +17,9 @@ import { MdOutlineContentPaste } from "react-icons/md";
 
 import { FiLoader } from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
-import { toastErro, toastSucesso } from "../../utils/toast";
+import { toastErro } from "../../utils/toast";
 import { useLocation, useNavigate } from "react-router-dom";
+import { localStorageService } from "../../services/localStorageService";
 
 const Login = () => {
   const { login } = useAuth();
@@ -28,17 +29,31 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const origem = location.state?.from?.pathname || "/feed"; //Caso não tenha vindo de lugar nenhum, redireciona para o feed
+  const origem = location.state?.from?.pathname || "/feed";
 
   useEffect(() => {
+    // 1. Verificamos se tem aviso de rota protegida
     if (location.state?.from) {
-      toastErro("Você precisa estar logado para acessar essa página.");
+      // 2. Verificamos se foi um logout por querer
+      const foiLogoutIntencional =
+        localStorageService.ler("logout_intencional");
 
-      // Limpa o estado para evitar loop infinito de toasts
-      navigate(location.pathname, { replace: true, state: {} }); //Substituimos a rota atual pela mesma sem estado
+      // Limpa a URL (tira o state) para não ficar sujo
+      navigate(location.pathname, { replace: true, state: {} });
+
+      // 3. A LÓGICA:
+      // Se NÃO foi intencional (ex: tentou entrar direto ou token venceu), mostra o erro.
+      // Se FOI intencional, fica quietinho.
+      if (!foiLogoutIntencional) {
+        toastErro("Você precisa estar logado para acessar essa página.");
+      }
+
+      // 4. Limpa a bandeira para as próximas vezes
+      localStorageService.remover("logout_intencional");
     }
   }, []);
 
@@ -49,13 +64,11 @@ const Login = () => {
 
     try {
       await login(email, senha);
-      toastSucesso("Login realizado com sucesso!");
       navigate(origem, { replace: true }); //replace para não voltar para a página de login
     } catch (error) {
       setErro(
-        error.response?.data?.error || "Erro ao fazer login.Tente Novamente"
+        error.response?.data?.error || "Erro ao fazer login.Tente Novamente",
       );
-      toastErro("Erro ao fazer login.Tente Novamente");
     } finally {
       setLoading(false);
     }
@@ -94,7 +107,7 @@ const Login = () => {
             </CampoInput>
             {erro && <p style={{ color: "red" }}>{erro}</p>}
             <Button type="submit">
-              <p >{loading ? "Carregando..." : "Entrar "}</p>
+              <p>{loading ? "Carregando..." : "Entrar "}</p>
               {loading ? <FiLoader /> : <CgArrowRight />}
             </Button>
           </Form>

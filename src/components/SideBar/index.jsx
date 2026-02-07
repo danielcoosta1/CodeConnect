@@ -6,17 +6,18 @@ import {
   Nav,
   ListaNav,
   UserProfile,
-  Avatar,
   UserInfo,
+  LinkNavegacao,
 } from "./style.js";
 import logoImg from "./assets/Logo.svg";
 
-import { NavLink } from "react-router-dom";
+
 
 import feedIcon from "./assets/feed.svg";
 import accountIcon from "./assets/account_circle.svg";
 import infoIcon from "./assets/info.svg";
 import logoutIcon from "./assets/logout.svg";
+import { FaPen } from "react-icons/fa";
 
 import feedIconWhite from "./assets/feedwhite.svg";
 import accountIconWhite from "./assets/account_circlewhite.svg";
@@ -50,7 +51,7 @@ const SideBar = () => {
     },
     {
       name: "Sair",
-      path: null,
+      path: "#",
       src: logoutIcon,
       src2: null,
       onclick: logout,
@@ -62,21 +63,24 @@ const SideBar = () => {
       <Nav>
         <ListaNav>
           <LinkPublicarEstilizado to="/publicar">
-            Publicar
+            {/* Ícone que aparece só na tela pequena */}
+            <FaPen className="icone-mobile" size={20} />
+            {/* Texto que aparece só na tela grande */}
+            <span className="texto-desktop">Publicar</span>
           </LinkPublicarEstilizado>
           {links.map((link) => (
             <ItemListaNav key={link.name}>
-              <NavLink to={link.path} onClick={link.onclick}>
+              <LinkNavegacao to={link.path} onClick={link.onclick} end>
                 {({ isActive }) => (
                   <>
                     <img
                       src={isActive && link.src2 ? link.src2 : link.src}
                       alt={link.name}
                     />
-                    <p>{link.name}</p>
+                    <p className="texto-link">{link.name}</p>
                   </>
                 )}
-              </NavLink>
+              </LinkNavegacao>
             </ItemListaNav>
           ))}
         </ListaNav>

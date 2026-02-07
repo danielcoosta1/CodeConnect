@@ -1,77 +1,193 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 
+// 1. O Container principal
 export const SidebarContainer = styled.aside`
+  background-color: #171d1f;
+
+  /* --- PADRÃO: DESKTOP (> 1024px) --- */
   width: 280px;
   height: 100vh;
-  background-color: #171d1f;
+  position: sticky;
+  top: 0;
+
   display: flex;
   flex-direction: column;
-  gap: 2rem;
   padding: 2rem 1rem;
   border-radius: 8px;
+  z-index: 100;
+
+  /* Transição suave para quando afinar no Tablet */
+  transition: all 0.3s ease;
+
+  /* --- MODO TABLET (Entre 768px e 1024px) --- */
+  /* Mantém na esquerda, mas fica fina */
+  @media (max-width: 1024px) {
+    width: 80px;
+    align-items: center;
+    padding: 2rem 0.5rem;
+  }
+
+  /* --- MODO MOBILE (< 768px) --- */
+  /* Sai da esquerda e vai para baixo */
+  @media (max-width: 768px) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    top: auto; /* Anula o sticky top */
+
+    width: 100%;
+    height: 70px; /* Altura da barra inferior */
+
+    flex-direction: row; /* Ícones lado a lado */
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 1rem;
+
+    border-radius: 16px 16px 0 0; /* Arredonda pontas de cima */
+    box-shadow: 0px -4px 20px rgba(0, 0, 0, 0.4); /* Sombra para destacar */
+  }
+`;
+// 2. A Logo
+export const LogoImg = styled.img`
+  transition: opacity 0.3s; /* Logo desaparece suavemente */
+
+  @media (max-width: 1024px) {
+    display: none;
+    opacity: 0;
+  }
 `;
 
 export const Nav = styled.nav`
   width: 100%;
-  margin-top: 8rem;
+  margin-top: 4rem;
+
+  @media (max-width: 768px) {
+    margin-top: 0;
+    width: 100%;
+  }
 `;
 
 export const ListaNav = styled.ul`
   display: flex;
-
   flex-direction: column;
-  gap: 4rem;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 1.5rem;
+  gap: 2rem;
+  width: 100%;
+  padding: 0;
+
+  @media (max-width: 768px) {
+    flex-direction: row; /* Horizontal */
+    justify-content: space-between;
+    gap: 0;
+  }
 `;
 
-export const LogoImg = styled.img``;
-
+// 3. O Botão Publicar
 export const LinkPublicarEstilizado = styled(NavLink)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: #81fe88;
   border: 1px solid #81fe88;
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  cursor: pointer;
-  text-align: center;
+  text-decoration: none;
   font-size: 1.6rem;
-  &:hover {
-    opacity: 0.6;
+
+  .icone-mobile {
+    display: none;
+  }
+
+  /* TABLET: Vira Bolinha na Lateral */
+  @media (max-width: 1024px) {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+
+    .texto-desktop {
+      display: none;
+    }
+    .icone-mobile {
+      display: block;
+    }
   }
 `;
 
+// 4. Os Itens do Menu
 export const ItemListaNav = styled.li`
+  width: 100%;
+  list-style: none;
+
+  @media (max-width: 768px) {
+    width: auto; /* No mobile, ocupa só o espaço do ícone */
+  }
+`;
+
+export const LinkNavegacao = styled(NavLink)`
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Desktop: Lado a Lado */
   align-items: center;
-  a {
-    color: #888888;
-    text-decoration: none;
-    transition: all 0.2s ease;
+  gap: 15px; /* Espaço entre ícone e texto */
+  width: 100%;
+  padding: 12px 16px; /* Padding interno generoso */
+  border-radius: 8px;
 
-    &:hover {
-      opacity: 0.8;
-      text-decoration: underline;
+  text-decoration: none;
+  color: #888888;
+  transition: all 0.3s ease; /* Transição suave de cor e fundo */
+
+  img {
+    width: 24px;
+    height: 24px;
+    min-width: 24px; /* Garante que o ícone não esmague na animação */
+  }
+
+  p {
+    font-size: 1.2rem;
+    margin: 0;
+    opacity: 1;
+    transition: opacity 0.2s; /* Texto desaparece suavemente */
+  }
+
+  &:hover {
+    background-color: #2d3538;
+    color: #ffffff;
+  }
+
+  &.active {
+    color: #ffffff;
+    background-color: #2d3538;
+    font-weight: bold;
+
+    img {
+      filter: brightness(1.5);
     }
+  }
 
+  /* TABLET E MOBILE: Esconde texto, mostra só ícone */
+  @media (max-width: 1024px) {
+    justify-content: center;
+    padding: 10px;
+
+    .texto-link {
+      display: none;
+    }
+  }
+
+  /* MOBILE ESPECÍFICO: Tira fundo do active para ficar mais limpo */
+  @media (max-width: 768px) {
     &.active {
-      text-decoration: underline;
-      color: #ffffff;
-
-      img {
-        filter: brightness(1.2);
-      }
-
-      p {
-        font-weight: bold;
-      }
+      background-color: transparent;
+      color: #81fe88; /* Ícone verde */
+    }
+    &:hover {
+      background-color: transparent;
     }
   }
 `;
 
+// 5. O Perfil do Usuário (Rodapé da barra)
 export const UserProfile = styled(NavLink)`
   display: flex;
   align-items: center;
@@ -81,32 +197,32 @@ export const UserProfile = styled(NavLink)`
   background-color: #2d3538;
   border-radius: 8px;
   margin-top: auto;
-  margin-bottom: 4rem;
   cursor: pointer;
-
-  /* Importante: Como virou um link (a), precisamos tirar o sublinhado padrão */
   text-decoration: none;
-  border: none; /* Caso tenha sobrado borda de botão */
-
-  transition: background-color 0.2s;
+  border: none;
+  transition: all 0.3s ease;
 
   &:hover {
     background-color: #3a4448;
   }
+
+  /* MODO FINO */
+  @media (max-width: 1024px) {
+    justify-content: center; /* Centraliza o avatar */
+    padding: 10px 0;
+    background-color: transparent; /* Tira o fundo para ficar limpo */
+  }
+
+  @media (max-width: 768px) {
+    justify-content: end;
+  }
 `;
 
-export const Avatar = styled.img`
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #81fe88; /* Identidade visual */
-`;
-
+// 6. As Informações do Usuário (Nome/Arroba)
 export const UserInfo = styled.div`
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Evita que nomes gigantes quebrem o layout */
+  overflow: hidden;
   gap: 4px;
 
   h3 {
@@ -127,5 +243,9 @@ export const UserInfo = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  /* ESCONDE TUDO NO MODO FINO */
+  @media (max-width: 1024px) {
+    display: none;
+  }
 `;
-/* --------------------------------------- */
