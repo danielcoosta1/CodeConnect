@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 
+// 1. O Container principal
 export const SidebarContainer = styled.aside`
-  width: 280px;
+  width: 280px; /* Largura padrão Desktop */
   height: 100vh;
   background-color: #171d1f;
   display: flex;
@@ -10,16 +11,26 @@ export const SidebarContainer = styled.aside`
   gap: 2rem;
   padding: 2rem 1rem;
   border-radius: 8px;
+  
+  /* Fixar na tela para não rolar junto com o feed */
+  position: sticky;
+  top: 0;
+
+  /* --- MODO TABLET/MOBILE (Barra Fina) --- */
+  @media (max-width: 1000px) {
+    width: 80px; /* Encolhe a largura */
+    padding: 2rem 0.5rem; /* Diminui o padding lateral */
+    align-items: center; /* Centraliza tudo */
+  }
 `;
 
 export const Nav = styled.nav`
   width: 100%;
-  margin-top: 8rem;
+  margin-top: 4rem;
 `;
 
 export const ListaNav = styled.ul`
   display: flex;
-
   flex-direction: column;
   gap: 4rem;
   align-items: center;
@@ -28,8 +39,16 @@ export const ListaNav = styled.ul`
   font-size: 1.5rem;
 `;
 
-export const LogoImg = styled.img``;
+// 2. A Logo
+export const LogoImg = styled.img`
+  /* No modo fino, vamos esconder a logo ou diminuir muito */
+  @media (max-width: 1000px) {
+    display: none; /* Opção: esconder para ganhar espaço */
+    /* Ou width: 40px; se quiser manter */
+  }
+`;
 
+// 3. O Botão Publicar
 export const LinkPublicarEstilizado = styled(NavLink)`
   color: #81fe88;
   border: 1px solid #81fe88;
@@ -38,40 +57,98 @@ export const LinkPublicarEstilizado = styled(NavLink)`
   cursor: pointer;
   text-align: center;
   font-size: 1.6rem;
+  
+  /* Flex para alinhar ícone e texto */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   &:hover {
     opacity: 0.6;
   }
-`;
 
-export const ItemListaNav = styled.li`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  a {
-    color: #888888;
-    text-decoration: none;
-    transition: all 0.2s ease;
+  /* Controle de exibição Ícone vs Texto */
+  .icone-mobile {
+    display: none; /* Esconde ícone no desktop */
+  }
 
-    &:hover {
-      opacity: 0.8;
-      text-decoration: underline;
+  @media (max-width: 1000px) {
+    border-radius: 50%; /* Vira uma bolinha */
+    width: 50px;
+    height: 50px;
+    padding: 0;
+
+    .texto-desktop {
+      display: none; /* Esconde texto */
     }
-
-    &.active {
-      text-decoration: underline;
-      color: #ffffff;
-
-      img {
-        filter: brightness(1.2);
-      }
-
-      p {
-        font-weight: bold;
-      }
+    .icone-mobile {
+      display: block; /* Mostra ícone */
     }
   }
 `;
 
+// 4. Os Itens do Menu
+export const ItemListaNav = styled.li`
+  width: 100%;
+  list-style: none;
+`;
+
+export const LinkNavegacao = styled(NavLink)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+
+  text-decoration: none;
+  color: #888888;
+  transition: all 0.2s ease;
+
+  img {
+    width: 24px;
+    height: 24px;
+    transition: filter 0.2s;
+  }
+
+  p {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+
+  /* --- EFEITOS --- */
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05); /* Fundo sutil ao passar o mouse */
+    color: #ffffff;
+    opacity: 1;
+  }
+
+  &.active {
+    color: #ffffff;
+    
+    /* Opcional: Um fundo para marcar o item ativo */
+    /* background-color: rgba(255, 255, 255, 0.1); */
+
+    img {
+      filter: brightness(10) grayscale(0); /* Garante que o ícone fique branco/vivo */
+    }
+
+    p {
+      font-weight: bold;
+    }
+  }
+
+  /* --- RESPONSIVIDADE (Esconde o texto) --- */
+  @media (max-width: 1000px) {
+    .texto-link {
+      display: none;
+    }
+  }
+`;
+
+// 5. O Perfil do Usuário (Rodapé da barra)
 export const UserProfile = styled(NavLink)`
   display: flex;
   align-items: center;
@@ -81,32 +158,28 @@ export const UserProfile = styled(NavLink)`
   background-color: #2d3538;
   border-radius: 8px;
   margin-top: auto;
-  margin-bottom: 4rem;
   cursor: pointer;
-
-  /* Importante: Como virou um link (a), precisamos tirar o sublinhado padrão */
   text-decoration: none;
-  border: none; /* Caso tenha sobrado borda de botão */
-
+  border: none;
   transition: background-color 0.2s;
 
   &:hover {
     background-color: #3a4448;
   }
+
+  /* MODO FINO */
+  @media (max-width: 1000px) {
+    justify-content: center; /* Centraliza o avatar */
+    padding: 10px 0;
+    background-color: transparent; /* Tira o fundo para ficar limpo */
+  }
 `;
 
-export const Avatar = styled.img`
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #81fe88; /* Identidade visual */
-`;
-
+// 6. As Informações do Usuário (Nome/Arroba)
 export const UserInfo = styled.div`
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Evita que nomes gigantes quebrem o layout */
+  overflow: hidden;
   gap: 4px;
 
   h3 {
@@ -127,5 +200,10 @@ export const UserInfo = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  /* ESCONDE TUDO NO MODO FINO */
+  @media (max-width: 1000px) {
+    display: none;
+  }
 `;
-/* --------------------------------------- */
+

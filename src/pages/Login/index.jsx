@@ -17,7 +17,7 @@ import { MdOutlineContentPaste } from "react-icons/md";
 
 import { FiLoader } from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
-import { toastErro, toastSucesso } from "../../utils/toast";
+import { toastErro } from "../../utils/toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import { localStorageService } from "../../services/localStorageService";
 
@@ -29,6 +29,7 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
 
