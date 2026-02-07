@@ -2,6 +2,7 @@ import { localStorageService } from "../../services/localStorageService";
 
 // 1. O Gabarito: Como o estado deve ser quando não há nada digitado
 export const ESTADO_LIMPO = {
+  //Dados do formulário
   title: "",
   content: "",
   allTags: [],
@@ -9,15 +10,21 @@ export const ESTADO_LIMPO = {
   tagInput: "",
   image: null,
   imageFileName: "",
+
+  //Dados de posts
   allPosts: [],
-  myPosts: [],
+  loadingPosts: true,
+  errorPosts: null,
   loading: false,
   error: null,
   success: false,
-  loadingPosts: true,
-  errorPosts: null,
+
+  //Dados de meus posts
+  myPosts: [],
   loadingMyPosts: true,
   errorMyPosts: null,
+
+  //Dados de perfil público
   userProfile: null,
   userPosts: [],
   loadingProfile: true,
