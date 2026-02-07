@@ -3,24 +3,45 @@ import { NavLink } from "react-router-dom";
 
 // 1. O Container principal
 export const SidebarContainer = styled.aside`
-  width: 280px; /* Largura padrão Desktop */
+  width: 280px; /* Padrão Desktop Grande */
   height: 100vh;
   background-color: #171d1f;
+
   display: flex;
   flex-direction: column;
   gap: 2rem;
   padding: 2rem 1rem;
   border-radius: 8px;
-  
-  /* Fixar na tela para não rolar junto com o feed */
+
   position: sticky;
   top: 0;
 
+  /* --- O SEGREDO DA FLUIDEZ 🌊 --- */
+  /* Isso faz a largura e o padding deslizarem suavemente */
+  transition: all 0.3s ease-in-out;
+  white-space: nowrap; /* Impede que o texto quebre de linha enquanto encolhe */
+  overflow: hidden; /* Garante que nada vaze */
+
+  /* --- NOVO: MODO LAPTOP (Intermediário) --- */
+  /* Entre 1000px e 1280px, a barra fica um pouco mais estreita */
+  @media (max-width: 1280px) {
+    width: 200px;
+    padding: 2rem 0.5rem;
+  }
+
   /* --- MODO TABLET/MOBILE (Barra Fina) --- */
   @media (max-width: 1000px) {
-    width: 80px; /* Encolhe a largura */
-    padding: 2rem 0.5rem; /* Diminui o padding lateral */
-    align-items: center; /* Centraliza tudo */
+    width: 80px;
+    align-items: center;
+  }
+`;
+// 2. A Logo
+export const LogoImg = styled.img`
+  transition: opacity 0.3s; /* Logo desaparece suavemente */
+
+  @media (max-width: 1000px) {
+    display: none;
+    opacity: 0;
   }
 `;
 
@@ -32,20 +53,9 @@ export const Nav = styled.nav`
 export const ListaNav = styled.ul`
   display: flex;
   flex-direction: column;
-  gap: 4rem;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 1.5rem;
-`;
-
-// 2. A Logo
-export const LogoImg = styled.img`
-  /* No modo fino, vamos esconder a logo ou diminuir muito */
-  @media (max-width: 1000px) {
-    display: none; /* Opção: esconder para ganhar espaço */
-    /* Ou width: 40px; se quiser manter */
-  }
+  gap: 2rem;
+  width: 100%;
+  padding: 0;
 `;
 
 // 3. O Botão Publicar
@@ -57,7 +67,7 @@ export const LinkPublicarEstilizado = styled(NavLink)`
   cursor: pointer;
   text-align: center;
   font-size: 1.6rem;
-  
+
   /* Flex para alinhar ícone e texto */
   display: flex;
   justify-content: center;
@@ -95,55 +105,54 @@ export const ItemListaNav = styled.li`
 
 export const LinkNavegacao = styled(NavLink)`
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Desktop: Lado a Lado */
   align-items: center;
-  gap: 8px;
+  gap: 15px; /* Espaço entre ícone e texto */
   width: 100%;
-  padding: 10px;
+  padding: 12px 16px; /* Padding interno generoso */
   border-radius: 8px;
 
   text-decoration: none;
   color: #888888;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease; /* Transição suave de cor e fundo */
 
   img {
     width: 24px;
     height: 24px;
-    transition: filter 0.2s;
+    min-width: 24px; /* Garante que o ícone não esmague na animação */
   }
 
   p {
     font-size: 1.2rem;
     margin: 0;
+    opacity: 1;
+    transition: opacity 0.2s; /* Texto desaparece suavemente */
   }
 
-  /* --- EFEITOS --- */
-  
   &:hover {
-    background-color: rgba(255, 255, 255, 0.05); /* Fundo sutil ao passar o mouse */
+    background-color: #2d3538;
     color: #ffffff;
-    opacity: 1;
   }
 
   &.active {
     color: #ffffff;
-    
-    /* Opcional: Um fundo para marcar o item ativo */
-    /* background-color: rgba(255, 255, 255, 0.1); */
+    background-color: #2d3538;
+    font-weight: bold;
 
     img {
-      filter: brightness(10) grayscale(0); /* Garante que o ícone fique branco/vivo */
-    }
-
-    p {
-      font-weight: bold;
+      filter: brightness(1.5);
     }
   }
 
-  /* --- RESPONSIVIDADE (Esconde o texto) --- */
+  /* AJUSTE PARA O MODO TABLET (Só Ícone) */
   @media (max-width: 1000px) {
+    justify-content: center; /* Centraliza o ícone */
+    padding: 12px;
+    gap: 0;
+
     .texto-link {
-      display: none;
+      display: none; /* Some com o texto */
+      opacity: 0;
     }
   }
 `;
@@ -161,7 +170,7 @@ export const UserProfile = styled(NavLink)`
   cursor: pointer;
   text-decoration: none;
   border: none;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
 
   &:hover {
     background-color: #3a4448;
@@ -206,4 +215,3 @@ export const UserInfo = styled.div`
     display: none;
   }
 `;
-

@@ -11,7 +11,7 @@ import {
 } from "./style.js";
 import logoImg from "./assets/Logo.svg";
 
-import { NavLink } from "react-router-dom";
+
 
 import feedIcon from "./assets/feed.svg";
 import accountIcon from "./assets/account_circle.svg";
