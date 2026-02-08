@@ -167,9 +167,9 @@ const Feed = () => {
             <>
               <p>Nenhum post encontrado para essa busca.</p>
               {/* BOTÃO DE RESGATE: Limpa texto E tags */}
-            <LimparBuscaButton>
-              Limpar buca
-            </LimparBuscaButton>
+              <LimparBuscaButton onClick={limparBuscaTotal}>
+                Limpar buca
+              </LimparBuscaButton>
             </>
           )}
         </NoPostsContainer>
