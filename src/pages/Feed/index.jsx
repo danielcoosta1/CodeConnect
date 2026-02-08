@@ -6,7 +6,7 @@ import {
   FeedContainerMain,
   FeedFilterContainer,
   InputSearch,
-  LoadingContainer,
+  LimparBuscaButton,
   NoPostsContainer,
   TagItem,
   TagList,
@@ -167,21 +167,9 @@ const Feed = () => {
             <>
               <p>Nenhum post encontrado para essa busca.</p>
               {/* BOTÃO DE RESGATE: Limpa texto E tags */}
-              <button
-                onClick={limparBuscaTotal}
-                style={{
-                  marginTop: "15px",
-                  background: "transparent",
-                  color: "#88F2DB",
-                  border: "1px solid #88F2DB",
-                  padding: "8px 16px",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                  fontWeight: "bold",
-                }}
-              >
-                Limpar busca
-              </button>
+            <LimparBuscaButton>
+              Limpar buca
+            </LimparBuscaButton>
             </>
           )}
         </NoPostsContainer>
