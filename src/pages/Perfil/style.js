@@ -4,104 +4,165 @@ export const PerfilContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 20px;
-  gap: 30px;
+
+  padding: 1.5rem;
+  gap: 2.5rem;
+
   color: #bcbcbc;
+
+  /* Centraliza em monitores muito largos */
+  max-width: 100rem;
+  margin: 0 auto;
 `;
 
 export const PerfilHeader = styled.header`
   display: flex;
   align-items: center;
-  gap: 24px;
-  background-color: #171d1f;
-  padding: 30px;
-  border-radius: 8px;
-  position: relative;
-`;
+  gap: 3rem;
 
-export const AvatarGrande = styled.img`
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #81fe88;
+  background-color: #171d1f;
+  padding: 2.5rem; /* 40px */
+  border-radius: 1rem; /* 16px */
+
+  position: relative;
+  box-shadow: 0px 0.25rem 0.625rem rgba(0, 0, 0, 0.2); /* Sombra sutil */
+
+  /* --- MODO MOBILE (Pilha Vertical) --- */
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1.25rem; /* 32px e 20px */
+    gap: 1.5rem;
+  }
 `;
 
 export const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  flex: 1; /* Ocupa o espaço restante para empurrar o botão de editar */
+  gap: 0.75rem; /* 12px */
+  flex: 1;
 
   h2 {
     color: #ffffff;
-    font-size: 2rem;
+    font-size: 2.5rem; /* 40px */
+    font-weight: 700;
+    line-height: 1.1;
     margin: 0;
   }
 
   span {
-    font-size: 1.1rem;
+    font-size: 1.4rem; /* ~22px */
     color: #888888;
   }
 
   p.funcao {
     color: #81fe88;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 1.2rem;
     text-transform: uppercase;
-    margin-top: 5px;
+    letter-spacing: 0.06rem;
+    margin-top: 0.3rem;
   }
 
   p.bio {
-    margin-top: 10px;
-    font-size: 1rem;
+    margin-top: 0.625rem; /* 10px */
+    font-size: 1.4rem;
     line-height: 1.5;
-    max-width: 600px;
+    color: #cccccc;
+    max-width: 50rem; /* 800px - limita largura da leitura */
+  }
+
+  /* Ajustes Mobile */
+  @media (max-width: 768px) {
+    align-items: center;
+
+    h2 {
+      font-size: 2rem;
+    }
+    p.bio {
+      font-size: 1.1rem;
+      text-align: center;
+    }
   }
 `;
 
-/* --- NOVO: Container dos Números (Seguidores/Compartilhamentos) --- */
+/* --- Container dos Números (Seguidores/Compartilhamentos) --- */
 export const StatsContainer = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 2rem;
   margin-top: 15px;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 0.625rem 1.25rem; /* 10px 20px */
+    border-radius: 0.5rem;
+    width: 100%;
+  }
 `;
 
 export const StatItem = styled.div`
   display: flex;
-  gap: 5px;
+  gap: 0.8rem;
   align-items: center;
+  justify-content: center;
 
   strong {
     color: #ffffff;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 
   span {
-    font-size: 0.9rem;
+    font-size: 1.25rem;
     color: #888888;
+  }
+  @media (max-width: 768px) {
+    gap: 0.25rem;
+    span {
+      font-size: 1.1rem;
+      text-transform: none;
+    }
   }
 `;
 
 export const BtnEditar = styled.button`
+  /* --- ESTILO PADRÃO (DESKTOP) --- */
   position: absolute;
-  top: 30px;
-  right: 30px;
+  top: 2.5rem; /* 40px */
+  right: 2.5rem; /* 40px */
+
   background: transparent;
   border: 1px solid #81fe88;
   color: #81fe88;
-  padding: 8px 16px;
-  border-radius: 4px;
+
+  padding: 0.625rem 1.25rem; /* 10px 20px */
+  border-radius: 0.5rem; /* 8px */
+
+  font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s;
+
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.625rem; /* 10px */
+
+  transition: all 0.2s;
 
   &:hover {
     background: #81fe88;
     color: #171d1f;
+    transform: translateY(-2px);
+  }
+
+  /* --- MODO MOBILE --- */
+  @media (max-width: 768px) {
+    position: static;
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.625rem;
+    padding: 0.75rem;
+    background-color: rgba(129, 254, 136, 0.1);
   }
 `;
 
@@ -113,19 +174,37 @@ export const ProfileNav = styled.nav`
   gap: 30px;
 
   margin-top: 10px;
+
+  @media (max-width: 768px) {
+    gap: 1.25rem;
+  }
 `;
 
 // Botão que finge ser um Link (Tab)
 export const ProfileTab = styled.button`
   background: none;
   border: none;
-  font-size: 1.1rem;
-  padding-bottom: 10px;
+  font-size: 1.2rem;
+  padding-bottom: 0.9rem; /* ~15px */
   cursor: pointer;
   color: ${({ $active }) => ($active ? "#81fe88" : "#888888")};
-  border-bottom: 2px solid
-    ${({ $active }) => ($active ? "#81fe88" : "transparent")};
-  font-weight: ${({ $active }) => ($active ? "bold" : "normal")};
+
+  /* Pseudo-elemento para a linha animada */
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 0.18rem; /* ~3px */
+    background-color: #81fe88;
+    transform: scaleX(${({ $active }) => ($active ? "1" : "0")});
+    transition: transform 0.3s ease;
+  }
+
+  font-weight: ${({ $active }) => ($active ? "600" : "400")};
   transition: all 0.2s;
 
   &:hover {

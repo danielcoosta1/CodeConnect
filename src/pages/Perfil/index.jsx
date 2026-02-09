@@ -3,7 +3,7 @@ import { useAuth } from "../../hooks/useAuth";
 import {
   PerfilContainer,
   PerfilHeader,
-  AvatarGrande,
+
   InfoContainer,
   BtnEditar,
   StatsContainer,
@@ -45,7 +45,7 @@ const Perfil = () => {
       />
 
       <PerfilHeader>
-        <ProfileAvatar src={user.imagem} size={120} hasBorder={true} />
+        <ProfileAvatar src={user.imagem} size={150} hasBorder={true} />
 
         <InfoContainer>
           <h2>{user.nome}</h2>
