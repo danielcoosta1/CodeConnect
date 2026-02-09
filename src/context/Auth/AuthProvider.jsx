@@ -68,34 +68,37 @@ const AuthProvider = ({ children }) => {
   // FUNÇÕES DE SESSÃO
 
   const login = async (email, senha) => {
+    dispatch({ type: "LOGIN_START" }); // 1. Avisa o Reducer que começou (loadingAuth = true)
+
     try {
       const response = await loginRequest(email, senha);
-      console.log("Resposta do servidor:", response);
-
       const { user: userData, token: authToken } = response;
 
-      // Configura Axios
       axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
 
-      // Salva no Storage (Sem imagem pesada)
       const { imagem: _img, ...userSemPeso } = userData;
       localStorageService.salvar("token", authToken);
       localStorageService.salvar("user", userSemPeso);
 
-      // Atualiza Reducer
       dispatch({
-        type: "LOGIN_SUCESSO",
+        type: "LOGIN_SUCESSO", // 2. Sucesso (loadingAuth = false, errorAuth = null)
         payload: { user: userData, token: authToken },
       });
 
-      toastSucesso("Login realizado com sucesso!");
-
-      navigation("/feed");
+      return true; // Retorna SUCESSO para o componente navegar
     } catch (error) {
       console.error("ERRO LOGIN:", error);
-      toastErro("Erro ao fazer login. Tente novamente.");
-      throw error;
+      const msg =
+        error.response?.data?.error ||
+        "Erro ao fazer login. Verifique seus dados.";
+
+      dispatch({ type: "LOGIN_ERROR", payload: msg }); // 3. Erro (loadingAuth = false, errorAuth = msg)
+      return false; // Retorna FALHA
     }
+  };
+
+  const limparErroAuth = () => {
+    dispatch({ type: "LIMPAR_ERRO_AUTH" });
   };
 
   const logout = () => {
@@ -170,6 +173,10 @@ const AuthProvider = ({ children }) => {
         isAuthenticated: !!state.token, // Usa o token como verdade
         loading: state.loading,
 
+        //Estados para login
+        loadingAuth: state.loadingAuth,
+        errorAuth: state.errorAuth,
+
         // Form
         nome: state.nome,
         sobrenome: state.sobrenome,
@@ -180,10 +187,11 @@ const AuthProvider = ({ children }) => {
 
         // UI
         loadingUpdate: state.loadingUpdate,
-
+        errorUpdate: state.errorUpdate,
         // Ações
         login,
         logout,
+        limparErroAuth,
         iniciarEdicao,
         atualizarDado,
         definirImagemForm,

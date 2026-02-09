@@ -6,13 +6,18 @@ export const ESTADO_LIMPO = {
   token: null,
   loading: true,
 
+  // ESTADOS PARA AÇÃO DE LOGIN
+
+  loadingAuth: false,
+  errorAuth: null,
+  
   // FORMULARIO DE REGISTRO
   nome: "",
   sobrenome: "",
   usuario: "",
   bio: "",
   funcao: "",
-  imagemDePerfil: "",
+  imagem: "",
 
   // UI DO MODAL
   loadingUpdate: false,
