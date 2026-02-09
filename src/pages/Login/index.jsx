@@ -22,7 +22,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { localStorageService } from "../../services/localStorageService";
 
 const Login = () => {
-  const { login, loadingAuth, errorAuth, limparErroAuth } = useAuth();
+  const { login, loadingAuth, errorAuth } = useAuth();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -33,9 +33,6 @@ const Login = () => {
   const origem = location.state?.from?.pathname || "/feed";
 
   // 2. Limpar erro antigo ao entrar na tela (Montagem)
-  useEffect(() => {
-    limparErroAuth();
-  }, []);
 
   useEffect(() => {
     // 1. Verificamos se tem aviso de rota protegida

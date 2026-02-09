@@ -9,8 +9,12 @@ export const loginRequest = async (email, senha) => {
   return response.data;
 };
 
-export const registerRequest = async (dadosCadastro) => {
+export const registerRequest = async (nome, email, senha) => {
   // Bate exatamente em: POST /api/auth/cadastro
-  const response = await axios.post(`${API_URL}/cadastro`, dadosCadastro);
+  const response = await axios.post(`${API_URL}/cadastro`, {
+    nome,
+    email,
+    senha,
+  });
   return response.data;
 };

@@ -4,7 +4,7 @@ import axios from "axios";
 import { localStorageService } from "../../services/localStorageService";
 import { useNavigate } from "react-router-dom";
 
-import { loginRequest } from "../../services/authService";
+import { loginRequest, registerRequest } from "../../services/authService";
 import {
   getUserProfile,
   updateProfileRequest,
@@ -67,6 +67,26 @@ const AuthProvider = ({ children }) => {
 
   // FUNÇÕES DE SESSÃO
 
+  const cadastro = async (nome, email, senha) => {
+    dispatch({ type: "CADASTRO_START" });
+
+    try {
+      const response = await registerRequest(nome, email, senha);
+      const { user: userData } = response;
+
+      dispatch({ type: "CADASTRO_SUCESSO", payload: userData });
+
+      return true;
+    } catch (error) {
+      console.error("ERRO CADASTRO", error);
+      const msg =
+        error.response.data.error ||
+        "Error ao fazer o cadastro, tente novamente.";
+
+      dispatch({ type: "CADASTRO_ERROR", payload: msg });
+      return false;
+    }
+  };
   const login = async (email, senha) => {
     dispatch({ type: "LOGIN_START" }); // 1. Avisa o Reducer que começou (loadingAuth = true)
 
@@ -95,10 +115,6 @@ const AuthProvider = ({ children }) => {
       dispatch({ type: "LOGIN_ERROR", payload: msg }); // 3. Erro (loadingAuth = false, errorAuth = msg)
       return false; // Retorna FALHA
     }
-  };
-
-  const limparErroAuth = () => {
-    dispatch({ type: "LIMPAR_ERRO_AUTH" });
   };
 
   const logout = () => {
@@ -173,6 +189,11 @@ const AuthProvider = ({ children }) => {
         isAuthenticated: !!state.token, // Usa o token como verdade
         loading: state.loading,
 
+        //Estados para o cadastro
+        loadingRegister: state.loadingRegister,
+        errorRegister: state.errorRegister,
+        cadastroSucesso: state.cadastroSucesso,
+
         //Estados para login
         loadingAuth: state.loadingAuth,
         errorAuth: state.errorAuth,
@@ -189,9 +210,9 @@ const AuthProvider = ({ children }) => {
         loadingUpdate: state.loadingUpdate,
         errorUpdate: state.errorUpdate,
         // Ações
+        cadastro,
         login,
         logout,
-        limparErroAuth,
         iniciarEdicao,
         atualizarDado,
         definirImagemForm,

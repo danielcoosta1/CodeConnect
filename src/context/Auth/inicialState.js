@@ -7,10 +7,14 @@ export const ESTADO_LIMPO = {
   loading: true,
 
   // ESTADOS PARA AÇÃO DE LOGIN
-
   loadingAuth: false,
   errorAuth: null,
-  
+
+  // ESTADOS PARA O CADASTRO
+  loadingRegister: false,
+  errorRegister: null,
+  cadastroSucesso: false,
+
   // FORMULARIO DE REGISTRO
   nome: "",
   sobrenome: "",

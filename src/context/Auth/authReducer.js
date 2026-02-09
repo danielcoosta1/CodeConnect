@@ -4,6 +4,32 @@ export const authReducer = (state, action) => {
   switch (action.type) {
     // GRUPO 1: Autenticação e Dados do Usuário
 
+    // AÇÕES PARA O CADASTRO
+    case "CADASTRO_START":
+      return {
+        ...state,
+        loadingRegister: true,
+        errorRegister: null,
+      };
+
+    case "CADASTRO_SUCESSO":
+      return {
+        ...state,
+        user: action.payload,
+        loadingRegister: false,
+        errorRegister: null,
+        cadastroSucesso: true,
+      };
+
+    case "CADASTRO_ERROR":
+      return {
+        ...state,
+        loadingRegister: false,
+        errorRegister: action.payload,
+      };
+
+    //AÇOES PARA O LOGIN
+
     case "LOGIN_START":
       return {
         ...state,
@@ -32,19 +58,14 @@ export const authReducer = (state, action) => {
         errorAuth: action.payload, // Recebe a mensagem de erro
       };
 
-    // Útil para limpar o erro quando o usuário troca de tela ---
-    case "LIMPAR_ERRO_AUTH":
-      return {
-        ...state,
-        errorAuth: null,
-      };
-
     case "LOGOUT":
       return {
         ...ESTADO_LIMPO,
         loading: false,
         isAuthenticated: false,
       };
+
+    // AÇOES PARA A SESSAO
 
     case "CARREGAR_SESSAO":
       return {
@@ -64,6 +85,7 @@ export const authReducer = (state, action) => {
 
     // GRUPO 2: Atualização do Perfil - FORMULÁRIO E UI
     // Quando abre o modal, copiamos os dados do user real para os inputs
+    //AÇOES PARA EDITAR PERFIL
     case "INICIAR_EDICAO":
       if (!state.user) return state;
       return {
