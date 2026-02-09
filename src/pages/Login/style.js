@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { device } from "../../styles/breakpoints";
 
 export const ContainerWrapper = styled.main`
   width: 100vw;
@@ -19,12 +20,14 @@ export const ContainerContent = styled.section`
   background-color: #171d1f;
   border-radius: 16px; // Um pouco de arredondamento fica mais moderno
   overflow: hidden; // Para a imagem não vazar as bordas arredondadas
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5); // Sombra para destacar do fundo
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); // Sombra para destacar do fundo
 
   // RESPONSIVIDADE
-  @media (max-width: 900px) {
-    flex-direction: column; // Em tablets/celulares, vira coluna
-    max-width: 600px; // Limita a largura quando estiver em coluna
+  /* RESPONSIVIDADE PADRONIZADA */
+  /* Abaixo de 1280px (Laptops peq/Tablets), vira coluna para não espremer */
+  @media ${device.tablet} {
+    flex-direction: column;
+    max-width: 37.5rem; /* ~600px - Largura confortável para coluna única */
   }
 `;
 
@@ -35,7 +38,7 @@ export const ContainerImg = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #171d1f; // Cor de fundo caso a imagem não carregue
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -43,8 +46,9 @@ export const ContainerImg = styled.div`
   }
 
   // Some com a imagem em telas menores para focar no login
-  @media (max-width: 900px) {
-    display: none; 
+  /* Some com a imagem no Tablet/Mobile para focar no login */
+  @media ${device.tablet} {
+    display: none;
   }
 `;
 
@@ -68,15 +72,16 @@ export const ContainerForm = styled.div`
     color: #a0a0a0;
   }
 
-  // Ajustes para Tablet/Mobile
-  @media (max-width: 1024px) {
-    padding: 3rem;
-    h1 { font-size: 2.5rem; }
-  }
-
-  @media (max-width: 480px) {
+  /* Ajustes para Mobile */
+  @media ${device.mobile} {
     padding: 2rem;
-    h1 { font-size: 2rem; }
+
+    h1 {
+      font-size: 2rem;
+    }
+    p {
+      font-size: 1.1rem;
+    }
   }
 `;
 
@@ -133,11 +138,13 @@ export const Button = styled.button`
   font-weight: 800;
   font-size: 1.3rem;
   cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
+  transition:
+    transform 0.2s,
+    background-color 0.2s;
   margin-top: 1rem;
 
-  p{
-    color: #132E35;
+  p {
+    color: #132e35;
   }
 
   &:hover {
@@ -156,7 +163,7 @@ export const ContainerCadastro = styled.div`
   gap: 0.5rem;
   text-align: center;
   margin-top: 1rem;
-  
+
   p {
     font-size: 1rem;
   }
