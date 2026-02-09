@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { device } from "../../styles/breakpoints";
 
 export const PerfilContainer = styled.div`
   display: flex;
@@ -28,11 +29,13 @@ export const PerfilHeader = styled.header`
   box-shadow: 0px 0.25rem 0.625rem rgba(0, 0, 0, 0.2); /* Sombra sutil */
 
   /* --- MODO MOBILE (Pilha Vertical) --- */
-  @media (max-width: 768px) {
+  /* --- MUDANÇA IMPORTANTE --- */
+  /* Abaixo de 1024px (Tablet), o layout vira vertical para não quebrar */
+  @media ${device.tablet} {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 2rem 1.25rem; /* 32px e 20px */
+    padding: 2rem 1.25rem;
     gap: 1.5rem;
   }
 `;
@@ -73,8 +76,8 @@ export const InfoContainer = styled.div`
     max-width: 50rem; /* 800px - limita largura da leitura */
   }
 
-  /* Ajustes Mobile */
-  @media (max-width: 768px) {
+  /* Ajustes para Tablet/Mobile */
+  @media ${device.tablet} {
     align-items: center;
 
     h2 {
@@ -93,10 +96,10 @@ export const StatsContainer = styled.div`
   gap: 2rem;
   margin-top: 15px;
 
-  @media (max-width: 768px) {
+  @media ${device.tablet} {
     justify-content: center;
     background-color: rgba(255, 255, 255, 0.05);
-    padding: 0.625rem 1.25rem; /* 10px 20px */
+    padding: 0.625rem 1.25rem;
     border-radius: 0.5rem;
     width: 100%;
   }
@@ -117,7 +120,7 @@ export const StatItem = styled.div`
     font-size: 1.25rem;
     color: #888888;
   }
-  @media (max-width: 768px) {
+  @media ${device.tablet} {
     gap: 0.25rem;
     span {
       font-size: 1.1rem;
@@ -155,9 +158,9 @@ export const BtnEditar = styled.button`
     transform: translateY(-2px);
   }
 
-  /* --- MODO MOBILE --- */
-  @media (max-width: 768px) {
-    position: static;
+  /* --- MODO TABLET E MOBILE --- */
+  @media ${device.tablet} {
+    position: static; /* Sai do absolute */
     width: 100%;
     justify-content: center;
     margin-top: 0.625rem;
@@ -171,11 +174,10 @@ export const ProfileNav = styled.nav`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 30px;
+  gap: 2.5rem;
+  margin-top: 0.625rem;
 
-  margin-top: 10px;
-
-  @media (max-width: 768px) {
+  @media ${device.tablet} {
     gap: 1.25rem;
   }
 `;
