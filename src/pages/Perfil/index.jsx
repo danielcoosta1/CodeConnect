@@ -3,7 +3,6 @@ import { useAuth } from "../../hooks/useAuth";
 import {
   PerfilContainer,
   PerfilHeader,
-
   InfoContainer,
   BtnEditar,
   StatsContainer,
@@ -48,7 +47,9 @@ const Perfil = () => {
         <ProfileAvatar src={user.imagem} size={150} hasBorder={true} />
 
         <InfoContainer>
-          <h2>{user.nome}</h2>
+          <h2>
+            {user.nome} {user.sobrenome}
+          </h2>
           <span>@{user.usuario || "usuario"}</span>
 
           {user.funcao && <p className="funcao">{user.funcao}</p>}
