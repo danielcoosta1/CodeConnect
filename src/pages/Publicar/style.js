@@ -10,7 +10,7 @@ export const ContainerWrapper = styled.div`
 
   padding: 3rem 4rem; /* 48px 64px */
   gap: 4rem; /* 64px */
-  box-sizing: border-box;
+  
 
   /* No Tablet (1280px), já vira coluna para não espremer o form */
   @media ${device.tablet} {
