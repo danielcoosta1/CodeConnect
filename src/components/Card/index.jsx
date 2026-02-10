@@ -18,7 +18,7 @@ const Card = ({ post }) => {
     <CardContainer>
       {post.image && (
         <ImgCard>
-          <img src={`data:image/png;base64,${post.image}`} alt={post.title} />
+          <img src={`data:image/png;base64,${post.image}`} alt={post.title} loading="lazy" />
         </ImgCard>
       )}
 
@@ -41,11 +41,13 @@ const Card = ({ post }) => {
             </ActionIcons>
           )}
           <AuthorInfo to={`/perfil/${post.author.id}`}>
+            <div style={{ display: "flex", alignItems: "center" }}>
             <ProfileAvatar
               src={post.author?.imagem}
               size={40}
               hasBorder={true}
             />
+            </div>
             <small>@{post.author.usuario}</small>
           </AuthorInfo>
         </CardFooter>

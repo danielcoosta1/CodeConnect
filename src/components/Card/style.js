@@ -1,115 +1,148 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { device } from "../../styles/breakpoints";
 
 export const CardContainer = styled.article`
   display: flex;
   flex-direction: column;
-  border-radius: 8px;
-  padding: 12px;
-  gap: 10px;
-  min-height: 450px;
-  width: 100%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  
   background-color: #171d1f;
-  transition: transform 0.3s ease;
+  border-radius: 0.5rem; /* 8px */
+  padding: 1rem;
+  gap: 1rem;
+  
+  width: 100%;
+  min-height: 28rem; /* ~450px */
+  
+  box-shadow: 0 0.125rem 0.3rem rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   color: #bcbcbc;
+
+  &:hover {
+    transform: translateY(-0.3rem); /* Levanta um pouco mais */
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.3);
+  }
+
+  /* Ajuste Mobile */
+  @media ${device.mobile} {
+    min-height: auto; /* Deixa altura automática no celular */
+  }
 `;
 
 export const ImgCard = styled.div`
   width: 100%;
-  height: 180px; /* Altura fixa para alinhar o grid */
-  background-color: #2d3538; /* Cor de fundo caso a imagem demore ou seja png transparente */
+  height: 12.5rem; /* 200px (Aumentei um pouco) */
+  border-radius: 0.25rem;
+  overflow: hidden;
+  background-color: #2d3538; 
 
   img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* A MÁGICA: Corta a imagem para preencher sem distorcer */
-    object-position: center;
+    object-fit: cover; 
+    transition: transform 0.5s ease;
+  }
+
+  /* Efeito de zoom na imagem ao passar o mouse no card */
+  ${CardContainer}:hover & img {
+    transform: scale(1.05);
   }
 `;
 
 export const ContentCard = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1; 
+  gap: 0.5rem;
 `;
 
 export const TitleCard = styled.h3`
-  margin: 1rem 0 0.5rem;
-  font-size: 1.4rem;
+  margin: 0.5rem 0;
+  font-size: 1.5rem; /* Aumentado para Desktop */
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+
+  @media ${device.mobile} {
+    font-size: 1.3rem;
+  }
 `;
 
 export const Description = styled.p`
-  font-size: 1.1rem;
-  line-height: 1.5;
-  margin-top: 8px; /* Espaço entre título e texto */
-
-  /* A MÁGICA DO CSS PARA LIMITAR LINHAS: */
+  font-size: 1.125rem; /* 18px - Texto mais legível */
+  line-height: 1.6;
+  color: #bcbcbc;
+  
+  /* Limita linhas */
   display: -webkit-box;
-  -webkit-line-clamp: 3; /* Limita a exatas 3 linhas */
+  -webkit-line-clamp: 3; 
   -webkit-box-orient: vertical;
-  overflow: hidden; /* Esconde o que passar de 3 linhas */
-  text-overflow: ellipsis; /* Adiciona o "..." no final */
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media ${device.mobile} {
+    font-size: 1rem; /* 16px no mobile */
+    -webkit-line-clamp: 4; /* Mostra um pouco mais no mobile  */
+  }
 `;
 
 export const CardFooter = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: auto;
+  margin-top: auto; /* Empurra para o fundo */
+  padding-top: 1rem;
+  border-top: 1px solid #333; /* Linha sutil separando footer */
 `;
 
 export const ActionIcons = styled.div`
   display: flex;
-  gap: 12px; /* Espaço entre o ícone de código e o de comentário */
+  gap: 1rem; 
   color: #818388;
-
-  /* Estilo para os ícones */
-  svg {
-    cursor: pointer;
-    transition: color 0.2s;
-    &:hover {
-      color: #88f2db; /* Cor de destaque ao passar o mouse */
-    }
-  }
 `;
 
 export const IconGroup = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px; /* Espaço entre o ícone e o número */
+  align-items: center; /* Ícone ao lado do número */
+  gap: 0.4rem; 
   cursor: pointer;
   transition: color 0.2s;
+  
+  font-size: 0.9rem;
+  font-weight: bold;
 
   &:hover {
-    color: #88f2db;
+    color: #81fe88; /* Verde do tema */
   }
 
-  span {
-    font-size: 15px;
+  svg {
+    font-size: 1.2rem;
   }
 `;
 
 export const AuthorInfo = styled(Link)`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.6rem;
 
-  text-decoration: none; // Remove sublinhado padrão de links
-  color: inherit; // Mantém a cor original do texto
+  text-decoration: none; 
+  color: inherit; 
 
-  padding: 5px 8px;
-  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #2d3538; // Um cinza um pouco mais claro que o fundo
-    cursor: pointer;
+    background-color: #2d3538; 
   }
 
   small {
     color: #bcbcbc;
-    font-size: 1rem;
+    font-size: 1rem; /* Nome maior */
+    font-weight: 500;
+  }
+  
+  @media ${device.mobile} {
+    small { font-size: 0.9rem; }
   }
 `;
