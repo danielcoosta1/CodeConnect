@@ -12,6 +12,7 @@ import {
   ContainerTags,
   ContainerUploadImg,
   ContainerWrapper,
+  ErrorImg,
   Form,
   Img,
   TagItem,
@@ -144,11 +145,7 @@ const Publicar = () => {
             </ContainerSubtittle>
           )}
         </ContainerButton>
-        {erroLocal && (
-          <p style={{ color: "red", fontSize: "1.15rem", marginTop: ".5rem" }}>
-            {erroLocal}
-          </p>
-        )}
+        {erroLocal && <ErrorImg>{erroLocal}</ErrorImg>}
       </ContainerUploadImg>
       <ContainerForm>
         <h2>Novo Projeto </h2>
