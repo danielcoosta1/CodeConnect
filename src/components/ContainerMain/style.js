@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { device } from "../../styles/breakpoints";
 
 export const ContainerEstilizado = styled.div`
   display: flex;
@@ -8,19 +9,20 @@ export const ContainerEstilizado = styled.div`
   margin: 0 auto;
   padding: 4rem 1rem 0 1rem; 
 
-  /* TABLET: Ajusta o gap da barra lateral fina */
-  @media (max-width: 1024px) {
+ /* --- TABLET (Barra fina) --- */
+  @media ${device.tablet} {
     gap: 1rem;
     padding: 2rem 1rem 0 1rem;
   }
 
-  /* MOBILE: Layout Vertical (Barra Fixa Embaixo) */
-  @media (max-width: 768px) {
+/* --- MOBILE (Barra fixa embaixo) --- */
+  @media ${device.mobile} {
     display: block; /* Remove o flex lateral */
-    padding: 1rem;
+    padding: 1rem 1rem 0 1rem; 
     
-    /* CRUCIAL: Empurra o conteúdo pra cima para a barra não cobrir o último post */
-    padding-bottom: 90px; 
+    /* Padding bottom para a barra fixa não cobrir conteúdo */
+    /* 90px -> ~5.6rem */
+    padding-bottom: 5.6rem; 
   }
 
   main {

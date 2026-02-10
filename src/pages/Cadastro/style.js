@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
+import { device } from "../../styles/breakpoints"; // <--- Importando nossos breakpoints
 
 // --- ANIMAÇÃO DE ENTRADA (FADE IN) ---
 const fadeIn = keyframes`
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(1.25rem); /* 20px -> 1.25rem */
   }
   to {
     opacity: 1;
@@ -18,9 +19,11 @@ export const ContainerWrapper = styled.main`
   width: 100vw;
   height: 100vh;
   background-color: #01080e;
+
   display: flex;
   justify-content: center;
   align-items: center;
+
   color: #e1e1e1;
   padding: 2rem;
 `;
@@ -29,15 +32,18 @@ export const ContainerWrapper = styled.main`
 export const ContainerContent = styled.section`
   display: flex;
   width: 100%;
-  max-width: 1200px;
-  background-color: #171d1f;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  max-width: 75rem; /* 1200px -> 75rem */
 
-  @media (max-width: 900px) {
+  background-color: #171d1f;
+  border-radius: 1rem; /* 16px -> 1rem */
+  overflow: hidden;
+  box-shadow: 0 0.625rem 2.5rem rgba(0, 0, 0, 0.5); /* 10px 40px */
+
+  /* RESPONSIVIDADE PADRONIZADA */
+  /* Abaixo de 1280px (Tablet/Laptop pequeno), vira coluna única */
+  @media ${device.tablet} {
     flex-direction: column;
-    max-width: 600px;
+    max-width: 37.5rem; /* ~600px */
   }
 `;
 
@@ -48,15 +54,16 @@ export const ContainerImg = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #171d1f;
-  
+
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  @media (max-width: 900px) {
-    display: none; 
+  /* Some com a imagem no Tablet para focar no formulário */
+  @media ${device.tablet} {
+    display: none;
   }
 `;
 
@@ -66,9 +73,10 @@ export const ContainerForm = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 4rem;
+
+  padding: 4rem; /* 64px */
   gap: 2rem;
-  position: relative; // Para centralizar o sucesso
+  position: relative;
 
   h1 {
     font-size: 3rem;
@@ -81,14 +89,13 @@ export const ContainerForm = styled.div`
     color: #a0a0a0;
   }
 
-  @media (max-width: 1024px) {
-    padding: 3rem;
-    h1 { font-size: 2.5rem; }
-  }
-
-  @media (max-width: 480px) {
+  /* Ajustes finos para Mobile */
+  @media ${device.mobile} {
     padding: 2rem;
-    h1 { font-size: 2rem; }
+
+    h1 {
+      font-size: 2rem;
+    }
   }
 `;
 
@@ -114,7 +121,7 @@ export const CampoInput = styled.div`
   input {
     padding: 1.2rem 1.5rem;
     border: 2px solid transparent;
-    border-radius: 8px;
+    border-radius: 0.5rem; /* 8px */
     background-color: #2a3236;
     color: white;
     font-size: 1.2rem;
@@ -138,19 +145,24 @@ export const Button = styled.button`
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
+
   padding: 1.2rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 0.5rem; /* 8px */
   background-color: #81fe88;
   color: #01080e;
+
   font-weight: 800;
   font-size: 1.3rem;
   cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
+
+  transition:
+    transform 0.2s,
+    background-color 0.2s;
   margin-top: 1rem;
 
   p {
-    color: #132E35;
+    color: #132e35;
     margin: 0;
   }
 
@@ -164,7 +176,7 @@ export const Button = styled.button`
   }
 `;
 
-// --- LINKS DE LOGIN (Rodapé do form) ---
+// --- LINKS DE LOGIN ---
 export const ContainerLogin = styled.div`
   display: flex;
   flex-direction: column;
@@ -172,7 +184,7 @@ export const ContainerLogin = styled.div`
   gap: 0.5rem;
   text-align: center;
   margin-top: 1rem;
-  
+
   p {
     font-size: 1.3rem;
   }
@@ -195,37 +207,36 @@ export const LinkLogin = styled(Link)`
   }
 `;
 
-// --- TELA DE SUCESSO (CAPRICHADA) 🚀 ---
+// --- TELA DE SUCESSO ---
 export const ContainerSucesso = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%; // Ocupa a altura toda do container pai
+  height: 100%;
   gap: 2rem;
   text-align: center;
-  animation: ${fadeIn} 0.6s ease-out; // Animação de entrada suave
+  animation: ${fadeIn} 0.6s ease-out;
 
-  // O texto "Cadastro realizado com sucesso"
   > p {
     color: #81fe88;
-    font-size: 2.2rem; // Bem grande
+    font-size: 2.2rem;
     font-weight: 800;
     line-height: 1.2;
-    text-shadow: 0 0 10px rgba(129, 254, 136, 0.2); // Leve brilho
+    /* Sombra em REM */
+    text-shadow: 0 0 0.625rem rgba(129, 254, 136, 0.2);
   }
 `;
 
 export const ContainerLoginSucesso = styled.div`
-  width: 100%; // Ocupa largura total
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   text-align: center;
   font-size: 1.3rem;
   color: #e1e1e1;
-  
-  // Texto "Você já pode fazer..."
+
   p {
     font-size: 1.4rem;
     color: #ccc;
@@ -234,28 +245,28 @@ export const ContainerLoginSucesso = styled.div`
 
 export const LinkLoginSucesso = styled(Link)`
   background-color: #81fe88;
-  color: #132e35; // Cor escura para contraste alto
-  
-  padding: 1.5rem 2rem; // Botão GORDO
-  width: 100%; // Botão LARGO
-  
-  border-radius: 8px;
+  color: #132e35;
+
+  padding: 1.5rem 2rem;
+  width: 100%;
+
+  border-radius: 0.5rem;
   font-weight: 800;
-  font-size: 1.5rem; // Letra GRANDE
-  
+  font-size: 1.5rem;
+
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0.8rem;
   text-decoration: none;
-  
-  box-shadow: 0 4px 15px rgba(129, 254, 136, 0.3); // Sombra verde
+
+  box-shadow: 0 0.25rem 0.9rem rgba(129, 254, 136, 0.3);
   transition: all 0.2s ease-in-out;
 
   &:hover {
     transform: translateY(-3px);
     background-color: #6be276;
-    box-shadow: 0 6px 20px rgba(129, 254, 136, 0.5);
+    box-shadow: 0 0.375rem 1.25rem rgba(129, 254, 136, 0.5);
   }
 
   &:active {

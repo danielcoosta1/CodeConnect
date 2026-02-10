@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
+import { device } from "../../styles/breakpoints";
 
 // 1. O Container principal
 export const SidebarContainer = styled.aside`
   background-color: #171d1f;
 
   /* --- PADRÃO: DESKTOP (> 1024px) --- */
-  width: 280px;
+  width: 18rem;
   height: 100vh;
   position: sticky;
   top: 0;
@@ -20,39 +21,39 @@ export const SidebarContainer = styled.aside`
   /* Transição suave para quando afinar no Tablet */
   transition: all 0.3s ease;
 
-  /* --- MODO TABLET (Entre 768px e 1024px) --- */
-  /* Mantém na esquerda, mas fica fina */
-  @media (max-width: 1024px) {
-    width: 80px;
+  /* --- MODO TABLET (Fina) --- */
+  /* Usamos device.tablet (max-width: 1024px) */
+  @media ${device.tablet} {
+    width: 5rem; /* 80px */
     align-items: center;
     padding: 2rem 0.5rem;
   }
 
-  /* --- MODO MOBILE (< 768px) --- */
-  /* Sai da esquerda e vai para baixo */
-  @media (max-width: 768px) {
+  /* --- MODO MOBILE (Barra Baixo) --- */
+  /* Usamos device.mobile (max-width: 768px) */
+  @media ${device.mobile} {
     position: fixed;
     bottom: 0;
     left: 0;
-    top: auto; /* Anula o sticky top */
+    top: auto;
 
     width: 100%;
-    height: 70px; /* Altura da barra inferior */
+    height: 4.375rem; /* 70px */
 
-    flex-direction: row; /* Ícones lado a lado */
+    flex-direction: row;
     justify-content: space-around;
     align-items: center;
     padding: 0 1rem;
 
-    border-radius: 16px 16px 0 0; /* Arredonda pontas de cima */
-    box-shadow: 0px -4px 20px rgba(0, 0, 0, 0.4); /* Sombra para destacar */
+    border-radius: 1rem 1rem 0 0; /* 16px */
+    box-shadow: 0px -0.25rem 1.25rem rgba(0, 0, 0, 0.4);
   }
 `;
 // 2. A Logo
 export const LogoImg = styled.img`
   transition: opacity 0.3s; /* Logo desaparece suavemente */
 
-  @media (max-width: 1024px) {
+  @media ${device.tablet} {
     display: none;
     opacity: 0;
   }
@@ -62,7 +63,7 @@ export const Nav = styled.nav`
   width: 100%;
   margin-top: 4rem;
 
-  @media (max-width: 768px) {
+  @media ${device.mobile} {
     margin-top: 0;
     width: 100%;
   }
@@ -75,8 +76,8 @@ export const ListaNav = styled.ul`
   width: 100%;
   padding: 0;
 
-  @media (max-width: 768px) {
-    flex-direction: row; /* Horizontal */
+  @media ${device.mobile} {
+    flex-direction: row;
     justify-content: space-between;
     gap: 0;
   }
@@ -99,10 +100,10 @@ export const LinkPublicarEstilizado = styled(NavLink)`
   }
 
   /* TABLET: Vira Bolinha na Lateral */
-  @media (max-width: 1024px) {
+  @media ${device.tablet} {
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 3.125rem; /* 50px */
+    height: 3.125rem; /* 50px */
     padding: 0;
 
     .texto-desktop {
@@ -119,35 +120,31 @@ export const ItemListaNav = styled.li`
   width: 100%;
   list-style: none;
 
-  @media (max-width: 768px) {
-    width: auto; /* No mobile, ocupa só o espaço do ícone */
+  @media ${device.mobile} {
+    width: auto;
   }
 `;
 
+/* O LINK CLICÁVEL */
 export const LinkNavegacao = styled(NavLink)`
   display: flex;
-  flex-direction: row; /* Desktop: Lado a Lado */
   align-items: center;
-  gap: 15px; /* Espaço entre ícone e texto */
+  gap: 1rem; /* ~16px */
   width: 100%;
-  padding: 12px 16px; /* Padding interno generoso */
-  border-radius: 8px;
-
+  padding: 0.75rem 1rem; /* 12px 16px */
+  border-radius: 0.5rem;
   text-decoration: none;
   color: #888888;
-  transition: all 0.3s ease; /* Transição suave de cor e fundo */
+  transition: all 0.3s ease;
 
   img {
-    width: 24px;
-    height: 24px;
-    min-width: 24px; /* Garante que o ícone não esmague na animação */
+    width: 1.5rem; /* 24px */
+    height: 1.5rem;
   }
 
   p {
     font-size: 1.2rem;
     margin: 0;
-    opacity: 1;
-    transition: opacity 0.2s; /* Texto desaparece suavemente */
   }
 
   &:hover {
@@ -159,34 +156,31 @@ export const LinkNavegacao = styled(NavLink)`
     color: #ffffff;
     background-color: #2d3538;
     font-weight: bold;
-
     img {
       filter: brightness(1.5);
     }
   }
 
-  /* TABLET E MOBILE: Esconde texto, mostra só ícone */
-  @media (max-width: 1024px) {
+  /* TABLET e MOBILE: Esconde texto */
+  @media ${device.tablet} {
     justify-content: center;
-    padding: 10px;
+    padding: 0.625rem; /* 10px */
 
     .texto-link {
       display: none;
     }
   }
 
-  /* MOBILE ESPECÍFICO: Tira fundo do active para ficar mais limpo */
-  @media (max-width: 768px) {
+  @media ${device.mobile} {
     &.active {
       background-color: transparent;
-      color: #81fe88; /* Ícone verde */
+      color: #81fe88;
     }
     &:hover {
       background-color: transparent;
     }
   }
 `;
-
 // 5. O Perfil do Usuário (Rodapé da barra)
 export const UserProfile = styled(NavLink)`
   display: flex;
@@ -207,13 +201,13 @@ export const UserProfile = styled(NavLink)`
   }
 
   /* MODO FINO */
-  @media (max-width: 1024px) {
+  @media ${device.tablet} {
     justify-content: center; /* Centraliza o avatar */
     padding: 10px 0;
     background-color: transparent; /* Tira o fundo para ficar limpo */
   }
 
-  @media (max-width: 768px) {
+  @media ${device.mobile} {
     justify-content: end;
   }
 `;
@@ -223,7 +217,7 @@ export const UserInfo = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  gap: 4px;
+  gap: 0.75rem;
 
   h3 {
     color: #ffffff;
@@ -245,7 +239,7 @@ export const UserInfo = styled.div`
   }
 
   /* ESCONDE TUDO NO MODO FINO */
-  @media (max-width: 1024px) {
+  @media ${device.tablet} {
     display: none;
   }
 `;

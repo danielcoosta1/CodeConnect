@@ -9,25 +9,11 @@ const rotate = keyframes`
   }
 `;
 
-export const LoadingContainer = styled.div`
-  display: flex;
-  height: 60vh;
-  align-items: center;
-  border-radius: 8px;
-  gap: 15px;
-  font-size: 30px;
-  color: #bcbcbc;
-  justify-content: center;
-  background-color: #171d1f;
-  margin-top: 50px;
-  .spin {
-    animation: ${rotate} 3s linear infinite;
-  }
-`;
-
 export const FeedContainerMain = styled.main`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 30px;
   padding: 20px;
 `;
@@ -35,6 +21,7 @@ export const FeedContainerMain = styled.main`
 export const FeedFilterContainer = styled.section`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 export const TagsFiltersContainer = styled.section`
@@ -108,12 +95,32 @@ export const ExcluirTudoButton = styled.button`
 `;
 
 export const NoPostsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
   text-align: center;
-  font-size: 18px;
+  font-size: 1.6rem;
   background-color: #171d1f;
   padding: 40px; /* Um pouco mais de respiro */
   border-radius: 8px;
   color: #fff;
   width: 100%;
-  max-width: 600px; /* Para não ficar muito largo em telas grandes */
+
+  min-height: 20rem;
+  max-width: 80rem; /* Para não ficar muito largo em telas grandes */
+`;
+
+export const LimparBuscaButton = styled.button`
+  margin-top: 3 rem;
+  background-color: transparent;
+  color: #88f2db;
+  border: 1px solid #88f2db;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.25rem;
+  font-weight: bold;
+  width: 30%;
 `;

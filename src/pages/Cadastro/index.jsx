@@ -12,7 +12,7 @@ import {
   LinkLogin,
   LinkLoginSucesso,
 } from "./style";
-import axios from "axios";
+
 import { useState } from "react";
 
 import { CgArrowRight } from "react-icons/cg";
@@ -21,37 +21,23 @@ import { IoLogIn } from "react-icons/io5";
 
 import imgCadastro from "./assets/img_cadastro.png";
 import { toastSucesso } from "../../utils/toast";
+import { useAuth } from "../../hooks/useAuth";
 
 const Cadastro = () => {
+  const { cadastro, loadingRegister, errorRegister, cadastroSucesso } =
+    useAuth();
+
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  const [erro, setErro] = useState("");
-  const [cadastroSucesso, setCadastroSucesso] = useState(false);
-  const [loading, setLoading] = useState(false);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setErro("");
 
-    try {
-      await axios.post("http://localhost:51213/api/auth/cadastro", {
-        nome,
-        email,
-        senha,
-      });
-      setCadastroSucesso(true);
-      toastSucesso("Cadastro realizado com sucesso!");
-    } catch (error) {
-      console.error(error);
-      setErro(
-        error.response?.data?.error ||
-          "Não foi possível cadastrar. Tente novamente.",
-      );
-    } finally {
-      setLoading(false);
+    const sucesso = await cadastro(nome, email, senha);
+
+    if (sucesso) {
+      toastSucesso("Cadastro efetuado com sucesso!");
     }
   };
 
@@ -110,10 +96,10 @@ const Cadastro = () => {
                   onChange={(e) => setSenha(e.target.value)}
                 />
               </CampoInput>
-              {erro && <p style={{ color: "red" }}>{erro}</p>}
+              {errorRegister && <p style={{ color: "red" }}>{errorRegister}</p>}
               <Button type="submit">
-                <p>{loading ? "Carregando..." : "Cadastrar "}</p>
-                {loading ? <FiLoader /> : <CgArrowRight />}
+                <p>{loadingRegister ? "Carregando..." : "Cadastrar "}</p>
+                {loadingRegister ? <FiLoader /> : <CgArrowRight />}
               </Button>
               <ContainerLogin>
                 <p> Já possui conta?</p>

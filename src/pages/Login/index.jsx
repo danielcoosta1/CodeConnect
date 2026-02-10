@@ -17,12 +17,12 @@ import { MdOutlineContentPaste } from "react-icons/md";
 
 import { FiLoader } from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
-import { toastErro } from "../../utils/toast";
+import { toastErro, toastSucesso } from "../../utils/toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import { localStorageService } from "../../services/localStorageService";
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login, loadingAuth, errorAuth } = useAuth();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -30,10 +30,9 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  const [erro, setErro] = useState("");
-  const [loading, setLoading] = useState(false);
-
   const origem = location.state?.from?.pathname || "/feed";
+
+  // 2. Limpar erro antigo ao entrar na tela (Montagem)
 
   useEffect(() => {
     // 1. Verificamos se tem aviso de rota protegida
@@ -59,18 +58,14 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setErro("");
 
-    try {
-      await login(email, senha);
-      navigate(origem, { replace: true }); //replace para não voltar para a página de login
-    } catch (error) {
-      setErro(
-        error.response?.data?.error || "Erro ao fazer login.Tente Novamente",
-      );
-    } finally {
-      setLoading(false);
+    // 3. Chamamos o login global
+    const sucesso = await login(email, senha);
+
+    // 4. Se retornou true, navegamos. Se false, o erro já apareceu via context.
+    if (sucesso) {
+      navigate(origem, { replace: true });
+      toastSucesso("Login efetuado com sucesso!");
     }
   };
 
@@ -105,10 +100,10 @@ const Login = () => {
                 onChange={(e) => setSenha(e.target.value)}
               />
             </CampoInput>
-            {erro && <p style={{ color: "red" }}>{erro}</p>}
+            {errorAuth && <p style={{ color: "red" }}>{errorAuth}</p>}
             <Button type="submit">
-              <p>{loading ? "Carregando..." : "Entrar "}</p>
-              {loading ? <FiLoader /> : <CgArrowRight />}
+              <p>{loadingAuth ? "Carregando..." : "Entrar "}</p>
+              {loadingAuth ? <FiLoader /> : <CgArrowRight />}
             </Button>
           </Form>
 

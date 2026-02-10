@@ -4,7 +4,7 @@ import axios from "axios";
 import { localStorageService } from "../../services/localStorageService";
 import { useNavigate } from "react-router-dom";
 
-import { loginRequest } from "../../services/authService";
+import { loginRequest, registerRequest } from "../../services/authService";
 import {
   getUserProfile,
   updateProfileRequest,
@@ -67,34 +67,53 @@ const AuthProvider = ({ children }) => {
 
   // FUNÇÕES DE SESSÃO
 
+  const cadastro = async (nome, email, senha) => {
+    dispatch({ type: "CADASTRO_START" });
+
+    try {
+      const response = await registerRequest(nome, email, senha);
+      const { user: userData } = response;
+
+      dispatch({ type: "CADASTRO_SUCESSO", payload: userData });
+
+      return true;
+    } catch (error) {
+      console.error("ERRO CADASTRO", error);
+      const msg =
+        error.response.data.error ||
+        "Error ao fazer o cadastro, tente novamente.";
+
+      dispatch({ type: "CADASTRO_ERROR", payload: msg });
+      return false;
+    }
+  };
   const login = async (email, senha) => {
+    dispatch({ type: "LOGIN_START" }); // 1. Avisa o Reducer que começou (loadingAuth = true)
+
     try {
       const response = await loginRequest(email, senha);
-      console.log("Resposta do servidor:", response);
-
       const { user: userData, token: authToken } = response;
 
-      // Configura Axios
       axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
 
-      // Salva no Storage (Sem imagem pesada)
       const { imagem: _img, ...userSemPeso } = userData;
       localStorageService.salvar("token", authToken);
       localStorageService.salvar("user", userSemPeso);
 
-      // Atualiza Reducer
       dispatch({
-        type: "LOGIN_SUCESSO",
+        type: "LOGIN_SUCESSO", // 2. Sucesso (loadingAuth = false, errorAuth = null)
         payload: { user: userData, token: authToken },
       });
 
-      toastSucesso("Login realizado com sucesso!");
-
-      navigation("/feed");
+      return true; // Retorna SUCESSO para o componente navegar
     } catch (error) {
       console.error("ERRO LOGIN:", error);
-      toastErro("Erro ao fazer login. Tente novamente.");
-      throw error;
+      const msg =
+        error.response?.data?.error ||
+        "Erro ao fazer login. Verifique seus dados.";
+
+      dispatch({ type: "LOGIN_ERROR", payload: msg }); // 3. Erro (loadingAuth = false, errorAuth = msg)
+      return false; // Retorna FALHA
     }
   };
 
@@ -170,6 +189,15 @@ const AuthProvider = ({ children }) => {
         isAuthenticated: !!state.token, // Usa o token como verdade
         loading: state.loading,
 
+        //Estados para o cadastro
+        loadingRegister: state.loadingRegister,
+        errorRegister: state.errorRegister,
+        cadastroSucesso: state.cadastroSucesso,
+
+        //Estados para login
+        loadingAuth: state.loadingAuth,
+        errorAuth: state.errorAuth,
+
         // Form
         nome: state.nome,
         sobrenome: state.sobrenome,
@@ -180,8 +208,9 @@ const AuthProvider = ({ children }) => {
 
         // UI
         loadingUpdate: state.loadingUpdate,
-
+        errorUpdate: state.errorUpdate,
         // Ações
+        cadastro,
         login,
         logout,
         iniciarEdicao,
