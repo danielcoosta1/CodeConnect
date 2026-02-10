@@ -66,7 +66,7 @@ const Publicar = () => {
     const tiposAceitos = ["image/jpeg", "image/png", "image/gif"];
     if (!tiposAceitos.includes(file.type)) {
       setErroLocal(
-        "Tipo de arquivo não suportado. Por favor, envie uma imagem."
+        "Tipo de arquivo não suportado. Por favor, envie uma imagem.",
       );
       return;
     }
@@ -145,7 +145,7 @@ const Publicar = () => {
           )}
         </ContainerButton>
         {erroLocal && (
-          <p style={{ color: "red", fontSize: "1.25rem", marginTop: "5px" }}>
+          <p style={{ color: "red", fontSize: "1.15rem", marginTop: ".5rem" }}>
             {erroLocal}
           </p>
         )}
