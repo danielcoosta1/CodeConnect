@@ -145,7 +145,7 @@ const Publicar = () => {
           )}
         </ContainerButton>
         {erroLocal && (
-          <p style={{ color: "red", fontSize: "12px", marginTop: "5px" }}>
+          <p style={{ color: "red", fontSize: "1.25rem", marginTop: "5px" }}>
             {erroLocal}
           </p>
         )}
