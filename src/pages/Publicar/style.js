@@ -10,7 +10,6 @@ export const ContainerWrapper = styled.div`
 
   padding: 3rem 4rem; /* 48px 64px */
   gap: 4rem; /* 64px */
-  
 
   /* No Tablet (1280px), já vira coluna para não espremer o form */
   @media ${device.tablet} {
@@ -31,7 +30,7 @@ export const ContainerUploadImg = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 40rem; /* ~520px (limita a largura da imagem) */
+  max-width: 35rem; /* ~520px (limita a largura da imagem) */
 
   @media ${device.tablet} {
     max-width: 80%; /* No tablet, pode ocupar a largura toda */
@@ -154,6 +153,7 @@ export const Form = styled.form`
 
 const commonInputStyles = `
   width: 100%;
+
   padding: 1.2rem;
   font-size: 1.2rem; 
   color: #171d1f; 
