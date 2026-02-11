@@ -3,7 +3,7 @@ export const breakpoints = {
   mobile: "768px", 
   
   // 1280px pega tablets deitados e laptops menores (telas de 13")
-  tablet: "1280px", 
+  tablet: "1380px", 
   
   // O que sobrar acima disso é Desktop Wide
   desktop: "1440px",
