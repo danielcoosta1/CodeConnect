@@ -1,6 +1,6 @@
 export const breakpoints = {
   // 768px é o padrão mundial para "fim dos celulares/começo dos tablets"
-  mobile: "768px", 
+  mobile: "868px", 
   
   // 1280px pega tablets deitados e laptops menores (telas de 13")
   tablet: "1380px", 
