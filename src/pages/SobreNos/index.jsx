@@ -7,6 +7,7 @@ import {
   ContainerWrapper,
   FooterMissao,
   ImgCapa,
+  ImgFooter,
   ImgMissao,
 } from "./style";
 
@@ -55,7 +56,7 @@ const SobreNos = () => {
           </p>
         </ContainerJunte>
         <FooterMissao>
-          <img src={logo} />
+          <ImgFooter src={logo} />
           <p>
             Juntos, vamos transformar ideias em inovações e moldar o futuro
             digital.
