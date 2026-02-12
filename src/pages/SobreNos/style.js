@@ -82,9 +82,9 @@ export const ContainerApresentacao = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
+
   gap: 1.5rem;
-  max-width: 50rem;
+  
   margin: 0 auto;
 
   /* 1. Aplica a base (H2, P e seus breakpoints) */
@@ -131,7 +131,7 @@ export const ContainerMissao = styled.div`
     /* Vamos manter normal: Texto em cima, Imagem embaixo no mobile fica bom */
     flex-direction: column;
     gap: 2rem;
-    text-align: center; /* Centraliza texto no mobile */
+
   }
 `;
 

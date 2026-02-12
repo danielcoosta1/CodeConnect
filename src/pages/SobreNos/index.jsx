@@ -27,9 +27,9 @@ const SobreNos = () => {
             No coração da revolução digital está a colaboração. CodeConnect
             nasceu da visão de criar um espaço onde desenvolvedores,
             programadores e entusiastas da tecnologia podem se conectar,
-            aprender e colaborar de maneira inigualável. Somos uma comunidade
-            global apaixonada por código e estamos comprometidos em oferecer um
-            ambiente inclusivo e inspirador para todos os níveis de habilidade.
+            aprender e colaborar. Somos uma comunidade global apaixonada por
+            código e estamos comprometidos em oferecer um ambiente inclusivo e
+            inspirador para todos os níveis de habilidade.
           </p>
         </ContainerApresentacao>
         <ContainerMissao>
@@ -51,8 +51,7 @@ const SobreNos = () => {
           <h2>Junte-se a Nós!</h2>
           <p>
             Estamos animados para ter você conosco nesta jornada empolgante.
-            Junte-se à nossa comunidade vibrante e descubra o poder da
-            colaboração no mundo do código.
+            Junte-se a nós e descubra o poder da colaboração no mundo do código.
           </p>
         </ContainerJunte>
         <FooterMissao>
