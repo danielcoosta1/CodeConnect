@@ -5,19 +5,18 @@ import { device } from "../../styles/breakpoints"; // Importando breakpoints
 export const ContainerWrapper = styled.div`
   display: flex;
   width: 100%;
-  min-height: 100vh; 
+  min-height: 100vh;
   background-color: #171d1f;
-  
+
   padding: 3rem 4rem; /* 48px 64px */
   gap: 4rem; /* 64px */
-  box-sizing: border-box;
 
   /* No Tablet (1280px), já vira coluna para não espremer o form */
   @media ${device.tablet} {
     flex-direction: column;
     padding: 2rem;
     gap: 2rem;
-    align-items: center; 
+    align-items: center;
   }
 
   @media ${device.mobile} {
@@ -31,8 +30,8 @@ export const ContainerUploadImg = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 40rem; /* ~520px (limita a largura da imagem) */
-  
+  max-width: 35rem; /* ~520px (limita a largura da imagem) */
+
   @media ${device.tablet} {
     max-width: 80%; /* No tablet, pode ocupar a largura toda */
     align-items: center;
@@ -54,9 +53,9 @@ export const Img = styled.img`
   height: auto;
   object-fit: cover;
   display: block;
-  
+
   /* Garante uma altura mínima visual se não tiver imagem */
-  min-height: 15rem; 
+  min-height: 15rem;
 `;
 
 export const ContainerButton = styled.div`
@@ -71,14 +70,14 @@ export const ButtonUploadImg = styled.button`
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  
-  font-size: 1.1rem; 
+
+  font-size: 1.1rem;
   font-weight: 600;
   color: #c1c1c1;
-  
+
   padding: 1.2rem;
   background-color: rgba(255, 255, 255, 0.05);
-  border: 2px solid #888888; 
+  border: 2px solid #888888;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: 0.3s;
@@ -100,11 +99,11 @@ export const ContainerSubtittle = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+
   color: #b0b0b0;
   margin-top: 1rem;
   font-size: 1rem;
-  
+
   background: rgba(0, 0, 0, 0.2);
   padding: 0.8rem;
   border-radius: 0.375rem; /* 6px */
@@ -122,26 +121,29 @@ export const ContainerSubtittle = styled.div`
 
 // --- COLUNA DA DIREITA (FORMULÁRIO) ---
 export const ContainerForm = styled.div`
-  flex: 1; 
+  flex: 1;
   width: 100%;
   color: #e1e1e1;
 
   h2 {
-    font-size: 2.5rem; 
+    font-size: 2.5rem;
     margin-bottom: 2rem;
     font-weight: 700;
   }
-  
+
   @media ${device.mobile} {
-    h2 { font-size: 2rem; text-align: center; }
+    h2 {
+      font-size: 2rem;
+      text-align: center;
+    }
   }
 `;
 
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 2.5rem; 
-  
+  gap: 2.5rem;
+
   @media ${device.mobile} {
     gap: 1.5rem;
   }
@@ -151,6 +153,7 @@ export const Form = styled.form`
 
 const commonInputStyles = `
   width: 100%;
+
   padding: 1.2rem;
   font-size: 1.2rem; 
   color: #171d1f; 
@@ -184,16 +187,22 @@ export const CampoInput = styled.div`
   display: flex;
   flex-direction: column;
 
-  label { ${commonLabelStyles} }
-  input { ${commonInputStyles} }
+  label {
+    ${commonLabelStyles}
+  }
+  input {
+    ${commonInputStyles}
+  }
 `;
 
 export const ContainerInputDescricao = styled.div`
   display: flex;
   flex-direction: column;
 
-  label { ${commonLabelStyles} }
-  
+  label {
+    ${commonLabelStyles}
+  }
+
   textarea {
     ${commonInputStyles};
     min-height: 15rem; /* 240px */
@@ -206,8 +215,12 @@ export const ContainerTags = styled.div`
   display: flex;
   flex-direction: column;
 
-  label { ${commonLabelStyles} }
-  input { ${commonInputStyles} }
+  label {
+    ${commonLabelStyles}
+  }
+  input {
+    ${commonInputStyles}
+  }
 `;
 
 // --- TAGS VISUAIS ---
@@ -223,7 +236,7 @@ export const TagItem = styled.li`
   color: #132e35;
   padding: 0.6rem 1rem;
   border-radius: 2rem;
-  
+
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -252,12 +265,28 @@ export const ContainerBotoes = styled.div`
   align-items: center;
   gap: 2rem;
   margin-top: 2rem;
-  
+
   @media ${device.mobile} {
     flex-direction: column-reverse; /* Publicar em cima, Descartar embaixo */
     gap: 1rem;
-    
-    button { width: 100%; }
+
+    button {
+      width: 100%;
+    }
+  }
+`;
+
+export const ErrorImg = styled.p`
+  color: red;
+  font-size: 1.4rem;
+  margin-top: 1rem;
+
+  @media ${device.tablet} {
+    font-size: 1.25rem;
+  }
+
+  @media ${device.mobile} {
+    font-size: 1rem;
   }
 `;
 
@@ -267,15 +296,15 @@ export const BotaoDescartar = styled.button`
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  
+
   border: 2px solid #81fe88;
   color: #81fe88;
   background-color: transparent;
 
-  padding: 1.2rem; 
+  padding: 1.2rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  font-size: 1.1rem; 
+  font-size: 1.1rem;
   font-weight: bold;
   transition: 0.2s;
 
@@ -285,17 +314,17 @@ export const BotaoDescartar = styled.button`
 `;
 
 export const BotaoPublicar = styled.button`
-  flex: 2; 
+  flex: 2;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  
-  font-size: 1.1rem; 
+
+  font-size: 1.1rem;
   background-color: #81fe88;
   color: #132e35;
-  
-  padding: 1.2rem; 
+
+  padding: 1.2rem;
   border-radius: 0.5rem;
   border: none;
   cursor: pointer;
@@ -311,7 +340,7 @@ export const BotaoPublicar = styled.button`
   &:active {
     transform: translateY(0);
   }
-  
+
   /* SVG dentro do botão */
   svg {
     font-size: 1.3rem;
