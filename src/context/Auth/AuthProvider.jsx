@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from "react";
 import { AuthContext } from "./AuthContext";
-import axios from "axios";
+import api from "../../services/api";
 import { localStorageService } from "../../services/localStorageService";
 import { useNavigate } from "react-router-dom";
 
@@ -25,8 +25,7 @@ const AuthProvider = ({ children }) => {
       const storedToken = localStorageService.ler("token");
 
       if (storedToken && storedUser) {
-        axios.defaults.headers.common["Authorization"] =
-          `Bearer ${storedToken}`;
+        api.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
 
         dispatch({
           type: "CARREGAR_SESSAO",
@@ -94,7 +93,7 @@ const AuthProvider = ({ children }) => {
       const response = await loginRequest(email, senha);
       const { user: userData, token: authToken } = response;
 
-      axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
+      api.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
 
       const { imagem: _img, ...userSemPeso } = userData;
       localStorageService.salvar("token", authToken);
@@ -123,7 +122,7 @@ const AuthProvider = ({ children }) => {
     localStorageService.remover("rascunho_perfil"); // Limpa rascunho
 
     localStorageService.salvar("logout_intencional", "true");
-    delete axios.defaults.headers.common["Authorization"];
+    delete api.defaults.headers.common["Authorization"];
 
     dispatch({ type: "LOGOUT" });
     navigation("/login");
