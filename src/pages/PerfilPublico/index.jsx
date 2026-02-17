@@ -11,7 +11,7 @@ import {
   ProfileTab,
   StatItem,
   StatsContainer,
-} from "./style"; 
+} from "./style";
 import ProfileAvatar from "../../components/ProfileAvatar";
 import { CardGrid } from "../../components/CardGrid/style";
 import Card from "../../components/Card";
