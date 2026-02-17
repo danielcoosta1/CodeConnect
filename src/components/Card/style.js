@@ -5,45 +5,55 @@ import { device } from "../../styles/breakpoints";
 export const CardContainer = styled.article`
   display: flex;
   flex-direction: column;
-  
+
   background-color: #171d1f;
-  border-radius: 0.5rem; /* 8px */
-  padding: 1rem;
-  gap: 1rem;
-  
+  border-radius: 0.8rem;
+  padding: 1.6rem;
+  gap: 1.6rem;
+
   width: 100%;
-  min-height: 28rem; /* ~450px */
-  
-  box-shadow: 0 0.125rem 0.3rem rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  /* Altura fixa para garantir uniformidade no Grid */
+  height: 48rem; /* 480px - Ajuste conforme necessidade */
+
+  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   color: #bcbcbc;
+  border: 1px solid #2d3538;
 
   &:hover {
-    transform: translateY(-0.3rem); /* Levanta um pouco mais */
-    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.3);
+    transform: translateY(-0.5rem);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.4);
+    border-color: #81fe88;
   }
 
-  /* Ajuste Mobile */
   @media ${device.mobile} {
-    min-height: auto; /* Deixa altura automática no celular */
+    height: auto; /* No celular é melhor deixar crescer para não cortar texto importante */
+    min-height: 40rem;
   }
 `;
 
 export const ImgCard = styled.div`
   width: 100%;
-  height: 12.5rem; /* 200px (Aumentei um pouco) */
-  border-radius: 0.25rem;
+
+  /* Altura fixa da imagem é CRUCIAL para o alinhamento */
+  height: 18rem;
+  /* Garante que a imagem não encolha se o texto for grande */
+  flex-shrink: 0;
+
+  border-radius: 0.4rem;
   overflow: hidden;
-  background-color: #2d3538; 
+  background-color: #2d3538;
 
   img {
     width: 100%;
     height: 100%;
-    object-fit: cover; 
+    object-fit: cover;
     transition: transform 0.5s ease;
   }
 
-  /* Efeito de zoom na imagem ao passar o mouse no card */
   ${CardContainer}:hover & img {
     transform: scale(1.05);
   }
@@ -52,97 +62,104 @@ export const ImgCard = styled.div`
 export const ContentCard = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1; 
-  gap: 0.5rem;
+
+  /* Ocupa todo o espaço disponível restante */
+  flex: 1;
+
+  gap: 1rem;
+  overflow: hidden; /* Garante que nada vaze */
 `;
 
 export const TitleCard = styled.h3`
   margin: 0.5rem 0;
-  font-size: 1.5rem; /* Aumentado para Desktop */
+  font-size: 2rem;
   font-weight: 700;
   color: #fff;
-  line-height: 1.2;
+  line-height: 1.3;
 
-  @media ${device.mobile} {
-    font-size: 1.3rem;
-  }
-`;
-
-export const Description = styled.p`
-  font-size: 1.125rem; /* 18px - Texto mais legível */
-  line-height: 1.6;
-  color: #bcbcbc;
-  
-  /* Limita linhas */
+  /* Limita Título a 2 linhas máx */
   display: -webkit-box;
-  -webkit-line-clamp: 3; 
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
 
-  @media ${device.mobile} {
-    font-size: 1rem; /* 16px no mobile */
-    -webkit-line-clamp: 4; /* Mostra um pouco mais no mobile  */
-  }
+export const Description = styled.p`
+  font-size: 1.6rem;
+  line-height: 1.5;
+  color: #bcbcbc;
+
+  /* Limita o texto para caber no card fixo */
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Mostra apenas 3 linhas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const CardFooter = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: auto; /* Empurra para o fundo */
-  padding-top: 1rem;
-  border-top: 1px solid #333; /* Linha sutil separando footer */
+
+  /* Empurra para o fundo do card, garantindo alinhamento no rodapé */
+  margin-top: auto;
+
+  padding-top: 1.5rem;
+  border-top: 0.1rem solid #2d3538;
+  gap: 1rem;
 `;
 
 export const ActionIcons = styled.div`
   display: flex;
-  gap: 1rem; 
+  gap: 1.5rem;
   color: #818388;
 `;
 
 export const IconGroup = styled.div`
   display: flex;
-  align-items: center; /* Ícone ao lado do número */
-  gap: 0.4rem; 
+  align-items: center;
+  gap: 0.5rem;
   cursor: pointer;
   transition: color 0.2s;
-  
-  font-size: 0.9rem;
+
+  font-size: 1.4rem;
   font-weight: bold;
 
-  &:hover {
-    color: #81fe88; /* Verde do tema */
+  svg {
+    width: 1.8rem;
+    height: 1.8rem;
   }
 
-  svg {
-    font-size: 1.2rem;
+  &:hover {
+    color: #81fe88;
   }
 `;
 
 export const AuthorInfo = styled(Link)`
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-
-  text-decoration: none; 
-  color: inherit; 
-
-  padding: 0.4rem 0.6rem;
+  gap: 1rem;
+  text-decoration: none;
+  color: inherit;
+  padding: 0.5rem;
   border-radius: 0.5rem;
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #2d3538; 
+    background-color: #2d3538;
   }
 
   small {
     color: #bcbcbc;
-    font-size: 1rem; /* Nome maior */
+    font-size: 1.4rem;
     font-weight: 500;
   }
-  
+
   @media ${device.mobile} {
-    small { font-size: 0.9rem; }
+    small {
+      font-size: 1.2rem;
+    }
   }
 `;

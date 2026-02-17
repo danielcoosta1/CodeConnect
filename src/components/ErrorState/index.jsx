@@ -1,23 +1,26 @@
 import { ErrorContainer, RetryButton } from "./style";
 import { BiErrorCircle } from "react-icons/bi";
-import { FiRefreshCw } from "react-icons/fi"; // Ícone de recarregar
+import { FiRefreshCw } from "react-icons/fi";
 
-const ErrorState = ({ 
-  titulo = "Ops! Algo deu errado", 
-  mensagem, 
-  onRetry, // Função opcional para tentar novamente
-  textoBotao = "Tentar Novamente" 
+const ErrorState = ({
+  titulo = "Ops! Algo deu errado",
+  mensagem,
+  onRetry,
+  textoBotao = "Tentar Novamente",
 }) => {
   return (
     <ErrorContainer>
-      <BiErrorCircle size={60} />
+      <BiErrorCircle className="error-icon" />
+
       <h3>{titulo}</h3>
-      <p>{mensagem || "Tivemos um problema de comunicação com o servidor. Verifique sua conexão e tente novamente."}</p>
-      
-      {/* O botão só aparece se uma função for passada via props */}
+      <p>
+        {mensagem ||
+          "Tivemos um problema de comunicação com o servidor. Verifique sua conexão e tente novamente."}
+      </p>
+
       {onRetry && (
         <RetryButton onClick={onRetry}>
-          <FiRefreshCw size={18} />
+          <FiRefreshCw />
           {textoBotao}
         </RetryButton>
       )}
