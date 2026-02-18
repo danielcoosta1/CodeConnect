@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 // Certifique-se de importar seus breakpoints
-import { device } from "./breakpoints"; 
+import { device } from "./breakpoints";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -38,7 +38,7 @@ const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
   }
   
-  /* ... resto do arquivo ... */
+//FORÇANDO ATT
 `;
 
 export default GlobalStyle;
