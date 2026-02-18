@@ -1,24 +1,21 @@
-import styled from "styled-components";
-import { device } from "../../styles/breakpoints";
+import styled, { keyframes } from "styled-components";
+
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
 
 export const FeedContainerMain = styled.main`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-
-  /* Convertido: 30px -> 3rem */
-  gap: 3rem;
-  /* Convertido: 20px -> 2rem */
-  padding: 2rem;
-
-  width: 100%;
-  margin: 0 auto;
-
-  @media ${device.mobile} {
-    padding: 1rem; /* Menos padding no mobile */
-    gap: 2rem;
-  }
+  gap: 30px;
+  padding: 20px;
 `;
 
 export const FeedFilterContainer = styled.section`
@@ -27,104 +24,73 @@ export const FeedFilterContainer = styled.section`
   width: 100%;
 `;
 
-export const InputSearch = styled.input`
-  width: 100%;
-  background-color: #171d1f;
-  color: #ffffff;
-  border: 0.1rem solid #444c4e; /* 1px */
-
-  /* Convertido padding e font-size */
-  padding: 1.2rem 1.6rem;
-  font-size: 1.6rem;
-  border-radius: 0.8rem;
-  margin-top: 1rem;
-
-  transition: border-color 0.2s;
-
-  &:focus {
-    outline: none;
-    border-color: #81fe88;
-  }
-
-  &::placeholder {
-    color: #5d6669;
-  }
-`;
-
 export const TagsFiltersContainer = styled.section`
   display: flex;
+  gap: 10px;
+  margin-top: 10px;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 2rem;
-  margin-top: 1.5rem;
-  width: 100%;
-
-  @media ${device.mobile} {
-    flex-direction: column;
-    gap: 1rem;
-  }
 `;
 
-export const TagList = styled.ul`
+export const TagList = styled.div`
   display: flex;
-  flex-wrap: wrap; /* Importante para não quebrar no mobile */
-  gap: 1rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
 `;
 
 export const TagItem = styled.li`
-  background-color: #2d3538;
-  padding: 0.6rem 1.2rem;
-  border-radius: 2rem;
-  display: flex;
+  background-color: #888888;
+  padding: 0.3em 0.5em;
+  border-radius: 8px;
+  justify-content: center;
   align-items: center;
-  gap: 0.8rem;
-  border: 0.1rem solid #444c4e;
+  display: flex;
 
   span {
-    font-size: 1.2rem;
-    color: #e1e1e1;
-    font-weight: 600;
+    font-size: 0.85rem;
+    color: #171d1f;
+    margin-right: 0.5rem;
     text-transform: uppercase;
+    font-weight: bold;
   }
 `;
 
 export const TagRemoveButton = styled.button`
   background: none;
   border: none;
-  color: #ff6b6b;
+  color: #171d1f;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+  font-size: 1rem;
+`;
 
-  svg {
-    font-size: 1.6rem;
-  }
+export const InputSearch = styled.input`
+  padding: 10px;
+  font-size: 16px;
+  margin-top: 10px;
+  background-color: #171d1f;
+  font-size: 20px;
+  color: #ffffff;
+  border: 1px solid #444c4e;
+  padding: 12px 15px;
 
-  &:hover {
-    color: #ff4c4c;
+  &:focus {
+    outline: none;
+    border-color: #81fe88;
   }
 `;
 
 export const ExcluirTudoButton = styled.button`
   background-color: transparent;
-  color: #a0a0a0;
+  color: white;
   border: none;
+
   cursor: pointer;
-  font-size: 1.4rem;
-  white-space: nowrap;
+  font-size: 20px;
 
   &:hover {
-    color: #ff6b6b;
-    text-decoration: underline;
-  }
-
-  @media ${device.mobile} {
-    align-self: flex-end;
+    border: 1px solid #81fe88;
+    padding: 2px 6px;
+    border-radius: 4px;
   }
 `;
 
@@ -133,39 +99,28 @@ export const NoPostsContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
+  gap: 3rem;
   text-align: center;
+  font-size: 1.6rem;
   background-color: #171d1f;
-
-  padding: 4rem;
-  border-radius: 0.8rem;
+  padding: 40px; /* Um pouco mais de respiro */
+  border-radius: 8px;
+  color: #fff;
   width: 100%;
-  max-width: 60rem;
-  margin-top: 4rem;
 
-  p {
-    font-size: 1.8rem;
-    color: #e1e1e1;
-  }
+  min-height: 20rem;
+  max-width: 80rem; /* Para não ficar muito largo em telas grandes */
 `;
 
 export const LimparBuscaButton = styled.button`
+  margin-top: 3 rem;
   background-color: transparent;
   color: #88f2db;
-  border: 0.1rem solid #88f2db;
+  border: 1px solid #88f2db;
   padding: 1rem 2rem;
-  border-radius: 0.8rem;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   font-weight: bold;
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: #88f2db;
-    color: #171d1f;
-  }
-
-  @media ${device.mobile} {
-    width: 100%;
-  }
+  width: 30%;
 `;
