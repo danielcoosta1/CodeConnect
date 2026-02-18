@@ -1,8 +1,10 @@
+// src/styles/GlobalStyles.js
 import { createGlobalStyle } from "styled-components";
-// Certifique-se de importar seus breakpoints
+// Importante: Precisamos do device que você adicionou na develop
 import { device } from "./breakpoints";
 
 const GlobalStyle = createGlobalStyle`
+  /* Reset básico */
   * {
     margin: 0;
     padding: 0;
@@ -10,21 +12,14 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html {
-    /* --- BASE MOBILE (Padrão) --- */
+    /* --- AQUI ESTÁ A CORREÇÃO DA DEVELOP --- */
     /* 1rem = 10px. Perfeito para iPhone, Android, etc. */
     font-size: 62.5%; 
-    
     
     width: 100%;
     overflow-x: hidden;
 
-    /* --- BASE DESKTOP (Telas maiores) --- */
-    /* Quando a tela for maior que um Laptop (ex: 1024px), 
-       a gente aumenta a base para 75% (1rem = 12px) 
-       ou 80% (1rem = 12.8px). 
-       
-       Isso faz o site inteiro dar um "zoom" automático no PC.
-    */
+    /* Aumenta a fonte em telas grandes para não ficar minúsculo */
     @media ${device.desktop} {
       font-size: 75%; 
     }
@@ -32,13 +27,28 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: "Inter", sans-serif;
+    /* Recupera o fundo que estava na main */
     background-color: #01080E;
-    /* Volta para tamanho legível de texto (1.6 * base) */
+    
+    /* Recupera o tamanho de leitura padrão (1.6rem = 16px) */
     font-size: 1.6rem; 
+    
     -webkit-font-smoothing: antialiased;
   }
+
+  a {
+    text-decoration: none;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  button {
+    cursor: pointer;
+  }
   
-//FORÇANDO ATT
+  // FORÇANDO ATT
 `;
 
 export default GlobalStyle;

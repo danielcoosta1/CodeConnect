@@ -12,16 +12,13 @@ import {
 } from "./style";
 import { FaCode, FaRegComment, FaShareNodes } from "react-icons/fa6";
 
+// O Card recebe a "prop" post. Quem chamar o Card, TEM QUE passar a prop post.
 const Card = ({ post }) => {
   return (
     <CardContainer>
       {post.image && (
         <ImgCard>
-          <img 
-            src={`data:image/png;base64,${post.image}`} 
-            alt={post.title} 
-            loading="lazy" 
-          />
+          <img src={`data:image/png;base64,${post.image}`} alt={post.title} loading="lazy" />
         </ImgCard>
       )}
 
@@ -30,32 +27,29 @@ const Card = ({ post }) => {
         <Description>{post.content}</Description>
 
         <CardFooter>
-          {/* Ícones de Ação (Visualmente apenas por enquanto) */}
-          <ActionIcons>
-            <IconGroup>
-              {/* Removemos size={20}, o CSS controla */}
-              <FaCode /> <span>0</span>
-            </IconGroup>
-            <IconGroup>
-              <FaShareNodes /> <span>0</span>
-            </IconGroup>
-            <IconGroup>
-              <FaRegComment /> <span>0</span>
-            </IconGroup>
-          </ActionIcons>
-
           {post.author && (
-            <AuthorInfo to={`/perfil/${post.author.id}`}>
-              <ProfileAvatar
-                src={post.author?.imagem}
-                size={60} // 60/16 = 3.75rem (~37px visual)
-                hasBorder={true}
-              />
-              <div className="author-text">
-                <small>@{post.author.usuario}</small>
-              </div>
-            </AuthorInfo>
+            <ActionIcons>
+              <IconGroup>
+                <FaCode size={20} /> 0
+              </IconGroup>
+              <IconGroup>
+                <FaShareNodes size={20} /> 0
+              </IconGroup>
+              <IconGroup>
+                <FaRegComment size={20} /> 0
+              </IconGroup>
+            </ActionIcons>
           )}
+          <AuthorInfo to={`/perfil/${post.author.id}`}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+            <ProfileAvatar
+              src={post.author?.imagem}
+              size={40}
+              hasBorder={true}
+            />
+            </div>
+            <small>@{post.author.usuario}</small>
+          </AuthorInfo>
         </CardFooter>
       </ContentCard>
     </CardContainer>

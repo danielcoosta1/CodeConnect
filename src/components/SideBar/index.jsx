@@ -11,6 +11,8 @@ import {
 } from "./style.js";
 import logoImg from "./assets/Logo.svg";
 
+
+
 import feedIcon from "./assets/feed.svg";
 import accountIcon from "./assets/account_circle.svg";
 import infoIcon from "./assets/info.svg";
@@ -25,7 +27,6 @@ import ProfileAvatar from "../ProfileAvatar/index.jsx";
 
 const SideBar = () => {
   const { logout, user } = useAuth();
-
   const links = [
     {
       name: "Feed",
@@ -56,22 +57,17 @@ const SideBar = () => {
       onclick: logout,
     },
   ];
-
   return (
     <SidebarContainer>
       <LogoImg src={logoImg} alt="Logo" />
-
       <Nav>
         <ListaNav>
-          {/* Botão de Publicar - Destaque */}
-          <ItemListaNav className="item-publicar">
-            <LinkPublicarEstilizado to="/publicar">
-              <FaPen className="icone-mobile" />
-              <span className="texto-desktop">Publicar</span>
-            </LinkPublicarEstilizado>
-          </ItemListaNav>
-
-          {/* Links Normais */}
+          <LinkPublicarEstilizado to="/publicar">
+            {/* Ícone que aparece só na tela pequena */}
+            <FaPen className="icone-mobile" size={20} />
+            {/* Texto que aparece só na tela grande */}
+            <span className="texto-desktop">Publicar</span>
+          </LinkPublicarEstilizado>
           {links.map((link) => (
             <ItemListaNav key={link.name}>
               <LinkNavegacao to={link.path} onClick={link.onclick} end>
@@ -89,14 +85,10 @@ const SideBar = () => {
           ))}
         </ListaNav>
       </Nav>
-
-      {/* Feedback Visual: Perfil do Usuário 
-         IMPORTANTE: No style.js vamos esconder isso no Mobile para não ficar duplicado
-      */}
+      {/* 2. Feedback Visual: Perfil do Usuário Logado (Lá embaixo) */}
       {user && (
         <UserProfile to="/perfil">
-          {/* Aumentei o size para 64 (que vira ~4rem no calculo do componente) */}
-          <ProfileAvatar src={user.imagem} size={64} hasBorder={true} />
+          <ProfileAvatar src={user.imagem} size={50} hasBorder={true} />
           <UserInfo>
             <h3>{user.nome || "Dev"}</h3>
             <p>@{user.usuario || "usuario"}</p>

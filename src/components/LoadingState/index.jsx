@@ -4,7 +4,7 @@ import { LoadingContainer } from "./style";
 const LoadingState = ({ texto = "Carregando...", size = 40 }) => {
   return (
     <LoadingContainer $size={size}>
-      <LuLoader className="spin" />
+      <LuLoader className="spin" size={size} />
       <span>{texto}</span>
     </LoadingContainer>
   );
