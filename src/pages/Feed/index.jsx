@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { usePost } from "../../hooks/usePost"; // Importe o hook
-import { IoMdClose } from "react-icons/io";
+import { LuLoader } from "react-icons/lu";
 import {
   ExcluirTudoButton,
   FeedContainerMain,
@@ -168,7 +168,7 @@ const Feed = () => {
               <p>Nenhum post encontrado para essa busca.</p>
               {/* BOTÃO DE RESGATE: Limpa texto E tags */}
               <LimparBuscaButton onClick={limparBuscaTotal}>
-                Limpar busca
+                Limpar buca
               </LimparBuscaButton>
             </>
           )}
