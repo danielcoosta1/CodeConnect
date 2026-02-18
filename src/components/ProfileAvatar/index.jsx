@@ -11,7 +11,7 @@ const ProfileAvatar = ({
   if (!src) {
     return (
       <AvatarWrapper $size={size} $hasBorder={hasBorder}>
-        <FaUserCircle size={size} color="#888888" />
+        <FaUserCircle color="#888888" />
       </AvatarWrapper>
     );
   }
@@ -26,7 +26,8 @@ const ProfileAvatar = ({
       <StyledImg
         src={finalSrc}
         alt={alt}
-        onError={(e) => { //TODA IMG TEM UMA PROBABILIDADE DE NÃO CARREGAR CORRETAMENTE, ENTÃO COLOCAMOS UM TRATAMENTO DE ERRO PARA SUBSTITUIR POR UMA IMAGEM PADRÃO
+        onError={(e) => {
+          //TODA IMG TEM UMA PROBABILIDADE DE NÃO CARREGAR CORRETAMENTE, ENTÃO COLOCAMOS UM TRATAMENTO DE ERRO PARA SUBSTITUIR POR UMA IMAGEM PADRÃO
           e.target.onerror = null; //EVITA LOOP INFINITO CASO A IMAGEM PADRÃO TAMBÉM NÃO CARREGUE
           e.target.src = "https://via.placeholder.com/150";
         }}
