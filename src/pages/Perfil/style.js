@@ -135,6 +135,7 @@ export const BtnEditar = styled.button`
   top: 2.5rem; /* 40px */
   right: 2.5rem; /* 40px */
 
+
   background: transparent;
   border: 1px solid #81fe88;
   color: #81fe88;

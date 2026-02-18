@@ -18,6 +18,6 @@ export const fetchMyPosts = async () => {
 };
 
 export const getPostsByUserId = async (userId) => {
-  const response = await api.get(`/users/${userId}`);
+  const response = await api.get(`/posts/user/${userId}`);
   return response.data;
 };
