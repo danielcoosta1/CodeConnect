@@ -14,6 +14,7 @@ const GlobalStyle = createGlobalStyle`
     /* 1rem = 10px. Perfeito para iPhone, Android, etc. */
     font-size: 62.5%; 
     
+    
     width: 100%;
     overflow-x: hidden;
 
