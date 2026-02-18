@@ -47,8 +47,7 @@ const GlobalStyle = createGlobalStyle`
   button {
     cursor: pointer;
   }
-  
-  // FORÇANDO ATT
+
 `;
 
 export default GlobalStyle;
