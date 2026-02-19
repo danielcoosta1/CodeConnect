@@ -130,7 +130,7 @@ export const LinkPublicarEstilizado = styled(NavLink)`
   /* MOBILE: Vira FAB (Floating Action Button) flutuando no canto direito! */
   @media ${device.mobile} {
     position: fixed;
-    bottom: 8rem; /* Fica acima da barra inferior (que tem 6rem) */
+    bottom: 5rem; /* Fica acima da barra inferior (que tem 6rem) */
     right: 2rem;
 
     width: 5.6rem;
