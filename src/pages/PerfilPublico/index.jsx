@@ -35,12 +35,10 @@ const PerfilPublico = () => {
 
   const [abaAtiva, setAbaAtiva] = useState("projetos");
 
-  // --- CORREÇÃO 1: Loading acontece ANTES de checar o userProfile ---
   if (loadingProfile) {
-    return <LoadingState texto="Carregando perfil..." size={50} />;
+    return <LoadingState texto="Carregando perfil..." size={45} />;
   }
 
-  // --- CORREÇÃO 2: Erro acontece ANTES de checar o userProfile ---
   if (errorProfile) {
     return (
       <ErrorState
@@ -50,15 +48,15 @@ const PerfilPublico = () => {
     );
   }
 
-  // Agora sim: Se não estiver carregando, não tiver erro e user for null, retorna null
   if (!userProfile) return null;
 
   return (
     <PerfilContainer>
       <PerfilHeader>
-        <ProfileAvatar src={userProfile.imagem} size={120} hasBorder={true} />
+        {/* Usando 150 de size para ficar do mesmo tamanho do perfil privado */}
+        <ProfileAvatar src={userProfile.imagem} size={150} hasBorder={true} />
+        
         <InfoContainer>
-          {/* Mostra Nome e Sobrenome */}
           <h2>
             {userProfile.nome} {userProfile.sobrenome}
           </h2>
@@ -84,7 +82,8 @@ const PerfilPublico = () => {
         </InfoContainer>
       </PerfilHeader>
 
-      <div style={{ height: "1px", backgroundColor: "#333", width: "100%" }} />
+      {/* Linha divisória fina em REM */}
+      <div style={{ height: "0.1rem", backgroundColor: "#333", width: "100%" }} />
 
       <ProfileNav>
         <ProfileTab
@@ -117,9 +116,8 @@ const PerfilPublico = () => {
                 ))}
               </CardGrid>
             ) : (
-              // --- CORREÇÃO 3: Texto de feedback ajustado (Você -> Ele) ---
               <div
-                style={{ textAlign: "center", padding: "40px", color: "#888" }}
+                style={{ textAlign: "center", padding: "4rem", color: "#888", fontSize: "1.6rem" }}
               >
                 <p>{userProfile.nome} ainda não publicou nenhum projeto.</p>
               </div>
@@ -128,12 +126,12 @@ const PerfilPublico = () => {
         )}
 
         {abaAtiva === "compartilhados" && (
-          <p style={{ color: "#888", textAlign: "center", marginTop: "20px" }}>
+          <p style={{ color: "#888", fontSize: "1.6rem", textAlign: "center", padding: "2rem" }}>
             Em breve...
           </p>
         )}
         {abaAtiva === "aprovados" && (
-          <p style={{ color: "#888", textAlign: "center", marginTop: "20px" }}>
+          <p style={{ color: "#888", fontSize: "1.6rem", textAlign: "center", padding: "2rem" }}>
             Em breve...
           </p>
         )}
