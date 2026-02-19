@@ -28,11 +28,10 @@ const Perfil = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   useEffect(() => {
-    carregarMeusPostsDoBanco(); // Zero parâmetros. O token cuida de tudo!
+    carregarMeusPostsDoBanco();
   }, []);
 
-  // Estado para controlar qual aba está selecionada
-  const [abaAtiva, setAbaAtiva] = useState("projetos"); // 'projetos' | 'compartilhados' | 'aprovados'
+  const [abaAtiva, setAbaAtiva] = useState("projetos");
 
   if (!user) return null;
 
@@ -59,7 +58,6 @@ const Perfil = () => {
               "Olá! Eu estou usando o CodeConnect para compartilhar meus projetos."}
           </p>
 
-          {/* NOVOS DADOS ESTATÍSTICOS */}
           <StatsContainer>
             <StatItem>
               <strong>{myPosts.length}</strong>
@@ -73,13 +71,16 @@ const Perfil = () => {
         </InfoContainer>
 
         <BtnEditar onClick={() => setModalIsOpen(true)}>
-          <FaPen size={12} /> Editar Perfil
+          {/* Tamanho controlado pelo CSS agora */}
+          <FaPen /> Editar Perfil
         </BtnEditar>
       </PerfilHeader>
 
-      <div style={{ height: "1px", backgroundColor: "#333", width: "100%" }} />
+      {/* Linha divisória com REM */}
+      <div
+        style={{ height: "0.1rem", backgroundColor: "#333", width: "100%" }}
+      />
 
-      {/* BARRA DE NAVEGAÇÃO (ABAS) */}
       <ProfileNav>
         <ProfileTab
           $active={abaAtiva === "projetos"}
@@ -101,32 +102,30 @@ const Perfil = () => {
         </ProfileTab>
       </ProfileNav>
 
-      {/* CONTEÚDO QUE MUDA CONFORME A ABA */}
-
       <>
         {abaAtiva === "projetos" && (
           <>
-            {/* LÓGICA DE RENDERIZAÇÃO CONDICIONAL MUTUAMENTE EXCLUSIVA */}
             {loadingMyPosts ? (
-              // 1. SE ESTÁ CARREGANDO, mostra SOMENTE o Loading
               <LoadingState texto="Carregando seus projetos..." size={45} />
             ) : errorMyPosts ? (
-              // 2. SE HOUVE ERRO, mostra o ErrorState
               <ErrorState
                 mensagem={errorMyPosts}
                 onRetry={carregarMeusPostsDoBanco}
               />
             ) : myPosts.length > 0 ? (
-              // 2. SE NÃO ESTÁ CARREGANDO E TEM POSTS, mostra a Grid
               <CardGrid>
                 {myPosts.map((post) => (
                   <Card key={post.id} post={post} />
                 ))}
               </CardGrid>
             ) : (
-              // 3. SE NÃO ESTÁ CARREGANDO E NÃO TEM POSTS, mostra a mensagem de Vazio
               <div
-                style={{ textAlign: "center", padding: "40px", color: "#888" }}
+                style={{
+                  textAlign: "center",
+                  padding: "4rem",
+                  color: "#888",
+                  fontSize: "1.6rem",
+                }}
               >
                 <p>Você ainda não publicou nenhum projeto.</p>
               </div>
@@ -135,10 +134,28 @@ const Perfil = () => {
         )}
 
         {abaAtiva === "compartilhados" && (
-          <p style={{ color: "#888" }}>Projetos compartilhados...</p>
+          <p
+            style={{
+              color: "#888",
+              fontSize: "1.6rem",
+              textAlign: "center",
+              padding: "2rem",
+            }}
+          >
+            Projetos compartilhados...
+          </p>
         )}
         {abaAtiva === "aprovados" && (
-          <p style={{ color: "#888" }}>Projetos aprovados...</p>
+          <p
+            style={{
+              color: "#888",
+              fontSize: "1.6rem",
+              textAlign: "center",
+              padding: "2rem",
+            }}
+          >
+            Projetos aprovados...
+          </p>
         )}
       </>
     </PerfilContainer>

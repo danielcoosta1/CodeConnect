@@ -11,8 +11,6 @@ import {
 } from "./style.js";
 import logoImg from "./assets/Logo.svg";
 
-
-
 import feedIcon from "./assets/feed.svg";
 import accountIcon from "./assets/account_circle.svg";
 import infoIcon from "./assets/info.svg";
@@ -64,7 +62,7 @@ const SideBar = () => {
         <ListaNav>
           <LinkPublicarEstilizado to="/publicar">
             {/* Ícone que aparece só na tela pequena */}
-            <FaPen className="icone-mobile" size={20} />
+            <FaPen className="icone-mobile" />
             {/* Texto que aparece só na tela grande */}
             <span className="texto-desktop">Publicar</span>
           </LinkPublicarEstilizado>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { usePost } from "../../hooks/usePost"; // Importe o hook
-import { LuLoader } from "react-icons/lu";
+import { IoMdClose } from "react-icons/io";
 import {
   ExcluirTudoButton,
   FeedContainerMain,
@@ -75,7 +75,7 @@ const Feed = () => {
           );
         });
 
-      // --- PORTÃO 2: VERIFICA A BUSCA AO VIVO (O que faltava) ---
+      // --- PORTÃO 2: VERIFICA A BUSCA AO VIVO ---
       // Se o termoBusca estiver vazio, assumimos "true" (passa direto).
       // Se tiver texto, fazemos a mesma varredura que fizemos nas tags.
       const termoBuscaLimpo = termoBusca.toLowerCase().trim();

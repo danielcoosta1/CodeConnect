@@ -12,13 +12,16 @@ import {
 } from "./style";
 import { FaCode, FaRegComment, FaShareNodes } from "react-icons/fa6";
 
-// O Card recebe a "prop" post. Quem chamar o Card, TEM QUE passar a prop post.
 const Card = ({ post }) => {
   return (
     <CardContainer>
       {post.image && (
         <ImgCard>
-          <img src={`data:image/png;base64,${post.image}`} alt={post.title} loading="lazy" />
+          <img
+            src={`data:image/png;base64,${post.image}`}
+            alt={post.title}
+            loading="lazy"
+          />
         </ImgCard>
       )}
 
@@ -30,25 +33,25 @@ const Card = ({ post }) => {
           {post.author && (
             <ActionIcons>
               <IconGroup>
-                <FaCode size={20} /> 0
+                <FaCode /> <span>0</span>
               </IconGroup>
               <IconGroup>
-                <FaShareNodes size={20} /> 0
+                <FaShareNodes /> <span>0</span>
               </IconGroup>
               <IconGroup>
-                <FaRegComment size={20} /> 0
+                <FaRegComment /> <span>0</span>
               </IconGroup>
             </ActionIcons>
           )}
           <AuthorInfo to={`/perfil/${post.author.id}`}>
-            <div style={{ display: "flex", alignItems: "center" }}>
             <ProfileAvatar
               src={post.author?.imagem}
-              size={40}
+              size={60}
               hasBorder={true}
             />
+            <div className="author-text">
+              <small>@{post.author.usuario}</small>
             </div>
-            <small>@{post.author.usuario}</small>
           </AuthorInfo>
         </CardFooter>
       </ContentCard>

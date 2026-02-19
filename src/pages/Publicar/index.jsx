@@ -1,3 +1,5 @@
+import { useRef, useState } from "react";
+import { usePost } from "../../hooks/usePost";
 import {
   BotaoDescartar,
   BotaoPublicar,
@@ -12,7 +14,7 @@ import {
   ContainerTags,
   ContainerUploadImg,
   ContainerWrapper,
-  ErrorImg,
+  ErrorText,
   Form,
   Img,
   TagItem,
@@ -20,20 +22,13 @@ import {
   TagRemoveButton,
 } from "./style";
 
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaUpload } from "react-icons/fa";
 import { MdPublish } from "react-icons/md";
+import { LuLoader } from "react-icons/lu";
+import { IoMdClose } from "react-icons/io";
 
 import defaultImg from "./assets/exemplo.png";
 import closeIcon from "./assets/icons/close.svg";
-
-import uploadIcon from "./assets/icons/upload.svg";
-
-import { useRef, useState } from "react";
-
-import { LuLoader } from "react-icons/lu";
-
-import { IoMdClose } from "react-icons/io";
-import { usePost } from "../../hooks/usePost";
 
 const Publicar = () => {
   const {
@@ -54,6 +49,7 @@ const Publicar = () => {
     limparFormulario,
     publicarPost,
   } = usePost();
+  
   const inputRef = useRef();
 
   const [erroTags, setErroTags] = useState("");
@@ -66,9 +62,7 @@ const Publicar = () => {
 
     const tiposAceitos = ["image/jpeg", "image/png", "image/gif"];
     if (!tiposAceitos.includes(file.type)) {
-      setErroLocal(
-        "Tipo de arquivo não suportado. Por favor, envie uma imagem.",
-      );
+      setErroLocal("Tipo de arquivo não suportado. Envie uma imagem.");
       return;
     }
 
@@ -77,15 +71,13 @@ const Publicar = () => {
       return;
     }
 
-    const reader = new FileReader(); // Cria um leitor de arquivos
-
-    // Quando o arquivo for carregado
+    const reader = new FileReader();
     reader.onload = () => {
-      const base64String = reader.result.split(",")[1]; // Extrai a parte base64 que seria o  src da imagem
+      const base64String = reader.result.split(",")[1];
       definirImagem(base64String, file.name);
+      setErroLocal("");
     };
-
-    reader.readAsDataURL(file); // Converte o arquivo para base64
+    reader.readAsDataURL(file);
   };
 
   const lidarComKeyDown = (e) => {
@@ -94,21 +86,19 @@ const Publicar = () => {
 
     const novaTag = tagInput.trim().toLowerCase();
 
-    if (!novaTag)
-      return setErroTags("Digite uma tag antes de pressionar Enter.");
-    if (tags && tags.includes(novaTag))
-      return setErroTags("Essa tag já foi adicionada.");
-    if (tags.length >= 4)
-      return setErroTags("Você não pode adicionar mais de 4 tags.");
+    if (!novaTag) return setErroTags("Digite uma tag antes de pressionar Enter.");
+    if (tags && tags.includes(novaTag)) return setErroTags("Essa tag já foi adicionada.");
+    if (tags.length >= 4) return setErroTags("Você não pode adicionar mais de 4 tags.");
     if (allTags.length > 0 && !allTags.includes(novaTag))
       return setErroTags("Tag inválida. Escolha uma tag válida");
+    
     adicionarTag(novaTag);
     setErroTags("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    publicarPost();
+    await publicarPost();
     setErroTags("");
     setErroLocal("");
   };
@@ -119,79 +109,87 @@ const Publicar = () => {
         <ContainerImg>
           <Img
             src={image ? `data:image/png;base64,${image}` : defaultImg}
-            alt="Imagem de exemplo"
+            alt="Preview do projeto"
           />
         </ContainerImg>
+        
         <ContainerButton>
-          <ButtonUploadImg onClick={() => inputRef.current.click()}>
-            <p>Carregar Imagem </p>
+          <ButtonUploadImg type="button" onClick={() => inputRef.current.click()}>
+            <p>Carregar Imagem</p>
             <input
               type="file"
               ref={inputRef}
-              accept="image/"
+              accept="image/*"
               onChange={lidarComUpload}
               style={{ display: "none" }}
             />
-            <img src={uploadIcon} alt="Ícone de upload" />
+            <FaUpload />
           </ButtonUploadImg>
+          
           {image && (
             <ContainerSubtittle>
               <p>{imageFileName}</p>
               <img
                 src={closeIcon}
-                alt="Ícone de lixeira"
+                alt="Remover imagem"
                 onClick={removerImagem}
               />
             </ContainerSubtittle>
           )}
         </ContainerButton>
-        {erroLocal && <ErrorImg>{erroLocal}</ErrorImg>}
+        {erroLocal && <ErrorText>{erroLocal}</ErrorText>}
       </ContainerUploadImg>
+
       <ContainerForm>
-        <h2>Novo Projeto </h2>
+        <h2>Novo Projeto</h2>
+        
         <Form onSubmit={handleSubmit}>
           <CampoInput>
-            <label>Título do projeto</label>
+            <label htmlFor="title">Título do projeto</label>
             <input
               type="text"
               id="title"
               name="title"
               value={title}
               onChange={(e) => atualizarDado("title", e.target.value)}
+              disabled={loading}
               required
-            ></input>
+            />
           </CampoInput>
+          
           <ContainerInputDescricao>
-            <label>Descrição</label>
+            <label htmlFor="content">Descrição</label>
             <textarea
               id="content"
               name="content"
               value={content}
               onChange={(e) => atualizarDado("content", e.target.value)}
+              disabled={loading}
               required
             />
           </ContainerInputDescricao>
+          
           <ContainerTags>
             <label htmlFor="tags">Tags</label>
             <input
               id="tags"
               name="tags"
               type="text"
-              placeholder="Digite e pressione Enter(Ex: JavaScript, React, Node.js)"
+              placeholder="Digite e pressione Enter (Ex: React, Node.js)"
               value={tagInput}
               onChange={(e) => atualizarTagInput(e.target.value)}
               onKeyDown={lidarComKeyDown}
+              disabled={loading}
             />
-            {erroTags && (
-              <p style={{ color: "red", marginTop: "15px" }}>{erroTags}</p>
-            )}
+            {erroTags && <ErrorText>{erroTags}</ErrorText>}
+            
             {tags?.length > 0 && (
               <TagList>
                 {tags.map((tag, index) => (
                   <TagItem key={index}>
                     <span>{tag}</span>
-                    <TagRemoveButton>
-                      <IoMdClose onClick={() => removerTag(index)} />
+                    <TagRemoveButton type="button" onClick={() => removerTag(index)}>
+                      <IoMdClose />
                     </TagRemoveButton>
                   </TagItem>
                 ))}
@@ -200,17 +198,24 @@ const Publicar = () => {
           </ContainerTags>
 
           <ContainerBotoes>
-            <BotaoDescartar onClick={limparFormulario} type="button">
+            <BotaoDescartar 
+              onClick={limparFormulario} 
+              type="button" 
+              disabled={loading}
+            >
               Descartar <FaTrash />
             </BotaoDescartar>
-            <BotaoPublicar type="submit">
+            
+            <BotaoPublicar type="submit" disabled={loading}>
               {!loading ? (
                 <>
                   Publicar <MdPublish />
                 </>
               ) : (
-                <LuLoader />
-              )}{" "}
+                <>
+                  Publicando... <LuLoader className="spin" />
+                </>
+              )}
             </BotaoPublicar>
           </ContainerBotoes>
         </Form>

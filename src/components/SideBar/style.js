@@ -2,35 +2,32 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { device } from "../../styles/breakpoints";
 
-// 1. O Container principal
+/* 1. O Container principal */
 export const SidebarContainer = styled.aside`
   background-color: #171d1f;
 
-  /* --- PADRÃO: DESKTOP (> 1024px) --- */
-  width: 18rem;
+  /* --- PADRÃO: DESKTOP --- */
+  width: 22rem;
   height: 100vh;
   position: sticky;
   top: 0;
 
   display: flex;
   flex-direction: column;
-  padding: 2rem 1rem;
-  border-radius: 8px;
+  padding: 3rem 1.6rem;
+  border-radius: 0.8rem;
   z-index: 100;
 
-  /* Transição suave para quando afinar no Tablet */
   transition: all 0.3s ease;
 
   /* --- MODO TABLET (Fina) --- */
-  /* Usamos device.tablet (max-width: 1024px) */
   @media ${device.tablet} {
-    width: 5rem; /* 80px */
+    width: 8rem;
     align-items: center;
-    padding: 2rem 0.5rem;
+    padding: 3rem 1rem;
   }
 
-  /* --- MODO MOBILE (Barra Baixo) --- */
-  /* Usamos device.mobile (max-width: 768px) */
+  /* --- MODO MOBILE (Barra Inferior) --- */
   @media ${device.mobile} {
     position: fixed;
     bottom: 0;
@@ -38,20 +35,22 @@ export const SidebarContainer = styled.aside`
     top: auto;
 
     width: 100%;
-    height: 4.375rem; /* 70px */
+    height: 6rem;
 
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
     padding: 0 1rem;
 
-    border-radius: 1rem 1rem 0 0; /* 16px */
-    box-shadow: 0px -0.25rem 1.25rem rgba(0, 0, 0, 0.4);
+    border-radius: 1.6rem 1.6rem 0 0;
+    box-shadow: 0 -0.2rem 1rem rgba(0, 0, 0, 0.3);
   }
 `;
-// 2. A Logo
+
+/* 2. A Logo */
 export const LogoImg = styled.img`
-  transition: opacity 0.3s; /* Logo desaparece suavemente */
+  width: 12rem;
+  transition: opacity 0.3s;
 
   @media ${device.tablet} {
     display: none;
@@ -72,79 +71,117 @@ export const Nav = styled.nav`
 export const ListaNav = styled.ul`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.6rem;
   width: 100%;
-  padding: 0;
+
+  @media ${device.tablet} {
+    justify-content: space-around; /* Distribui os ícones por igual na barra */
+    align-items: center;
+  }
 
   @media ${device.mobile} {
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around; /* Distribui os ícones por igual na barra */
+    align-items: center;
     gap: 0;
   }
 `;
 
-// 3. O Botão Publicar
+/* 3. O Botão Publicar (versão FAB no Mobile) */
 export const LinkPublicarEstilizado = styled(NavLink)`
   display: flex;
   justify-content: center;
   align-items: center;
   color: #81fe88;
-  border: 1px solid #81fe88;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border: 0.1rem solid #81fe88;
+  padding: 1.2rem;
+  border-radius: 0.8rem;
   text-decoration: none;
   font-size: 1.6rem;
+  font-weight: bold;
+  transition: all 0.2s ease;
 
   .icone-mobile {
     display: none;
   }
 
+  &:hover {
+    background-color: #81fe88;
+    color: #171d1f;
+  }
+
   /* TABLET: Vira Bolinha na Lateral */
   @media ${device.tablet} {
     border-radius: 50%;
-    width: 3.125rem; /* 50px */
-    height: 3.125rem; /* 50px */
+    width: 4.8rem;
+    height: 4.8rem;
     padding: 0;
+    margin-bottom: 5rem;
 
     .texto-desktop {
       display: none;
     }
     .icone-mobile {
       display: block;
+      font-size: 2rem;
+    }
+  }
+
+  /* MOBILE: Vira FAB (Floating Action Button) flutuando no canto direito! */
+  @media ${device.mobile} {
+    position: fixed;
+    bottom: 5rem; /* Fica acima da barra inferior (que tem 6rem) */
+    right: 2rem;
+
+    width: 5.6rem;
+    height: 5.6rem;
+    border-radius: 50%;
+
+    background-color: #81fe88;
+    color: #171d1f;
+    box-shadow: 0 0.4rem 1.2rem rgba(129, 254, 136, 0.3); /* Sombra neon */
+    z-index: 1000;
+
+    .icone-mobile {
+      display: block;
+      font-size: 2.2rem;
+    }
+
+    &:hover {
+      transform: scale(1.05); /* Efeito de crescer ao invés de mudar a cor */
     }
   }
 `;
 
-// 4. Os Itens do Menu
+/* 4. Os Itens do Menu */
 export const ItemListaNav = styled.li`
   width: 100%;
-  list-style: none;
 
   @media ${device.mobile} {
     width: auto;
   }
 `;
 
-/* O LINK CLICÁVEL */
 export const LinkNavegacao = styled(NavLink)`
   display: flex;
   align-items: center;
-  gap: 1rem; /* ~16px */
+  gap: 1.6rem;
   width: 100%;
-  padding: 0.75rem 1rem; /* 12px 16px */
-  border-radius: 0.5rem;
+  padding: 1.2rem 1.6rem;
+  border-radius: 0.8rem;
   text-decoration: none;
   color: #888888;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 
   img {
-    width: 1.5rem; /* 24px */
-    height: 1.5rem;
+    width: 2rem;
+    height: 2rem;
   }
 
   p {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     margin: 0;
+    font-weight: 500;
   }
 
   &:hover {
@@ -161,10 +198,9 @@ export const LinkNavegacao = styled(NavLink)`
     }
   }
 
-  /* TABLET e MOBILE: Esconde texto */
   @media ${device.tablet} {
     justify-content: center;
-    padding: 0.625rem; /* 10px */
+    padding: 1.2rem;
 
     .texto-link {
       display: none;
@@ -172,52 +208,54 @@ export const LinkNavegacao = styled(NavLink)`
   }
 
   @media ${device.mobile} {
+    padding: 1rem;
     &.active {
       background-color: transparent;
-      color: #81fe88;
+      /* Destaque verde no ícone da página atual */
+      filter: sepia(100%) hue-rotate(80deg) saturate(300%) brightness(1.2);
     }
     &:hover {
       background-color: transparent;
     }
   }
 `;
-// 5. O Perfil do Usuário (Rodapé da barra)
+
+/* 5. O Perfil do Usuário (Ajuste de Padding e Ocultação no Mobile) */
 export const UserProfile = styled(NavLink)`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 1.2rem;
   width: 100%;
-  padding: 14px;
+
+  /* Ajuste do Padding: Mais equilibrado em Desktop */
+  padding: 1.2rem 1.6rem;
   background-color: #2d3538;
-  border-radius: 8px;
+  border-radius: 0.8rem;
   margin-top: auto;
-  cursor: pointer;
   text-decoration: none;
-  border: none;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 
   &:hover {
     background-color: #3a4448;
   }
 
-  /* MODO FINO */
   @media ${device.tablet} {
-    justify-content: center; /* Centraliza o avatar */
-    padding: 10px 0;
-    background-color: transparent; /* Tira o fundo para ficar limpo */
+    justify-content: center;
+    padding: 1.2rem 0;
+    background-color: transparent;
   }
 
+  /* --- O CULPADO ELIMINADO --- */
   @media ${device.mobile} {
-    justify-content: end;
+    display: none; /* Remove totalmente do DOM no celular */
   }
 `;
 
-// 6. As Informações do Usuário (Nome/Arroba)
 export const UserInfo = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  gap: 0.75rem;
+  gap: 0.4rem;
 
   h3 {
     color: #ffffff;
@@ -226,19 +264,16 @@ export const UserInfo = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin: 0;
   }
 
   p {
     color: #888888;
     font-size: 1.2rem;
-    margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  /* ESCONDE TUDO NO MODO FINO */
   @media ${device.tablet} {
     display: none;
   }

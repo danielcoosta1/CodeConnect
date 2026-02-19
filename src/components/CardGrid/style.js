@@ -3,23 +3,19 @@ import { device } from "../../styles/breakpoints";
 
 export const CardGrid = styled.section`
   display: grid;
-
-  /* Desktop: Tenta colocar cards de 400px a 1fr.
-     Se a tela for grande, cabem 3. Se for média, cabem 2.
-  */
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(25rem, 1fr)
-  ); /* 400px -> 25rem */
-
-  gap: 1.5rem; /* 24px */
+  
+  /* Forçamos a largura mínima de 320px (32rem) para os cards ficarem bem distribuídos */
+  grid-template-columns: repeat(auto-fill, minmax(32rem, 1fr));
+  gap: 2.4rem; /* Respiro entre os cards */
+  
   align-items: start;
   width: 100%;
+  justify-content: center;
 
   /* --- MOBILE --- */
-  /* No celular, o grid vira uma coluna só (1fr) */
   @media ${device.mobile} {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: 1fr; /* Uma coluna no celular */
+    gap: 1.6rem;
+    width: 100%;
   }
 `;
