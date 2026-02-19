@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
-import { device } from "../../styles/breakpoints"; // <--- Importando nossos breakpoints
+import { device } from "../../styles/breakpoints";
 
-// --- ANIMAÇÃO DE ENTRADA (FADE IN) ---
 const fadeIn = keyframes`
   from {
     opacity: 0;
-    transform: translateY(1.25rem); /* 20px -> 1.25rem */
+    transform: translateY(2rem);
   }
   to {
     opacity: 1;
@@ -14,40 +13,53 @@ const fadeIn = keyframes`
   }
 `;
 
-// --- WRAPPER GERAL ---
 export const ContainerWrapper = styled.main`
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #01080e;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   color: #e1e1e1;
-  padding: 2rem;
-`;
+  padding: 2.4rem;
 
-// --- O CARTÃO CENTRAL ---
-export const ContainerContent = styled.section`
-  display: flex;
-  width: 100%;
-  max-width: 75rem; /* 1200px -> 75rem */
-
-  background-color: #171d1f;
-  border-radius: 1rem; /* 16px -> 1rem */
-  overflow: hidden;
-  box-shadow: 0 0.625rem 2.5rem rgba(0, 0, 0, 0.5); /* 10px 40px */
-
-  /* RESPONSIVIDADE PADRONIZADA */
-  /* Abaixo de 1280px (Tablet/Laptop pequeno), vira coluna única */
+  /* --- MÁGICA DA MARCA D'ÁGUA --- */
   @media ${device.tablet} {
-    flex-direction: column;
-    max-width: 37.5rem; /* ~600px */
+    background-image: linear-gradient(
+        rgba(1, 8, 14, 0.85), 
+        rgba(1, 8, 14, 0.95)
+      ),
+      url(${(props) => props.$bgImage});
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; 
+  }
+
+  @media ${device.mobile} {
+    padding: 1.6rem;
   }
 `;
 
-// --- ÁREA DA IMAGEM ---
+export const ContainerContent = styled.section`
+  display: flex;
+  width: 100%;
+  max-width: 100rem;
+  background-color: #171d1f;
+  border-radius: 1.6rem; 
+  overflow: hidden;
+  box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.5); 
+
+  @media ${device.tablet} {
+    flex-direction: column;
+    max-width: 50rem; 
+    
+    /* Glassmorphism */
+    background-color: rgba(23, 29, 31, 0.85); 
+    backdrop-filter: blur(0.5rem);
+    border: 0.1rem solid rgba(255, 255, 255, 0.05); 
+  }
+`;
+
 export const ContainerImg = styled.div`
   flex: 1;
   display: flex;
@@ -61,40 +73,47 @@ export const ContainerImg = styled.div`
     object-fit: cover;
   }
 
-  /* Some com a imagem no Tablet para focar no formulário */
   @media ${device.tablet} {
     display: none;
   }
 `;
 
-// --- ÁREA DO FORMULÁRIO ---
 export const ContainerForm = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  padding: 4rem; /* 64px */
-  gap: 2rem;
+  padding: 6rem 4rem; 
+  gap: 2.4rem;
   position: relative;
 
   h1 {
-    font-size: 3rem;
+    font-size: 3.6rem;
     font-weight: 700;
     color: #fff;
+    margin: 0;
   }
 
-  p {
-    font-size: 1.3rem;
+  p.subtitle {
+    font-size: 1.6rem;
     color: #a0a0a0;
+    margin-top: -1.6rem; 
   }
 
-  /* Ajustes finos para Mobile */
+  p.error-message {
+    color: #ff6b6b;
+    font-size: 1.4rem;
+    margin: 0;
+  }
+
   @media ${device.mobile} {
-    padding: 2rem;
+    padding: 3.2rem 2rem;
 
     h1 {
-      font-size: 2rem;
+      font-size: 2.8rem;
+    }
+    p.subtitle {
+      font-size: 1.4rem;
     }
   }
 `;
@@ -102,40 +121,45 @@ export const ContainerForm = styled.div`
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
   width: 100%;
 `;
 
-// --- INPUTS PADRONIZADOS ---
 export const CampoInput = styled.div`
   display: flex;
   flex-direction: column;
 
   label {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
     color: #e1e1e1;
     font-weight: 600;
   }
 
   input {
-    padding: 1.2rem 1.5rem;
-    border: 2px solid transparent;
-    border-radius: 0.5rem; /* 8px */
+    padding: 1.2rem 1.6rem;
+    border: 0.2rem solid transparent;
+    border-radius: 0.8rem; 
     background-color: #2a3236;
     color: white;
-    font-size: 1.2rem;
+    font-size: 1.6rem;
+    font-family: inherit;
     transition: all 0.2s ease-in-out;
 
     &::placeholder {
       color: #888;
-      font-size: 1.1rem;
+      font-size: 1.4rem;
     }
 
     &:focus {
       outline: none;
       background-color: #333c42;
       border-color: #81fe88;
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
     }
   }
 `;
@@ -145,48 +169,58 @@ export const Button = styled.button`
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-
   padding: 1.2rem;
   border: none;
-  border-radius: 0.5rem; /* 8px */
+  border-radius: 0.8rem; 
   background-color: #81fe88;
-  color: #01080e;
-
+  color: #132e35;
   font-weight: 800;
-  font-size: 1.3rem;
+  font-size: 1.6rem;
   cursor: pointer;
-
-  transition:
-    transform 0.2s,
-    background-color 0.2s;
+  transition: all 0.2s ease;
   margin-top: 1rem;
 
-  p {
-    color: #132e35;
-    margin: 0;
-  }
-
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: #6be276;
-    transform: translateY(-2px);
+    transform: translateY(-0.2rem);
+    box-shadow: 0 0.4rem 1.2rem rgba(129, 254, 136, 0.3);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  svg {
+    font-size: 2rem;
+  }
+
+  .spin {
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 `;
 
-// --- LINKS DE LOGIN ---
 export const ContainerLogin = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.8rem;
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 1.6rem;
 
   p {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
+    color: #e1e1e1;
+    margin: 0;
   }
 `;
 
@@ -196,14 +230,18 @@ export const LinkLogin = styled(Link)`
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  font-size: 1.4rem;
-  gap: 0.5rem;
+  font-size: 1.6rem;
+  gap: 0.6rem;
   text-decoration: none;
   transition: 0.2s;
 
   &:hover {
     text-decoration: underline;
     color: #fff;
+  }
+
+  svg {
+    font-size: 2rem;
   }
 `;
 
@@ -214,17 +252,24 @@ export const ContainerSucesso = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  gap: 2rem;
+  min-height: 40rem; /* Para não encolher o container de repente */
+  gap: 3.2rem;
   text-align: center;
-  animation: ${fadeIn} 0.6s ease-out;
+  animation: ${fadeIn} 0.5s ease-out;
 
-  > p {
+  p.success-title {
     color: #81fe88;
-    font-size: 2.2rem;
+    font-size: 3.2rem;
     font-weight: 800;
     line-height: 1.2;
-    /* Sombra em REM */
-    text-shadow: 0 0 0.625rem rgba(129, 254, 136, 0.2);
+    text-shadow: 0 0 1rem rgba(129, 254, 136, 0.3);
+    margin: 0;
+  }
+
+  @media ${device.mobile} {
+    p.success-title {
+      font-size: 2.8rem;
+    }
   }
 `;
 
@@ -232,44 +277,43 @@ export const ContainerLoginSucesso = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2.4rem;
   text-align: center;
-  font-size: 1.3rem;
-  color: #e1e1e1;
 
   p {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     color: #ccc;
+    margin: 0;
   }
 `;
 
 export const LinkLoginSucesso = styled(Link)`
   background-color: #81fe88;
   color: #132e35;
-
-  padding: 1.5rem 2rem;
+  padding: 1.6rem 2.4rem;
   width: 100%;
-
-  border-radius: 0.5rem;
+  border-radius: 0.8rem;
   font-weight: 800;
-  font-size: 1.5rem;
-
+  font-size: 1.8rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.8rem;
+  gap: 1.2rem;
   text-decoration: none;
-
-  box-shadow: 0 0.25rem 0.9rem rgba(129, 254, 136, 0.3);
-  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0.4rem 1.2rem rgba(129, 254, 136, 0.3);
+  transition: all 0.2s ease;
 
   &:hover {
-    transform: translateY(-3px);
+    transform: translateY(-0.3rem);
     background-color: #6be276;
-    box-shadow: 0 0.375rem 1.25rem rgba(129, 254, 136, 0.5);
+    box-shadow: 0 0.6rem 1.6rem rgba(129, 254, 136, 0.5);
   }
 
   &:active {
     transform: translateY(0);
+  }
+
+  svg {
+    font-size: 2.4rem;
   }
 `;
