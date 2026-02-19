@@ -1,5 +1,42 @@
 import styled from "styled-components";
-import { device } from "../../styles/breakpoints"; // Importando breakpoints
+import { device } from "../../styles/breakpoints";
+
+// --- MIXINS DE ESTILO (Sincronizados com o Modal) ---
+const commonInputStyles = `
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.6rem; 
+  color: #171d1f; 
+  background-color: #888888; /* Escurecido para bater com o padrão */
+  border: 0.2rem solid transparent;
+  border-radius: 0.8rem;
+  font-family: inherit;
+  transition: 0.2s;
+
+  &::placeholder {
+    color: #333;
+    opacity: 0.7;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #81fe88;
+    background-color: #999;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+`;
+
+const commonLabelStyles = `
+  display: block;
+  margin-bottom: 0.8rem;
+  font-size: 1.4rem; 
+  color: #e1e1e1;
+  font-weight: 600;
+`;
 
 // --- WRAPPER GERAL ---
 export const ContainerWrapper = styled.div`
@@ -7,21 +44,22 @@ export const ContainerWrapper = styled.div`
   width: 100%;
   min-height: 100vh;
   background-color: #171d1f;
+  
+  padding: 4rem; 
+  gap: 4rem; 
+  max-width: 120rem; /* Limita largura em telas muito grandes */
+  margin: 0 auto;
 
-  padding: 3rem 4rem; /* 48px 64px */
-  gap: 4rem; /* 64px */
-
-  /* No Tablet (1280px), já vira coluna para não espremer o form */
   @media ${device.tablet} {
     flex-direction: column;
-    padding: 2rem;
-    gap: 2rem;
+    padding: 3rem 2rem;
+    gap: 3rem;
     align-items: center;
   }
 
   @media ${device.mobile} {
-    padding: 1.5rem 1rem;
-    padding-bottom: 6rem; /* Espaço extra embaixo por conta da BottomBar */
+    padding: 2rem 1.6rem;
+    padding-bottom: 8rem; /* Espaço extra embaixo por conta da BottomBar */
   }
 `;
 
@@ -30,38 +68,37 @@ export const ContainerUploadImg = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 35rem; /* ~520px (limita a largura da imagem) */
+  max-width: 40rem; 
 
   @media ${device.tablet} {
-    max-width: 80%; /* No tablet, pode ocupar a largura toda */
-    align-items: center;
+    max-width: 100%; 
   }
 `;
 
 export const ContainerImg = styled.div`
-  background-color: #888888;
-  border-radius: 1rem; /* 16px */
+  background-color: #2d3538; /* Fundo escuro elegante se imagem não carregar */
+  border-radius: 1.6rem; 
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
+  border: 0.1rem solid #333;
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.2);
 `;
 
 export const Img = styled.img`
-  width: 100%; /* Ocupa 100% do ContainerImg */
+  width: 100%;
   height: auto;
   object-fit: cover;
   display: block;
-
-  /* Garante uma altura mínima visual se não tiver imagem */
-  min-height: 15rem;
+  min-height: 30rem; /* Altura mínima elegante para a capa do projeto */
 `;
 
 export const ContainerButton = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   width: 100%;
 `;
 
@@ -71,27 +108,26 @@ export const ButtonUploadImg = styled.button`
   justify-content: center;
   gap: 1rem;
 
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   font-weight: 600;
   color: #c1c1c1;
 
   padding: 1.2rem;
   background-color: rgba(255, 255, 255, 0.05);
-  border: 2px solid #888888;
-  border-radius: 0.5rem;
+  border: 0.1rem solid #888888;
+  border-radius: 0.8rem;
   cursor: pointer;
   transition: 0.3s;
   width: 100%;
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: #e1e1e1;
-    color: #fff;
+  svg {
+    font-size: 1.8rem;
   }
 
-  img {
-    width: 1.5rem;
-    height: 1.5rem;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #81fe88;
+    color: #fff;
   }
 `;
 
@@ -102,19 +138,19 @@ export const ContainerSubtittle = styled.div`
 
   color: #b0b0b0;
   margin-top: 1rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
 
   background: rgba(0, 0, 0, 0.2);
-  padding: 0.8rem;
-  border-radius: 0.375rem; /* 6px */
+  padding: 1rem 1.6rem;
+  border-radius: 0.8rem; 
 
   img {
     cursor: pointer;
-    width: 1.25rem; /* 20px */
-    height: 1.25rem;
+    width: 1.6rem; 
+    height: 1.6rem;
     transition: 0.2s;
     &:hover {
-      opacity: 0.8;
+      filter: brightness(1.5);
     }
   }
 `;
@@ -126,14 +162,14 @@ export const ContainerForm = styled.div`
   color: #e1e1e1;
 
   h2 {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
+    font-size: 3.2rem;
+    margin-bottom: 2.4rem;
     font-weight: 700;
   }
 
   @media ${device.mobile} {
     h2 {
-      font-size: 2rem;
+      font-size: 2.4rem;
       text-align: center;
     }
   }
@@ -142,45 +178,7 @@ export const ContainerForm = styled.div`
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
-
-  @media ${device.mobile} {
-    gap: 1.5rem;
-  }
-`;
-
-// --- MIXINS DE ESTILO (Para não repetir código) ---
-
-const commonInputStyles = `
-  width: 100%;
-
-  padding: 1.2rem;
-  font-size: 1.2rem; 
-  color: #171d1f; 
-  background-color: #bcbcbc; /* Um pouco mais claro que #888 para contraste */
-  border: 2px solid transparent;
-  border-radius: 0.5rem;
-  font-family: inherit;
-  transition: 0.2s;
-
-  &::placeholder {
-    color: #444;
-    opacity: 0.8;
-  }
-
-  &:focus {
-    outline: none;
-    border-color: #81fe88;
-    background-color: #d1d1d1;
-  }
-`;
-
-const commonLabelStyles = `
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem; 
-  color: #e1e1e1;
-  font-weight: 600;
+  gap: 2rem;
 `;
 
 export const CampoInput = styled.div`
@@ -205,9 +203,8 @@ export const ContainerInputDescricao = styled.div`
 
   textarea {
     ${commonInputStyles};
-    min-height: 15rem; /* 240px */
+    min-height: 20rem; 
     resize: vertical;
-    line-height: 1.5;
   }
 `;
 
@@ -223,25 +220,24 @@ export const ContainerTags = styled.div`
   }
 `;
 
-// --- TAGS VISUAIS ---
 export const TagList = styled.ul`
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 1.6rem;
 `;
 
 export const TagItem = styled.li`
   background-color: #81fe88;
   color: #132e35;
-  padding: 0.6rem 1rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 2rem;
 
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.8rem;
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 1.2rem;
 `;
 
 export const TagRemoveButton = styled.button`
@@ -251,11 +247,22 @@ export const TagRemoveButton = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
-  font-size: 1.2rem;
+  justify-content: center;
+  font-size: 1.6rem;
   padding: 0;
 
   &:hover {
     color: #000;
+  }
+`;
+
+export const ErrorText = styled.p`
+  color: #ff6b6b;
+  font-size: 1.4rem;
+  margin-top: 0.8rem;
+
+  @media ${device.mobile} {
+    font-size: 1.2rem;
   }
 `;
 
@@ -267,26 +274,12 @@ export const ContainerBotoes = styled.div`
   margin-top: 2rem;
 
   @media ${device.mobile} {
-    flex-direction: column-reverse; /* Publicar em cima, Descartar embaixo */
-    gap: 1rem;
+    flex-direction: column-reverse; 
+    gap: 1.6rem;
 
     button {
       width: 100%;
     }
-  }
-`;
-
-export const ErrorImg = styled.p`
-  color: red;
-  font-size: 1.4rem;
-  margin-top: 1rem;
-
-  @media ${device.tablet} {
-    font-size: 1.25rem;
-  }
-
-  @media ${device.mobile} {
-    font-size: 1rem;
   }
 `;
 
@@ -297,19 +290,24 @@ export const BotaoDescartar = styled.button`
   justify-content: center;
   gap: 0.8rem;
 
-  border: 2px solid #81fe88;
+  border: 0.2rem solid #81fe88;
   color: #81fe88;
   background-color: transparent;
 
-  padding: 1.2rem;
-  border-radius: 0.5rem;
+  padding: 1.2rem 2.4rem;
+  border-radius: 0.8rem;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1.6rem;
   font-weight: bold;
   transition: 0.2s;
 
   &:hover {
     background-color: rgba(129, 254, 136, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
@@ -320,29 +318,42 @@ export const BotaoPublicar = styled.button`
   justify-content: center;
   gap: 0.8rem;
 
-  font-size: 1.1rem;
+  font-size: 1.6rem;
   background-color: #81fe88;
   color: #132e35;
 
-  padding: 1.2rem;
-  border-radius: 0.5rem;
+  padding: 1.2rem 3.2rem;
+  border-radius: 0.8rem;
   border: none;
   cursor: pointer;
   font-weight: bold;
   transition: 0.2s;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: #6be276;
-    transform: translateY(-2px);
-    box-shadow: 0 0.25rem 0.75rem rgba(129, 254, 136, 0.3);
+    transform: translateY(-0.2rem);
+    box-shadow: 0 0.4rem 1.2rem rgba(129, 254, 136, 0.3);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: translateY(0);
   }
 
-  /* SVG dentro do botão */
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
   svg {
-    font-size: 1.3rem;
+    font-size: 1.8rem;
+  }
+
+  .spin {
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 `;
