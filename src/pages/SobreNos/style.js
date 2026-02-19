@@ -2,38 +2,38 @@ import styled, { css } from "styled-components";
 import { device } from "../../styles/breakpoints";
 
 // --- MIXIN TIPOGRAFIA ---
-// Usando o helper 'css' do styled-components para garantir sintaxe correta
+// Escala padronizada com o restante do app (Base: 16px para texto)
 const typographyMixin = css`
   h2 {
-    color: #bcbcbc;
-    font-weight: 500;
-    font-size: 2rem;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 2.4rem; /* 24px - Reduzido, mais elegante */
     line-height: 1.2;
-    margin-bottom: 1rem; /* Espaço entre título e parágrafo */
+    margin-bottom: 1.2rem;
   }
 
   p {
-    color: #e1e1e1;
-    font-weight: 300;
-    font-size: 1.3rem;
-    line-height: 1.6; /* Leitura mais confortável */
+    color: #cccccc;
+    font-weight: 400;
+    font-size: 1.5rem; /* 15px - Padrão de leitura sem gritar */
+    line-height: 1.6; 
   }
 
   @media ${device.tablet} {
     h2 {
-      font-size: 1.8rem;
+      font-size: 2rem;
     }
     p {
-      font-size: 1.2rem;
+      font-size: 1.4rem;
     }
   }
 
   @media ${device.mobile} {
     h2 {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
     }
     p {
-      font-size: 1.1rem;
+      font-size: 1.3rem;
     }
   }
 `;
@@ -42,39 +42,35 @@ export const ContainerMain = styled.section`
   display: flex;
   flex-direction: column;
   width: 100%;
-
-  /* Removemos o padding lateral fixo para a capa encostar nas bordas se quiser */
-  /* Mas se quiser manter o conteúdo alinhado, usamos um wrapper interno */
   background-color: #171d1f;
-  padding-bottom: 4rem; /* Respiro no final */
+  padding-bottom: 6rem; 
 `;
 
 export const ImgCapa = styled.img`
   width: 100%;
-  height: 20rem; /* Define uma altura fixa para a capa */
-  object-fit: cover; /* Corta a imagem para preencher sem distorcer */
-  border-radius: 0 0 1rem 1rem; /* Charme: bordas arredondadas só embaixo */
+  height: 30rem; /* Aumentado de 20 para 30rem para visual de Hero */
+  object-fit: cover; 
+  border-radius: 0 0 1.6rem 1.6rem; 
   margin-bottom: 4rem;
 
   @media ${device.mobile} {
-    height: 12rem; /* Capa menor no celular */
-    margin-bottom: 2rem;
+    height: 16rem; 
+    margin-bottom: 2.4rem;
   }
 `;
 
 export const ContainerWrapper = styled.section`
   display: flex;
   flex-direction: column;
-  gap: 6rem; /* Mais respiro entre seções */
+  gap: 8rem; /* Respiro bem generoso entre as seções */
 
-  /* Centraliza o conteúdo e limita a largura para leitura (não ficar muito esticado) */
-  max-width: 75rem; /* 1200px */
+  max-width: 100rem; /* Alinhado com o max-width do Perfil e Feed */
   margin: 0 auto;
-  padding: 0 2rem; /* Padding lateral para o texto não colar na borda */
+  padding: 0 2.4rem; 
 
   @media ${device.tablet} {
-    gap: 4rem;
-    padding: 0 1.5rem;
+    gap: 5rem;
+    padding: 0 1.6rem;
   }
 `;
 
@@ -82,76 +78,70 @@ export const ContainerApresentacao = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  gap: 1.5rem;
-  
+  text-align: center; 
+  gap: 1.6rem;
   margin: 0 auto;
+  max-width: 80rem; 
 
-  /* 1. Aplica a base (H2, P e seus breakpoints) */
   ${typographyMixin}
 
-  /* 2. Estilização EXCLUSIVA do H1 (que não existe no mixin) */
   h1 {
-    font-size: 3rem;
+    font-size: 3.6rem; /* 36px - Destaque sem exageros */
     color: #81fe88;
-    line-height: 1.1;
+    line-height: 1.2;
     font-weight: 700;
   }
 
-  /* 3. Ajustes finos (Sobrescrita) */
-  /* Como é a capa, quero o H2 um pouco mais claro que o padrão cinza do mixin */
   h2 {
-    color: #ffffff;
-    font-weight: 400; /* Mais leve que o bold */
+    color: #e1e1e1;
+    font-weight: 500; 
+    font-size: 1.8rem; /* Subtítulo elegante */
+    margin-bottom: 0.8rem;
   }
 
-  /* Breakpoints exclusivos do H1 */
   @media ${device.tablet} {
     h1 {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
     }
   }
 
   @media ${device.mobile} {
     h1 {
-      font-size: 2rem;
+      font-size: 2.4rem;
     }
   }
 `;
 
 export const ContainerMissao = styled.div`
   display: flex;
-  align-items: center; /* Alinha verticalmente imagem e texto */
+  align-items: center; 
   justify-content: space-between;
-  gap: 4rem;
+  gap: 6rem;
 
-  /* No Tablet (1280px) já vira coluna, senão fica apertado */
   @media ${device.tablet} {
-    flex-direction: column-reverse; /* Imagem em cima, texto embaixo? Ou normal? */
-    /* Vamos manter normal: Texto em cima, Imagem embaixo no mobile fica bom */
     flex-direction: column;
-    gap: 2rem;
-
+    gap: 3.2rem;
+    text-align: center; /* Centraliza no mobile */
   }
 `;
 
 export const ContainerWarapperMissao = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1; /* Ocupa o espaço disponível */
-  gap: 1rem;
+  flex: 1; 
+  gap: 1.6rem;
 
-  ${typographyMixin}/* Aplica o mixin corrigido */
+  ${typographyMixin}
 `;
 
 export const ImgMissao = styled.img`
-  width: 45%; /* Um pouco maior */
-  max-width: 30rem; /* Limite máximo */
-  border-radius: 1rem;
-  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.3); /* Sombra para destacar */
+  width: 45%; 
+  max-width: 40rem; 
+  border-radius: 1.6rem;
+  box-shadow: 0 0.8rem 2.4rem rgba(0, 0, 0, 0.3); 
 
   @media ${device.tablet} {
-    width: 80%; /* No tablet ocupa mais espaço */
+    width: 90%; 
     max-width: 100%;
   }
 `;
@@ -159,68 +149,64 @@ export const ImgMissao = styled.img`
 export const ContainerJunte = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.6rem;
 
-  background-color: #2d3538; /* Um box de destaque */
-  padding: 3rem;
-  border-radius: 1rem;
+  background-color: #2d3538; 
+  padding: 4rem;
+  border-radius: 1.6rem;
   text-align: center;
+  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.15);
 
   ${typographyMixin}
 
-  /* Sobrescreve cores do mixin para dar destaque */
   h2 {
     color: #81fe88;
+    margin-bottom: 0.8rem;
   }
+  
   p {
     max-width: 60rem;
     margin: 0 auto;
   }
 
   @media ${device.mobile} {
-    padding: 2rem;
+    padding: 2.4rem;
   }
 `;
 
 export const FooterMissao = styled.footer`
   display: flex;
-
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.6rem;
   justify-content: center;
   margin-top: 2rem;
 
-  border-top: 1px solid #333;
-  padding-top: 3rem;
+  border-top: 0.1rem solid #333;
+  padding-top: 3.2rem;
 
   p {
     font-weight: 400;
-    font-size: 2rem;
+    font-size: 1.6rem; /* Texto de rodapé legível, mas não gigante */
     color: #888;
   }
 
   @media ${device.tablet} {
-    p {
-      font-size: 1.6rem;
-    }
+    flex-direction: column;
+    text-align: center;
   }
 
   @media ${device.mobile} {
     p {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
     }
   }
 `;
 
 export const ImgFooter = styled.img`
-  width: 5rem; /* 80px */
-  opacity: 0.8; /* Leve transparência */
+  width: 4.8rem; 
+  opacity: 0.8; 
 
   @media ${device.tablet} {
-    width: 3.5rem;
-  }
-
-  @media ${device.mobile} {
-    width: 3rem;
+    width: 4rem;
   }
 `;
