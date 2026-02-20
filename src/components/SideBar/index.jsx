@@ -22,9 +22,11 @@ import accountIconWhite from "./assets/account_circlewhite.svg";
 import infoIconWhite from "./assets/infowhite.svg";
 import { useAuth } from "../../hooks/useAuth.js";
 import ProfileAvatar from "../ProfileAvatar/index.jsx";
+import { useState } from "react";
 
 const SideBar = () => {
   const { logout, user } = useAuth();
+  const [modalSairAberto, setModalSairAberto] = useState(false);
   const links = [
     {
       name: "Feed",
