@@ -29,6 +29,7 @@ import { IoMdClose } from "react-icons/io";
 
 import defaultImg from "./assets/exemplo.png";
 import closeIcon from "./assets/icons/close.svg";
+import ModalConfirmacao from "../../components/ModalConfirmacao";
 
 const Publicar = () => {
   const {
@@ -49,8 +50,12 @@ const Publicar = () => {
     limparFormulario,
     publicarPost,
   } = usePost();
-  
+
   const inputRef = useRef();
+
+  // Estados dos nossos dois Modais
+  const [modalPublicarIsOpen, setModalPublicarIsOpen] = useState(false);
+  const [modalDescartarIsOpen, setModalDescartarIsOpen] = useState(false);
 
   const [erroTags, setErroTags] = useState("");
   const [erroLocal, setErroLocal] = useState("");
@@ -86,25 +91,62 @@ const Publicar = () => {
 
     const novaTag = tagInput.trim().toLowerCase();
 
-    if (!novaTag) return setErroTags("Digite uma tag antes de pressionar Enter.");
-    if (tags && tags.includes(novaTag)) return setErroTags("Essa tag já foi adicionada.");
-    if (tags.length >= 4) return setErroTags("Você não pode adicionar mais de 4 tags.");
+    if (!novaTag)
+      return setErroTags("Digite uma tag antes de pressionar Enter.");
+    if (tags && tags.includes(novaTag))
+      return setErroTags("Essa tag já foi adicionada.");
+    if (tags.length >= 4)
+      return setErroTags("Você não pode adicionar mais de 4 tags.");
     if (allTags.length > 0 && !allTags.includes(novaTag))
       return setErroTags("Tag inválida. Escolha uma tag válida");
-    
+
     adicionarTag(novaTag);
     setErroTags("");
   };
 
-  const handleSubmit = async (e) => {
+  // --- LÓGICA CORRIGIDA DO FORMULÁRIO ---
+
+  // 1. O Form foi validado pelo HTML5 com sucesso? Abre o modal!
+  const tentarPublicar = (e) => {
     e.preventDefault();
+    setModalPublicarIsOpen(true);
+  };
+
+  // 2. O usuário clicou em "Confirmar"? Executa o Back-end!
+  const confirmarPublicacao = async () => {
     await publicarPost();
     setErroTags("");
     setErroLocal("");
   };
 
+  // 3. O usuário confirmou que quer descartar? Limpa tudo!
+  const confirmarDescarte = () => {
+    limparFormulario();
+    setErroLocal("");
+    setErroTags("");
+  };
+
   return (
     <ContainerWrapper>
+      <ModalConfirmacao
+        isOpen={modalPublicarIsOpen}
+        onClose={() => setModalPublicarIsOpen(false)}
+        onConfirm={confirmarPublicacao}
+        titulo="Publicar Projeto"
+        mensagem="Tudo pronto? Tem certeza que deseja publicar este projeto para a comunidade?"
+        textoConfirmar="Publicar"
+      />
+
+      <ModalConfirmacao
+        isOpen={modalDescartarIsOpen}
+        onClose={() => setModalDescartarIsOpen(false)}
+        onConfirm={confirmarDescarte}
+        titulo="Descartar Projeto"
+        mensagem="Tem certeza? Todos os dados preenchidos serão perdidos e não poderão ser recuperados."
+        textoConfirmar="Descartar"
+        isDestructive={true} 
+      />
+
       <ContainerUploadImg>
         <ContainerImg>
           <Img
@@ -112,9 +154,12 @@ const Publicar = () => {
             alt="Preview do projeto"
           />
         </ContainerImg>
-        
+
         <ContainerButton>
-          <ButtonUploadImg type="button" onClick={() => inputRef.current.click()}>
+          <ButtonUploadImg
+            type="button"
+            onClick={() => inputRef.current.click()}
+          >
             <p>Carregar Imagem</p>
             <input
               type="file"
@@ -125,7 +170,7 @@ const Publicar = () => {
             />
             <FaUpload />
           </ButtonUploadImg>
-          
+
           {image && (
             <ContainerSubtittle>
               <p>{imageFileName}</p>
@@ -142,8 +187,9 @@ const Publicar = () => {
 
       <ContainerForm>
         <h2>Novo Projeto</h2>
-        
-        <Form onSubmit={handleSubmit}>
+
+        {/* O onSubmit entra aqui, resgatando a validação nativa! */}
+        <Form onSubmit={tentarPublicar}>
           <CampoInput>
             <label htmlFor="title">Título do projeto</label>
             <input
@@ -156,7 +202,7 @@ const Publicar = () => {
               required
             />
           </CampoInput>
-          
+
           <ContainerInputDescricao>
             <label htmlFor="content">Descrição</label>
             <textarea
@@ -168,7 +214,7 @@ const Publicar = () => {
               required
             />
           </ContainerInputDescricao>
-          
+
           <ContainerTags>
             <label htmlFor="tags">Tags</label>
             <input
@@ -182,13 +228,16 @@ const Publicar = () => {
               disabled={loading}
             />
             {erroTags && <ErrorText>{erroTags}</ErrorText>}
-            
+
             {tags?.length > 0 && (
               <TagList>
                 {tags.map((tag, index) => (
                   <TagItem key={index}>
                     <span>{tag}</span>
-                    <TagRemoveButton type="button" onClick={() => removerTag(index)}>
+                    <TagRemoveButton
+                      type="button"
+                      onClick={() => removerTag(index)}
+                    >
                       <IoMdClose />
                     </TagRemoveButton>
                   </TagItem>
@@ -198,14 +247,15 @@ const Publicar = () => {
           </ContainerTags>
 
           <ContainerBotoes>
-            <BotaoDescartar 
-              onClick={limparFormulario} 
-              type="button" 
+            <BotaoDescartar
+              type="button"
+              onClick={() => setModalDescartarIsOpen(true)}
               disabled={loading}
             >
               Descartar <FaTrash />
             </BotaoDescartar>
-            
+
+            {/* O botão volta a ser type="submit" para engatilhar a checagem do form */}
             <BotaoPublicar type="submit" disabled={loading}>
               {!loading ? (
                 <>
