@@ -22,9 +22,13 @@ import accountIconWhite from "./assets/account_circlewhite.svg";
 import infoIconWhite from "./assets/infowhite.svg";
 import { useAuth } from "../../hooks/useAuth.js";
 import ProfileAvatar from "../ProfileAvatar/index.jsx";
+import { useState } from "react";
+import ModalConfirmacao from "../ModalConfirmacao/index.jsx";
 
 const SideBar = () => {
   const { logout, user } = useAuth();
+  const [modalSairAberto, setModalSairAberto] = useState(false);
+
   const links = [
     {
       name: "Feed",
@@ -52,11 +56,23 @@ const SideBar = () => {
       path: "#",
       src: logoutIcon,
       src2: null,
-      onclick: logout,
+      onclick: (e) => {
+        e.preventDefault(); // Evita que a página recarregue
+        setModalSairAberto(true);
+      },
     },
   ];
   return (
     <SidebarContainer>
+      <ModalConfirmacao
+        isOpen={modalSairAberto}
+        onClose={() => setModalSairAberto(false)}
+        onConfirm={logout}
+        titulo="Sair da conta"
+        mensagem="Tem certeza que deseja sair do CodeConnect?"
+        textoConfirmar="Sair"
+        isDestructive={true} // Isso vai deixar o botão vermelho!
+      />
       <LogoImg src={logoImg} alt="Logo" />
       <Nav>
         <ListaNav>
