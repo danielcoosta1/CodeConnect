@@ -29,6 +29,11 @@ export const ESTADO_LIMPO = {
   userPosts: [],
   loadingProfile: true,
   errorProfile: null,
+
+  //Dados de post individual
+  postDetails: null,
+  loadingPostDetails: true,
+  errorPostDetails: null,
 };
 
 // 2. Tenta ler o rascunho

@@ -6,6 +6,7 @@ import { toastErro, toastSucesso } from "../../utils/toast";
 import {
   createPostRequest,
   fetchMyPosts,
+  fetchPostById,
   fetchPosts,
   getPostsByUserId,
 } from "../../services/postService";
@@ -173,6 +174,25 @@ export const PostProvider = ({ children }) => {
     }
   };
 
+  const carregarPostPorId = async (postId) => {
+    dispatch({ type: "CARREGAR_POST_INICIO" });
+
+    try {
+      const postResponse = await fetchPostById(postId);
+
+      dispatch({
+        type: "CARREGAR_POST_SUCESSO",
+        payload: { post: postResponse },
+      });
+    } catch (error) {
+      dispatch({
+        type: "CARREGAR_POST_ERRO",
+        payload: "Não foi possível carregar os detalhes do post.",
+      });
+      console.error(error);
+    }
+  };
+
   return (
     <PostContext.Provider
       value={{
@@ -204,6 +224,11 @@ export const PostProvider = ({ children }) => {
         loadingProfile: state.loadingProfile,
         errorProfile: state.errorProfile,
 
+        // Estado de post individual
+        postDetails: state.postDetails,
+        loadingPostDetails: state.loadingPostDetails,
+        errorPostDetails: state.errorPostDetails,
+
         //AÇÕES / FUNÇÕES
         carregarPerfilPublico,
         atualizarDado,
@@ -216,6 +241,7 @@ export const PostProvider = ({ children }) => {
         publicarPost,
         carregarPostsDoBanco,
         carregarMeusPostsDoBanco,
+        carregarPostPorId,
       }}
     >
       {" "}

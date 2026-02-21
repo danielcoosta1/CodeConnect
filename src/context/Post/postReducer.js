@@ -159,7 +159,31 @@ export const postReducer = (state, action) => {
         errorProfile: action.payload,
       };
 
-    // --- GRUPO 5: Limpeza ---
+    // --- GRUPO 5: Post  ---
+
+    case "CARREGAR_POST_INICIO":
+      return {
+        ...state,
+        loadingPostDetails: true,
+        errorPostDetails: null,
+        postDetails: null, // Limpa o post anterior
+      };
+
+    case "CARREGAR_POST_SUCESSO":
+      return {
+        ...state,
+        loadingPostDetails: false,
+        postDetails: action.payload.post, // Dados do post
+      };
+
+    case "CARREGAR_POST_ERRO":
+      return {
+        ...state,
+        loadingPostDetails: false,
+        errorPostDetails: action.payload,
+      };
+
+    // --- GRUPO 6: Limpeza ---
 
     // Zera tudo para o estado original (usado após publicar ou ao clicar em descartar)
     case "RESET_FORM":
