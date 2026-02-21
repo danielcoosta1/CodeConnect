@@ -114,3 +114,35 @@ export const getPostsByUserId = async (req, res) => {
     return res.status(500).json({ error: "Erro interno ao buscar post." });
   }
 };
+
+export const getPostById = async (req, res) => {
+  try {
+    const { id } = req.params; // Aqui é o ID do POST
+
+    // Usamos findUnique (ou findFirst) pois queremos apenas UM
+    const post = await prisma.post.findUnique({
+      where: { id: id },
+      include: {
+        author: {
+          select: {
+            id: true,
+            nome: true,
+            sobrenome: true,
+            usuario: true,
+            imagem: true,
+            funcao: true,
+          },
+        },
+      },
+    });
+
+    if (!post) {
+      return res.status(404).json({ error: "Projeto não encontrado." });
+    }
+
+    return res.status(200).json(post);
+  } catch (error) {
+    console.error("Erro ao buscar projeto por ID:", error);
+    return res.status(500).json({ error: "Erro interno ao buscar projeto." });
+  }
+};
