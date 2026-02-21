@@ -5,7 +5,7 @@ import { device } from "../../styles/breakpoints";
 export const CardContainer = styled.article`
   display: flex;
   flex-direction: column;
-
+  cursor: pointer;
   background-color: #171d1f;
   border-radius: 0.8rem;
   padding: 1.6rem;

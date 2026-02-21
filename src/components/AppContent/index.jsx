@@ -37,6 +37,7 @@ const AppContent = () => {
           <Route path="perfil" element={<Perfil />} />
           <Route path="sobre-nos" element={<SobreNos />} />
           <Route path="perfil/:id" element={<PerfilPublico />} />
+          <Route path="post/:id" element={<h1>Página do Post (Em construção)</h1>} />
         </Route>
       </Routes>
     </>
