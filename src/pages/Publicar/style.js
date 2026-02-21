@@ -71,6 +71,9 @@ export const ContainerUploadImg = styled.div`
   max-width: 40rem; 
 
   @media ${device.tablet} {
+    max-width: 70%; 
+  }
+   @media ${device.mobile} {
     max-width: 100%; 
   }
 `;

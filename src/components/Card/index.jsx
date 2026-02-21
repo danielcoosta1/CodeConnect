@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import ProfileAvatar from "../ProfileAvatar";
 import {
   CardContainer,
@@ -13,8 +14,14 @@ import {
 import { FaCode, FaRegComment, FaShareNodes } from "react-icons/fa6";
 
 const Card = ({ post }) => {
+  const navigate = useNavigate();
+  // Função que abre o post inteiro
+  const abrirPost = () => {
+    navigate(`/post/${post.id}`);
+  };
+
   return (
-    <CardContainer>
+    <CardContainer onClick={abrirPost}>
       {post.image && (
         <ImgCard>
           <img
@@ -29,7 +36,12 @@ const Card = ({ post }) => {
         <TitleCard>{post.title}</TitleCard>
         <Description>{post.content}</Description>
 
-        <CardFooter>
+        <CardFooter
+          onClick={
+            (e) =>
+              e.stopPropagation() /* Evita que o clique no footer abra o post */
+          }
+        >
           {post.author && (
             <ActionIcons>
               <IconGroup>

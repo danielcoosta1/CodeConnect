@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Cadastro from "../../pages/Cadastro";
 import Login from "../../pages/Login";
-import ContainerMain from "../ContainerMain";
+
 import Publicar from "../../pages/Publicar";
 import Feed from "../../pages/Feed";
 import Perfil from "../../pages/Perfil";
@@ -9,6 +9,7 @@ import SobreNos from "../../pages/SobreNos";
 import { ToastContainer } from "react-toastify";
 import ProtectedLayout from "../ProtectedLayout";
 import PerfilPublico from "../../pages/PerfilPublico";
+import Post from "../../pages/Post";
 
 const AppContent = () => {
   return (
@@ -37,6 +38,7 @@ const AppContent = () => {
           <Route path="perfil" element={<Perfil />} />
           <Route path="sobre-nos" element={<SobreNos />} />
           <Route path="perfil/:id" element={<PerfilPublico />} />
+          <Route path="post/:id" element={<Post />} />
         </Route>
       </Routes>
     </>
