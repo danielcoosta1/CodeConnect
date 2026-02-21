@@ -88,7 +88,7 @@ export const getMyPosts = async (req, res) => {
 };
 
 //Busca todos os posts de um usuário específico
-export const getPostById = async (req, res) => {
+export const getPostsByUserId = async (req, res) => {
   try {
     const { id } = req.params; // Pega o ID da URL
 
