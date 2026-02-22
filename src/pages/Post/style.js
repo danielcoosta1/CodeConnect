@@ -39,7 +39,82 @@ export const BackButton = styled.button`
     color: #81fe88;
   }
 `;
+export const HeaderTop = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.4rem;
+  flex-wrap: wrap; /* Para não quebrar no mobile se o botão de voltar empurrar */
+  gap: 1.6rem;
 
+  /* Removemos a margem do BackButton original porque o HeaderTop já vai cuidar do espaçamento */
+  ${BackButton} {
+    margin-bottom: 0;
+  }
+`;
+
+export const AuthorActions = styled.div`
+  display: flex;
+  gap: 1.2rem;
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1.6rem;
+    border-radius: 0.8rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    /* --- DESIGN NEUTRO (GHOST BUTTON) --- */
+    background-color: transparent;
+    color: #818388; /* Cinza discreto */
+    border: 0.1rem solid #2d3538; /* Borda da mesma cor das outras divisões */
+  }
+
+  .btn-edit:hover {
+    color: #fff;
+    border-color: #81fe88;
+    background-color: rgba(
+      129,
+      254,
+      136,
+      0.05
+    ); /* Um fundo verde bem fraquinho */
+  }
+
+  .btn-delete:hover {
+    color: #ff5f56;
+    border-color: #ff5f56;
+    background-color: rgba(
+      255,
+      95,
+      86,
+      0.05
+    ); /* Um fundo vermelho bem fraquinho */
+  }
+
+  /* --- MÁGICA DO MOBILE AQUI --- */
+  @media ${device.mobile} {
+    gap: 0.8rem;
+
+    button {
+      padding: 0.8rem; /* Deixa o botão quadradinho */
+    }
+
+    span {
+      display: none; /* Esconde o texto para poupar espaço */
+    }
+
+    svg {
+      width: 1.6rem;
+      height: 1.6rem;
+    }
+  }
+`;
 export const CoverImage = styled.div`
   width: 100%;
   height: 35rem;

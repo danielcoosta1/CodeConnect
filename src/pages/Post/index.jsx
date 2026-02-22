@@ -6,9 +6,10 @@ import LoadingState from "../../components/LoadingState"; // Nossas ferramentas 
 import ErrorState from "../../components/ErrorState"; // Nossas ferramentas globais!
 import { FaArrowLeft, FaShareNodes } from "react-icons/fa6";
 import defaultImg from "../Publicar/assets/exemplo.png";
-import { FaGithub } from "react-icons/fa";
+import { FaGithub, FaPen, FaTrash } from "react-icons/fa";
 import { FaExternalLinkAlt } from "react-icons/fa";
-
+// Substitua o FaPen por FaRegEdit
+import { FaRegEdit } from "react-icons/fa";
 import {
   PostContainer,
   CoverImage,
@@ -27,8 +28,11 @@ import {
   FakeInputComment,
   LinksContainer,
   ProjectLink,
+  HeaderTop,
+  AuthorActions,
 } from "./style";
 import { usePost } from "../../hooks/usePost";
+import { useAuth } from "../../hooks/useAuth";
 import { FaCode, FaRegComment } from "react-icons/fa";
 
 const Post = () => {
@@ -41,6 +45,10 @@ const Post = () => {
     errorPostDetails,
     carregarPostPorId,
   } = usePost();
+
+  const { user } = useAuth();
+
+  const isAuthor = postDetails?.author?.id === user?.id;
 
   useEffect(() => {
     if (id) {
@@ -65,9 +73,29 @@ const Post = () => {
   return (
     <PostContainer>
       <PostHeader>
-        <BackButton onClick={() => navigate(-1)}>
-          <FaArrowLeft /> Voltar
-        </BackButton>
+        <HeaderTop>
+          <BackButton onClick={() => navigate(-1)}>
+            <FaArrowLeft /> Voltar
+          </BackButton>
+
+          {/* Renderização Condicional: Só aparece se for o dono! */}
+          {isAuthor && (
+            <AuthorActions>
+              <button
+                className="btn-edit"
+                onClick={() => console.log("Editar post")}
+              >
+                <FaRegEdit /> <span>Editar</span>
+              </button>
+              <button
+                className="btn-delete"
+                onClick={() => console.log("Excluir post")}
+              >
+                <FaTrash /> <span>Excluir</span>
+              </button>
+            </AuthorActions>
+          )}
+        </HeaderTop>
 
         <CoverImage>
           <img
@@ -81,7 +109,7 @@ const Post = () => {
         </CoverImage>
 
         <PostTitle>{postDetails.title}</PostTitle>
-       <LinksContainer>
+        <LinksContainer>
           <ProjectLink
             href="#"
             target="_blank"
