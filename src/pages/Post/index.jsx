@@ -4,8 +4,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import ProfileAvatar from "../../components/ProfileAvatar";
 import LoadingState from "../../components/LoadingState"; // Nossas ferramentas globais!
 import ErrorState from "../../components/ErrorState"; // Nossas ferramentas globais!
-import { FaArrowLeft } from "react-icons/fa6";
+import { FaArrowLeft, FaShareNodes } from "react-icons/fa6";
 import defaultImg from "../Publicar/assets/exemplo.png";
+import { FaGithub } from "react-icons/fa";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 import {
   PostContainer,
@@ -17,8 +19,17 @@ import {
   TagList,
   TagItem,
   BackButton,
+  AuthorContainer,
+  ActionIcons,
+  IconGroup,
+  CodeContainer,
+  CommentsContainer,
+  FakeInputComment,
+  LinksContainer,
+  ProjectLink,
 } from "./style";
 import { usePost } from "../../hooks/usePost";
+import { FaCode, FaRegComment } from "react-icons/fa";
 
 const Post = () => {
   const { id } = useParams(); // Pega o ID da URL
@@ -53,50 +64,104 @@ const Post = () => {
   // Renderização de Sucesso
   return (
     <PostContainer>
-      <BackButton onClick={() => navigate(-1)}>
-        <FaArrowLeft /> Voltar
-      </BackButton>
-
-      <CoverImage>
-        <img
-          src={
-            postDetails.image
-              ? `data:image/png;base64,${postDetails.image}`
-              : defaultImg
-          }
-          alt={`Capa do projeto ${postDetails.title}`}
-        />
-      </CoverImage>
-
       <PostHeader>
-        <AuthorInfo to={`/perfil/${postDetails.author.id}`}>
-          <ProfileAvatar
-            src={postDetails.author?.imagem}
-            size={50}
-            hasBorder={true}
+        <BackButton onClick={() => navigate(-1)}>
+          <FaArrowLeft /> Voltar
+        </BackButton>
+
+        <CoverImage>
+          <img
+            src={
+              postDetails.image
+                ? `data:image/png;base64,${postDetails.image}`
+                : defaultImg
+            }
+            alt={`Capa do projeto ${postDetails.title}`}
           />
-          <div>
-            <h3>
-              {postDetails.author.nome} {postDetails.author.sobrenome}
-            </h3>
-            <small>@{postDetails.author.usuario}</small>
-          </div>
-        </AuthorInfo>
+        </CoverImage>
+
+        <PostTitle>{postDetails.title}</PostTitle>
+       <LinksContainer>
+          <ProjectLink
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            $primary={true}
+          >
+            <FaExternalLinkAlt /> <span>Acessar Projeto</span>
+          </ProjectLink>
+
+          <ProjectLink href="#" target="_blank" rel="noopener noreferrer">
+            <FaGithub /> <span>Ver Código-Fonte</span>
+          </ProjectLink>
+        </LinksContainer>
+        <PostContent>
+          <p>{postDetails.content}</p>
+        </PostContent>
+
+        {postDetails.tags && postDetails.tags.length > 0 && (
+          <TagList>
+            {postDetails.tags.map((tag, index) => (
+              <TagItem key={index}>{tag}</TagItem>
+            ))}
+          </TagList>
+        )}
+
+        <AuthorContainer>
+          <ActionIcons>
+            <IconGroup>
+              <FaCode /> <span>0</span>
+            </IconGroup>
+            <IconGroup>
+              <FaShareNodes /> <span>0</span>
+            </IconGroup>
+            <IconGroup>
+              <FaRegComment /> <span>0</span>
+            </IconGroup>
+          </ActionIcons>
+          <AuthorInfo to={`/perfil/${postDetails.author.id}`}>
+            <ProfileAvatar
+              src={postDetails.author?.imagem}
+              size={50}
+              hasBorder={true}
+            />
+            <div>
+              <h3>
+                {postDetails.author.nome} {postDetails.author.sobrenome}
+              </h3>
+              <small>@{postDetails.author.usuario}</small>
+            </div>
+          </AuthorInfo>
+        </AuthorContainer>
       </PostHeader>
+      <CodeContainer>
+        <pre>
+          <code>
+            {`// Trecho de código em destaque
+function saudarComunidade(usuario) {
+  console.log(\`Olá, \${usuario}! Bem-vindo ao meu projeto.\`);
+  return true;
+}
 
-      <PostTitle>{postDetails.title}</PostTitle>
+saudarComunidade("Dev");`}
+          </code>
+        </pre>
+      </CodeContainer>
+      <CommentsContainer>
+        <h2>Comentários</h2>
+        <p>Seja o primeiro a comentar neste projeto!</p>
 
-      <PostContent>
-        <p>{postDetails.content}</p>
-      </PostContent>
+        <FakeInputComment>
+          <input
+            type="text"
+            placeholder="Adicione um comentário..."
+            disabled={loadingPostDetails}
+          />
+          <button type="button">Comentar</button>
+        </FakeInputComment>
 
-      {postDetails.tags && postDetails.tags.length > 0 && (
-        <TagList>
-          {postDetails.tags.map((tag, index) => (
-            <TagItem key={index}>{tag}</TagItem>
-          ))}
-        </TagList>
-      )}
+        {/* Futuramente faremos um map() dos comentários reais aqui */}
+      </CommentsContainer>
     </PostContainer>
   );
 };
