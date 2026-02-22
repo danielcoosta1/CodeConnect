@@ -146,3 +146,35 @@ export const getPostById = async (req, res) => {
     return res.status(500).json({ error: "Erro interno ao buscar projeto." });
   }
 };
+
+// Excluir um post (Apenas o autor pode fazer isso)
+export const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params; // ID do post na URL
+    const userId = req.user.id; // ID do usuário logado (vindo do token)
+
+    // 1. Busca o post para verificar se ele existe e de quem é
+    const post = await prisma.post.findUnique({
+      where: { id: id },
+    });
+
+    if (!post) {
+      return res.status(404).json({ error: "Projeto não encontrado." });
+    }
+
+    // 2. Trava de Segurança: O usuário logado é o dono do post?
+    if (post.authorId !== userId) {
+      return res.status(403).json({ error: "Acesso negado. Você só pode excluir seus próprios projetos." });
+    }
+
+    // 3. Se passou pela trava, pode deletar!
+    await prisma.post.delete({
+      where: { id: id },
+    });
+
+    return res.status(200).json({ message: "Projeto excluído com sucesso." });
+  } catch (error) {
+    console.error("Erro ao excluir o projeto:", error);
+    return res.status(500).json({ error: "Erro interno ao excluir projeto." });
+  }
+};
