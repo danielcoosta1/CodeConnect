@@ -26,3 +26,9 @@ export const fetchPostById = async (postId) => {
   const response = await api.get(`/posts/${postId}`);
   return response.data;
 };
+
+
+export const deletePostById = async (postId) => {
+  const response = await api.delete(`/posts/${postId}`);
+  return response.data;
+}

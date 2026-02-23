@@ -183,7 +183,37 @@ export const postReducer = (state, action) => {
         errorPostDetails: action.payload,
       };
 
-    // --- GRUPO 6: Limpeza ---
+    // --- GRUPO 6: Exclusão de Post ---
+
+    case "DELETAR_POST_INICIO":
+      return {
+        ...state,
+        loadingDeletePost: true,
+        errorDeletePost: null,
+      };
+
+    case "DELETAR_POST_SUCESSO":
+      return {
+        ...state,
+        loadingDeletePost: false,
+        errorDeletePost: null,
+
+        // Remove o post deletado de todos os lugares onde ele aparece
+        myPosts: state.myPosts.filter((post) => post.id !== action.payload),
+        userPosts: state.userPosts.filter((post) => post.id !== action.payload),
+        allPosts: state.allPosts.filter((post) => post.id !== action.payload),
+        postDetails:
+          state.postDetails?.id === action.payload ? null : state.postDetails,
+      };
+
+    case "DELETAR_POST_ERRO":
+      return {
+        ...state,
+        loadingDeletePost: false,
+        errorDeletePost: action.payload,
+      };
+
+    // --- GRUPO 7: Limpeza ---
 
     // Zera tudo para o estado original (usado após publicar ou ao clicar em descartar)
     case "RESET_FORM":
