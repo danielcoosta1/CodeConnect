@@ -9,6 +9,8 @@ import {
   fetchPostById,
   fetchPosts,
   getPostsByUserId,
+  deletePostById,
+  updatePostById,
 } from "../../services/postService";
 import { localStorageService } from "../../services/localStorageService";
 import { postInicialState } from "./inicialState";
@@ -17,7 +19,7 @@ import { getUserById } from "../../services/userService";
 export const PostProvider = ({ children }) => {
   const [state, dispatch] = useReducer(postReducer, postInicialState);
 
-  //ALIMENTAR ALLTAGS
+  // --- EFEITO: Carregar sugestões de tags (Mock) ---
 
   useEffect(() => {
     const carregarSugestoes = async () => {
@@ -91,7 +93,7 @@ export const PostProvider = ({ children }) => {
     dispatch({ type: "RESET_FORM" });
   };
 
-  // -------  AÇÕES DE INTEGRAÇÃO COM A API   --------
+  // -------  AÇÕES DE MANIPULAÇÃO DE POSTS (CHAMADAS AO BACKEND)   --------
 
   const carregarPostsDoBanco = async () => {
     dispatch({ type: "CARREGAR_POSTS_INICIO" });
@@ -193,6 +195,60 @@ export const PostProvider = ({ children }) => {
     }
   };
 
+  const deletarPostPorId = async (postId) => {
+    dispatch({ type: "DELETAR_POST_INICIO" });
+
+    try {
+      // Chama a API, mas não precisamos guardar o 'response'(é um objeto JSON com uma mensagem) já que só queremos o ID
+      await deletePostById(postId);
+
+      dispatch({
+        type: "DELETAR_POST_SUCESSO",
+        payload: postId, //  Mandamos o ID exato para o filtro funcionar
+      });
+
+      toastSucesso("Projeto excluído com sucesso!");
+      return true; // Avisa a página que deu tudo certo!
+    } catch (error) {
+      const msgErro =
+        error.response?.data?.error || "Erro ao excluir o projeto.";
+      dispatch({ type: "DELETAR_POST_ERRO", payload: msgErro });
+      toastErro(msgErro);
+      console.error(error);
+      return false; // Avisa a página que deu erro
+    }
+  };
+
+  // Ação para preparar os dados para edição (preenche o formulário com os dados do post)
+
+  const prepararEdicao = (post) => {
+    dispatch({ type: "PREENCHER_FORMULARIO_EDICAO", payload: post });
+  };
+
+  // Função 2: Dispara a atualização real para o banco
+  const atualizarPost = async (postId, postData) => {
+    dispatch({ type: "ATUALIZAR_POST_INICIO" });
+
+    try {
+      const response = await updatePostById(postId, postData);
+
+      dispatch({
+        type: "ATUALIZAR_POST_SUCESSO",
+        payload: response.post, // O post atualizado que volta da API
+      });
+
+      toastSucesso("Projeto atualizado com sucesso!");
+      return true;
+    } catch (error) {
+      const msgErro =
+        error.response?.data?.error || "Erro ao atualizar o projeto.";
+      dispatch({ type: "ATUALIZAR_POST_ERRO", payload: msgErro });
+      toastErro(msgErro);
+      console.error(error);
+      return false;
+    }
+  };
+
   return (
     <PostContext.Provider
       value={{
@@ -229,6 +285,15 @@ export const PostProvider = ({ children }) => {
         loadingPostDetails: state.loadingPostDetails,
         errorPostDetails: state.errorPostDetails,
 
+        // Estado de exclusão de post
+        loadingDeletePost: state.loadingDeletePost,
+        errorDeletePost: state.errorDeletePost,
+
+        // Estado de edição de post
+        loadingEditPost: state.loadingEditPost,
+        errorEditPost: state.errorEditPost,
+        successUpdatePost: state.successUpdatePost,
+
         //AÇÕES / FUNÇÕES
         carregarPerfilPublico,
         atualizarDado,
@@ -242,6 +307,9 @@ export const PostProvider = ({ children }) => {
         carregarPostsDoBanco,
         carregarMeusPostsDoBanco,
         carregarPostPorId,
+        deletarPostPorId,
+        prepararEdicao,
+        atualizarPost,
       }}
     >
       {" "}

@@ -183,7 +183,87 @@ export const postReducer = (state, action) => {
         errorPostDetails: action.payload,
       };
 
-    // --- GRUPO 6: Limpeza ---
+    // --- GRUPO 6: Exclusão de Post ---
+
+    case "DELETAR_POST_INICIO":
+      return {
+        ...state,
+        loadingDeletePost: true,
+        errorDeletePost: null,
+      };
+
+    case "DELETAR_POST_SUCESSO":
+      return {
+        ...state,
+        loadingDeletePost: false,
+        errorDeletePost: null,
+
+        // Remove o post deletado de todos os lugares onde ele aparece
+        myPosts: state.myPosts.filter((post) => post.id !== action.payload),
+        userPosts: state.userPosts.filter((post) => post.id !== action.payload),
+        allPosts: state.allPosts.filter((post) => post.id !== action.payload),
+        postDetails:
+          state.postDetails?.id === action.payload ? null : state.postDetails,
+      };
+
+    case "DELETAR_POST_ERRO":
+      return {
+        ...state,
+        loadingDeletePost: false,
+        errorDeletePost: action.payload,
+      };
+
+    // --- GRUPO 7: Edição de Post ---
+
+    // Essa ação pega os dados do post e joga para dentro dos inputs do formulário!
+    case "PREENCHER_FORMULARIO_EDICAO":
+      return {
+        ...state,
+        title: action.payload.title || "",
+        content: action.payload.content || "",
+        tags: action.payload.tags || [],
+        image: action.payload.image || null,
+        // Limpa qualquer erro antigo ao entrar no modo edição
+        errorUpdatePost: null,
+        successUpdatePost: false,
+      };
+
+    case "ATUALIZAR_POST_INICIO":
+      return {
+        ...state,
+        loadingEditPost: true,
+        errorEditPost: null,
+        successUpdatePost: false,
+      };
+
+    case "ATUALIZAR_POST_SUCESSO":
+      return {
+        ...state,
+        loadingEditPost: false,
+        errorEditPost: null,
+        successUpdatePost: true,
+        // Opcional: Aqui você poderia atualizar o postDetails e os arrays de posts para refletir a edição
+        allPosts: state.allPosts.map((post) =>
+          post.id === action.payload.id ? action.payload : post,
+        ),
+        myPosts: state.myPosts.map((post) =>
+          post.id === action.payload.id ? action.payload : post,
+        ),
+        userPosts: state.userPosts.map((post) =>
+          post.id === action.payload.id ? action.payload : post,
+        ),
+        postDetails: action.payload, // Atualiza os detalhes do post editado
+      };
+
+    case "ATUALIZAR_POST_ERRO":
+      return {
+        ...state,
+        loadingEditPost: false,
+        errorEditPost: action.payload,
+        successUpdatePost: false,
+      };
+
+    // --- GRUPO 8: Limpeza ---
 
     // Zera tudo para o estado original (usado após publicar ou ao clicar em descartar)
     case "RESET_FORM":
