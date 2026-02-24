@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePost } from "../../hooks/usePost";
 import {
   BotaoDescartar,
@@ -30,6 +30,7 @@ import { IoMdClose } from "react-icons/io";
 import defaultImg from "./assets/exemplo.png";
 import closeIcon from "./assets/icons/close.svg";
 import ModalConfirmacao from "../../components/ModalConfirmacao";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Publicar = () => {
   const {
@@ -49,6 +50,10 @@ const Publicar = () => {
     removerImagem,
     limparFormulario,
     publicarPost,
+    postDetails,
+    carregarPostPorId,
+    prepararEdicao,
+    atualizarPost,
   } = usePost();
 
   const inputRef = useRef();
@@ -59,6 +64,29 @@ const Publicar = () => {
 
   const [erroTags, setErroTags] = useState("");
   const [erroLocal, setErroLocal] = useState("");
+
+  const navigate = useNavigate();
+
+  const { id } = useParams(); // Se tiver ID, estamos editando. Se não, é um novo post.
+
+  const isEditMode = !!id; // Verdadeiro se tiver ID, falso se não tiver
+
+  useEffect(() => {
+    // Se for modo edição e a gente ainda não tiver os detalhes do post, vamos buscar!
+    if (isEditMode) {
+      carregarPostPorId(id);
+    } else {
+      limparFormulario(); // Garante que o formulário esteja limpo ao criar um novo post
+    }
+  }, [id, isEditMode]);
+
+  // Quando o carregarPostPorId terminar de buscar e atualizar o postDetails,
+  // nós disparamos a função para preencher os inputs do formulário
+  useEffect(() => {
+    if (isEditMode && postDetails?.id === id) {
+      prepararEdicao(postDetails);
+    }
+  }, [isEditMode, postDetails]);
 
   const lidarComUpload = (event) => {
     event.preventDefault();
@@ -114,7 +142,28 @@ const Publicar = () => {
 
   // 2. O usuário clicou em "Confirmar"? Executa o Back-end!
   const confirmarPublicacao = async () => {
-    await publicarPost();
+    if (isEditMode) {
+      // MODO EDIÇÃO: Pegamos os dados atuais que estão no state do contexto
+      const postData = {
+        title,
+        content,
+        tags,
+        image,
+        imageFileName,
+      };
+
+      const sucesso = await atualizarPost(id, postData);
+
+      if (sucesso) {
+        limparFormulario(); // Limpa a memória
+        navigate(`/post/${id}`); // Redireciona o usuário de volta para ver o post editado!
+      }
+    } else {
+      // MODO CRIAÇÃO: Mantém o que você já tinha
+      await publicarPost();
+      navigate("/feed"); // Opcional: Mandar para o feed após publicar
+    }
+
     setErroTags("");
     setErroLocal("");
   };
@@ -132,9 +181,13 @@ const Publicar = () => {
         isOpen={modalPublicarIsOpen}
         onClose={() => setModalPublicarIsOpen(false)}
         onConfirm={confirmarPublicacao}
-        titulo="Publicar Projeto"
-        mensagem="Tudo pronto? Tem certeza que deseja publicar este projeto para a comunidade?"
-        textoConfirmar="Publicar"
+        titulo={isEditMode ? "Salvar Alterações" : "Publicar Projeto"}
+        mensagem={
+          isEditMode
+            ? "Tem certeza que deseja salvar as alterações neste projeto?"
+            : "Tudo pronto? Tem certeza que deseja publicar este projeto para a comunidade?"
+        }
+        textoConfirmar={isEditMode ? "Salvar" : "Publicar"}
       />
 
       <ModalConfirmacao
@@ -144,7 +197,7 @@ const Publicar = () => {
         titulo="Descartar Projeto"
         mensagem="Tem certeza? Todos os dados preenchidos serão perdidos e não poderão ser recuperados."
         textoConfirmar="Descartar"
-        isDestructive={true} 
+        isDestructive={true}
       />
 
       <ContainerUploadImg>
@@ -186,7 +239,7 @@ const Publicar = () => {
       </ContainerUploadImg>
 
       <ContainerForm>
-        <h2>Novo Projeto</h2>
+        <h2>{isEditMode ? "Editar Projeto" : "Novo Projeto"}</h2>
 
         {/* O onSubmit entra aqui, resgatando a validação nativa! */}
         <Form onSubmit={tentarPublicar}>
@@ -259,11 +312,12 @@ const Publicar = () => {
             <BotaoPublicar type="submit" disabled={loading}>
               {!loading ? (
                 <>
-                  Publicar <MdPublish />
+                  {isEditMode ? "Salvar" : "Publicar"} <MdPublish />
                 </>
               ) : (
                 <>
-                  Publicando... <LuLoader className="spin" />
+                  {isEditMode ? "Salvando..." : "Publicando..."}{" "}
+                  <LuLoader className="spin" />
                 </>
               )}
             </BotaoPublicar>

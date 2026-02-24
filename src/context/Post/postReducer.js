@@ -1,4 +1,3 @@
-import { all } from "axios";
 import { ESTADO_LIMPO } from "./inicialState";
 
 export const postReducer = (state, action) => {

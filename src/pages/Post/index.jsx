@@ -101,7 +101,7 @@ const Post = () => {
               <AuthorActions>
                 <button
                   className="btn-edit"
-                  onClick={() => console.log("Editar post")}
+                  onClick={() => navigate(`/editar/${id}`)}
                 >
                   <FaRegEdit /> <span>Editar</span>
                 </button>
