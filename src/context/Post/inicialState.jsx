@@ -38,6 +38,11 @@ export const ESTADO_LIMPO = {
   //Dados de exclusão de post
   loadingDeletePost: false,
   errorDeletePost: null,
+
+  //Dados para edição de post
+  loadingEditPost: false,
+  errorEditPost: null,
+  sucessUpdatePost: false,
 };
 
 // 2. Tenta ler o rascunho

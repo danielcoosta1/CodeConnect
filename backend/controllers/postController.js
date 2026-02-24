@@ -115,6 +115,7 @@ export const getPostsByUserId = async (req, res) => {
   }
 };
 
+// Busca um post específico pelo ID (para a página de detalhes do post)
 export const getPostById = async (req, res) => {
   try {
     const { id } = req.params; // Aqui é o ID do POST
@@ -164,7 +165,11 @@ export const deletePost = async (req, res) => {
 
     // 2. Trava de Segurança: O usuário logado é o dono do post?
     if (post.authorId !== userId) {
-      return res.status(403).json({ error: "Acesso negado. Você só pode excluir seus próprios projetos." });
+      return res
+        .status(403)
+        .json({
+          error: "Acesso negado. Você só pode excluir seus próprios projetos.",
+        });
     }
 
     // 3. Se passou pela trava, pode deletar!
@@ -176,5 +181,52 @@ export const deletePost = async (req, res) => {
   } catch (error) {
     console.error("Erro ao excluir o projeto:", error);
     return res.status(500).json({ error: "Erro interno ao excluir projeto." });
+  }
+};
+
+// Rota para atualizar um post (Apenas o autor pode fazer isso)
+export const updatePost = async (req, res) => {
+  try {
+    const { id } = req.params; // ID do post na URL
+    const userId = req.user.id; // ID do usuário logado (vindo do token)
+    const { title, content, tags, image } = req.body; // Novos dados enviados pelo formulário // Novos dados do post
+
+    // 1. Busca o post para verificar se ele existe e de quem é
+    const post = await prisma.post.findUnique({
+      where: { id: id },
+    });
+
+    if (!post) {
+      return res.status(404).json({ error: "Projeto não encontrado." });
+    }
+
+    // 2. Trava de Segurança: O usuário logado é o dono do post?
+    if (post.authorId !== userId) {
+      return res
+        .status(403)
+        .json({
+          error: "Acesso negado. Você só pode editar seus próprios projetos.",
+        });
+    }
+
+    // 3. Se passou pela trava, pode atualizar!
+    const updatedPost = await prisma.post.update({
+      where: { id: id },
+      data: {
+        title: title || post.title, // Se não enviar título, mantém o antigo
+        content: content || post.content, // Se não enviar conteúdo, mantém o antigo
+        tags: tags || post.tags, // Se não enviar tags, mantém as antigas
+        image: image !== undefined ? image : post.image, // Permite enviar null para remover a imagem
+      },
+    });
+
+    return res
+      .status(200)
+      .json({ message: "Projeto atualizado com sucesso.", post: updatedPost });
+  } catch (error) {
+    console.error("Erro ao atualizar o projeto:", error);
+    return res
+      .status(500)
+      .json({ error: "Erro interno ao atualizar projeto." });
   }
 };

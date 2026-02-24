@@ -10,6 +10,7 @@ import {
   fetchPosts,
   getPostsByUserId,
   deletePostById,
+  updatePostById,
 } from "../../services/postService";
 import { localStorageService } from "../../services/localStorageService";
 import { postInicialState } from "./inicialState";
@@ -205,18 +206,49 @@ export const PostProvider = ({ children }) => {
         type: "DELETAR_POST_SUCESSO",
         payload: postId, //  Mandamos o ID exato para o filtro funcionar
       });
-      
+
       toastSucesso("Projeto excluído com sucesso!");
       return true; // Avisa a página que deu tudo certo!
-
     } catch (error) {
-      const msgErro = error.response?.data?.error || "Erro ao excluir o projeto.";
+      const msgErro =
+        error.response?.data?.error || "Erro ao excluir o projeto.";
       dispatch({ type: "DELETAR_POST_ERRO", payload: msgErro });
       toastErro(msgErro);
       console.error(error);
       return false; // Avisa a página que deu erro
     }
   };
+
+  // Ação para preparar os dados para edição (preenche o formulário com os dados do post)
+
+  const prepararEdicao = (post) => {
+    dispatch({ type: "PREENCHER_FORMULARIO_EDICAO", payload: post });
+  };
+
+  // Função 2: Dispara a atualização real para o banco
+  const atualizarPost = async (postId, postData) => {
+    dispatch({ type: "ATUALIZAR_POST_INICIO" });
+
+    try {
+      const response = await updatePostById(postId, postData);
+
+      dispatch({
+        type: "ATUALIZAR_POST_SUCESSO",
+        payload: response.post, // O post atualizado que volta da API
+      });
+
+      toastSucesso("Projeto atualizado com sucesso!");
+      return true;
+    } catch (error) {
+      const msgErro =
+        error.response?.data?.error || "Erro ao atualizar o projeto.";
+      dispatch({ type: "ATUALIZAR_POST_ERRO", payload: msgErro });
+      toastErro(msgErro);
+      console.error(error);
+      return false;
+    }
+  };
+
   return (
     <PostContext.Provider
       value={{
@@ -257,6 +289,11 @@ export const PostProvider = ({ children }) => {
         loadingDeletePost: state.loadingDeletePost,
         errorDeletePost: state.errorDeletePost,
 
+        // Estado de edição de post
+        loadingEditPost: state.loadingEditPost,
+        errorEditPost: state.errorEditPost,
+        successUpdatePost: state.successUpdatePost,
+
         //AÇÕES / FUNÇÕES
         carregarPerfilPublico,
         atualizarDado,
@@ -271,6 +308,8 @@ export const PostProvider = ({ children }) => {
         carregarMeusPostsDoBanco,
         carregarPostPorId,
         deletarPostPorId,
+        prepararEdicao,
+        atualizarPost,
       }}
     >
       {" "}
