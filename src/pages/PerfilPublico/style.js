@@ -26,11 +26,11 @@ export const PerfilHeader = styled.header`
   gap: 3.2rem;
 
   background-color: #171d1f;
-  padding: 3.2rem; 
-  border-radius: 1.6rem; 
+  padding: 3.2rem;
+  border-radius: 1.6rem;
 
   position: relative;
-  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.2); 
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.2);
 
   /* Abaixo de 1024px (Tablet), o layout vira vertical para não quebrar */
   @media ${device.tablet} {
@@ -42,10 +42,37 @@ export const PerfilHeader = styled.header`
   }
 `;
 
+export const BotaoSeguir = styled.button`
+  margin-top: 1rem;
+  padding: 0.8rem 2rem;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  /* Se sigo, fundo escuro. Se não sigo, verde vibrante! */
+  background-color: ${(props) =>
+    props.$isFollowing ? "transparent" : "#28a745"};
+  color: ${(props) => (props.$isFollowing ? "#888" : "#fff")};
+  border: 1px solid ${(props) => (props.$isFollowing ? "#888" : "#28a745")};
+
+  &:hover {
+    background-color: ${(props) =>
+      props.$isFollowing ? "rgba(255, 0, 0, 0.1)" : "#218838"};
+    color: ${(props) => (props.$isFollowing ? "red" : "#fff")};
+    border-color: ${(props) => (props.$isFollowing ? "red" : "#218838")};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
 export const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.8rem; 
+  gap: 0.8rem;
   flex: 1;
 
   h2 {
@@ -121,7 +148,7 @@ export const StatItem = styled.div`
     font-size: 1.4rem;
     color: #888888;
   }
-  
+
   @media ${device.tablet} {
     gap: 0.4rem;
     span {
@@ -147,7 +174,7 @@ export const ProfileTab = styled.button`
   background: none;
   border: none;
   font-size: 1.6rem; /* Ajustado para padrão 16px visual */
-  padding-bottom: 1rem; 
+  padding-bottom: 1rem;
   cursor: pointer;
   color: ${({ $active }) => ($active ? "#81fe88" : "#888888")};
 
@@ -160,7 +187,7 @@ export const ProfileTab = styled.button`
     bottom: -0.1rem;
     left: 0;
     width: 100%;
-    height: 0.2rem; 
+    height: 0.2rem;
     background-color: #81fe88;
     transform: scaleX(${({ $active }) => ($active ? "1" : "0")});
     transition: transform 0.3s ease;

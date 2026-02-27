@@ -26,6 +26,9 @@ export const ESTADO_LIMPO = {
   // UI DO MODAL
   loadingUpdate: false,
   errorUpdate: null,
+
+  // SISTEMA PARA SEGUIDORES
+  loadingFollow: false,
 };
 
 const rascunhoSalvo = localStorageService.ler("rascunho_perfil");

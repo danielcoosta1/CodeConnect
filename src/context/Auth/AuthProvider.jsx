@@ -7,11 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { loginRequest, registerRequest } from "../../services/authService";
 import {
   getUserProfile,
+  toggleFollowRequest,
   updateProfileRequest,
 } from "../../services/userService";
 import { authReducer } from "./authReducer";
 import { authInicialState } from "./inicialState";
 import { toastErro, toastSucesso } from "../../utils/toast";
+import { toast } from "react-toastify";
 
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, authInicialState);
@@ -177,6 +179,24 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // --- FUNÇÕES DE SEGUIR / DEIXAR DE SEGUIR (GRUPO 4) ---
+
+  const handleToggleFollow = async (targetUserId) => {
+    dispatch({ type: "TOGGLE_FOLLOW_START" });
+    try {
+      const result = await toggleFollowRequest(targetUserId);
+
+      dispatch({
+        type: "TOGGLE_FOLLOW_SUCCESS",
+        payload: { isFollowing: result.isFollowing, targetId: targetUserId },
+      });
+      return result.isFollowing; // Retorna o novo estado de follow para o componente
+    } catch (error) {
+      console.error("Erro ao seguir/deixar de seguir:", error);
+      dispatch({ type: "TOGGLE_FOLLOW_ERROR" });
+      toastErro("Erro ao seguir/deixar de seguir usuário.");
+    }
+  };
   // Condicionamos a renderização dos filhos
   // Isso previne que a aplicação renderize as rotas protegidas antes da verificação terminar
   return (
@@ -216,6 +236,7 @@ const AuthProvider = ({ children }) => {
         atualizarDado,
         definirImagemForm,
         salvarPerfil,
+        handleToggleFollow,
       }}
     >
       {!state.loading && children}

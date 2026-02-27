@@ -33,11 +33,11 @@ model User {
   
   // 1. Quem este usuário ESTÁ SEGUINDO (Ele guarda a lista de IDs dos amigos)
   followingIds String[] @db.ObjectId
-  following    User[]   @relation("UserFollows", fields: [followingIds], references: [id])
+  following    User[]   @relation("UserFollows", fields: [followingIds], references: [id]) // Relaciona os IDs dos amigos com os usuários correspondentes
 
   // 2. Quem ESTÁ SEGUINDO este usuário (A relação inversa)
   followerIds  String[] @db.ObjectId
-  followers    User[]   @relation("UserFollows", fields: [followerIds], references: [id])
+  followers    User[]   @relation("UserFollows", fields: [followerIds], references: [id]) // Relaciona os IDs dos seguidores com os usuários correspondentes
 }
 
 // O novo model, baseado na sua ideia do Figma
