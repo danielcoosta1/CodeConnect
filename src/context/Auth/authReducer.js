@@ -136,6 +136,37 @@ export const authReducer = (state, action) => {
     case "UPDATE_ERROR":
       return { ...state, loadingUpdate: false, errorUpdate: action.payload };
 
+    // Grupo 4: Ações para sistema de seguidores (follow/unfollow)
+
+    case "TOGGLE_FOLLOW_START":
+      return { ...state, loadingFollow: true };
+
+    case "TOGGLE_FOLLOW_SUCCESS": // Atualizamos OTIMISTAMENTE o array 'followingIds'
+    {
+      const isFollowing = action.payload.isFollowing;
+      const targetId = action.payload.targetId; // ID do usuário que foi seguido ou deixado de seguir - Vindo do payload da ação(o resultado da API)
+
+      let newFollowingIds = [...(state.user?.followingIds || [])]; // Cópia do array atual
+
+      // Se já estava seguindo e agora deixou de seguir, remove do array. Se não estava seguindo e agora começou, adiciona ao array.
+      if (isFollowing) {
+        newFollowingIds.push(targetId); // Começou a seguir
+      } else {
+        newFollowingIds = newFollowingIds.filter((id) => id !== targetId); // Deixou de seguir
+      }
+
+      // Retorna o estado atualizado com a nova lista de followingIds
+
+      return {
+        ...state,
+        loadingFollow: false,
+        user: { ...state.user, followingIds: newFollowingIds }, // Atualiza o user com a nova lista de IDs que está seguindo sem precisar refazer login ou recarregar a página
+      };
+    }
+
+    case "TOGGLE_FOLLOW_ERROR":
+      return { ...state, loadingFollow: false };
+
     default:
       return state;
   }

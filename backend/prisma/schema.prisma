@@ -25,8 +25,19 @@ model User {
   imagem String? // URL ou Base64 da foto de perfil
   bio    String? // Pequeno texto sobre o dev
   funcao String? // Ex: "Front-end Developer", "Fullstack"
+  
   // A relação inversa: um usuário pode ter múltiplos posts
   posts  Post[]
+
+  // --- SISTEMA DE SEGUIDORES (Específico para MongoDB) ---
+  
+  // 1. Quem este usuário ESTÁ SEGUINDO (Ele guarda a lista de IDs dos amigos)
+  followingIds String[] @db.ObjectId
+  following    User[]   @relation("UserFollows", fields: [followingIds], references: [id]) // Relaciona os IDs dos amigos com os usuários correspondentes
+
+  // 2. Quem ESTÁ SEGUINDO este usuário (A relação inversa)
+  followerIds  String[] @db.ObjectId
+  followers    User[]   @relation("UserFollows", fields: [followerIds], references: [id]) // Relaciona os IDs dos seguidores com os usuários correspondentes
 }
 
 // O novo model, baseado na sua ideia do Figma

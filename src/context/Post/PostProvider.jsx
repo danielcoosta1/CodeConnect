@@ -176,6 +176,14 @@ export const PostProvider = ({ children }) => {
     }
   };
 
+  // --- FUNÇÃO PARA SINCRONIZAR SEGUIDORES NA TELA ---
+  const atualizarSeguidoresPerfilPublico = (isFollowing, meuId) => {
+    dispatch({
+      type: "ATUALIZAR_SEGUIDORES_PERFIL",
+      payload: { isFollowing, meuId },
+    });
+  };
+
   const carregarPostPorId = async (postId) => {
     dispatch({ type: "CARREGAR_POST_INICIO" });
 
@@ -310,6 +318,7 @@ export const PostProvider = ({ children }) => {
         deletarPostPorId,
         prepararEdicao,
         atualizarPost,
+        atualizarSeguidoresPerfilPublico,
       }}
     >
       {" "}
