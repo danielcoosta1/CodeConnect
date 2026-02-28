@@ -159,6 +159,32 @@ export const postReducer = (state, action) => {
         errorProfile: action.payload,
       };
 
+      case "ATUALIZAR_SEGUIDORES_PERFIL": {
+      // Se não tiver perfil carregado, não faz nada
+      if (!state.userProfile) return state;
+
+      const isFollowing = action.payload.isFollowing;
+      const meuIdLogado = action.payload.meuId;
+      
+      let novosSeguidores = [...(state.userProfile.followerIds || [])];
+
+      if (isFollowing) {
+        // Se eu comecei a seguir, adiciono o MEU ID na lista de seguidores dele
+        novosSeguidores.push(meuIdLogado);
+      } else {
+        // Se eu deixei de seguir, removo o MEU ID da lista dele
+        novosSeguidores = novosSeguidores.filter(id => id !== meuIdLogado);
+      }
+
+      return {
+        ...state,
+        userProfile: {
+          ...state.userProfile,
+          followerIds: novosSeguidores, // Atualiza a vitrine!
+        },
+      };
+    }
+
     // --- GRUPO 5: Post  ---
 
     case "CARREGAR_POST_INICIO":

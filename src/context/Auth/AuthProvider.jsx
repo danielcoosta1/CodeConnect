@@ -186,6 +186,23 @@ const AuthProvider = ({ children }) => {
     try {
       const result = await toggleFollowRequest(targetUserId);
 
+      // --- ATUALIZA O LOCAL STORAGE PARA O F5 NÃO QUEBRAR ---
+      const currentUserStr = localStorageService.ler("user");
+      if (currentUserStr) {
+        let updatedFollowing = [...(currentUserStr.followingIds || [])];
+        if (result.isFollowing) {
+          updatedFollowing.push(targetUserId);
+        } else {
+          updatedFollowing = updatedFollowing.filter(
+            (id) => id !== targetUserId,
+          );
+        }
+        localStorageService.salvar("user", {
+          ...currentUserStr,
+          followingIds: updatedFollowing,
+        });
+      }
+      // -----------------------------------------------------
       dispatch({
         type: "TOGGLE_FOLLOW_SUCCESS",
         payload: { isFollowing: result.isFollowing, targetId: targetUserId },

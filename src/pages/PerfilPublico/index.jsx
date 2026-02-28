@@ -17,6 +17,9 @@ import {
 import ProfileAvatar from "../../components/ProfileAvatar";
 import { CardGrid } from "../../components/CardGrid/style";
 import Card from "../../components/Card";
+import { FiUserPlus, FiUserCheck, FiUserX } from "react-icons/fi";
+import { LuLoader } from "react-icons/lu";
+import { toastSucesso } from "../../utils/toast";
 
 const PerfilPublico = () => {
   const { id } = useParams();
@@ -29,21 +32,42 @@ const PerfilPublico = () => {
     userPosts,
     loadingProfile,
     errorProfile,
+    atualizarSeguidoresPerfilPublico,
   } = usePost();
 
   useEffect(() => {
     if (id) {
       carregarPerfilPublico(id);
+      
     }
   }, [id]);
 
   const [abaAtiva, setAbaAtiva] = useState("projetos");
+  const [isHoveringBtn, setIsHoveringBtn] = useState(false); // Estado para controlar o hover do botão
 
   // Verifica se o usuário logado já segue o perfil que está visitando
   const isFollowing = usuarioLogado?.followingIds?.includes(id);
 
   // Verifica se o perfil que está sendo visitado é o próprio perfil do usuário logado
   const isMyOwnProfile = usuarioLogado?.id === id;
+
+  const lidarComSeguir = async () => {
+    // 1. O handleToggleFollow já faz a requisição e retorna true/false
+    const resultIsFollowing = await handleToggleFollow(id);
+
+    // Se não for undefined (ou seja, se não deu erro de API)
+    if (resultIsFollowing !== undefined) {
+      // 2. Avisa o PostContext para somar/subtrair +1 na vitrine!
+      atualizarSeguidoresPerfilPublico(resultIsFollowing, usuarioLogado.id);
+
+      // 3. Mostra o Toast dinâmico bonitão!
+      if (resultIsFollowing) {
+        toastSucesso(`Você começou a seguir ${userProfile.nome}!`);
+      } else {
+        toastSucesso(`Você deixou de seguir ${userProfile.nome}.`);
+      }
+    }
+  };
 
   if (loadingProfile) {
     return <LoadingState texto="Carregando perfil..." size={45} />;
@@ -95,15 +119,31 @@ const PerfilPublico = () => {
           </StatsContainer>
           {!isMyOwnProfile && (
             <BotaoSeguir
-              $isFollowing={isFollowing} // O style muda a cor com base nisso
-              onClick={() => handleToggleFollow(id)}
+              $isFollowing={isFollowing}
+              onClick={lidarComSeguir}
               disabled={loadingFollow}
+              onMouseEnter={() => setIsHoveringBtn(true)}
+              onMouseLeave={() => setIsHoveringBtn(false)}
             >
-              {loadingFollow
-                ? "Aguarde..."
-                : isFollowing
-                  ? "Deixar de Seguir"
-                  : "Seguir"}
+              {loadingFollow ? (
+                <>
+                  <LuLoader className="spin" /> Aguarde...
+                </>
+              ) : isFollowing ? (
+                isHoveringBtn ? (
+                  <>
+                    <FiUserX /> Deixar de Seguir
+                  </>
+                ) : (
+                  <>
+                    <FiUserCheck /> Seguindo
+                  </>
+                )
+              ) : (
+                <>
+                  <FiUserPlus /> Seguir
+                </>
+              )}
             </BotaoSeguir>
           )}
         </InfoContainer>

@@ -43,29 +43,99 @@ export const PerfilHeader = styled.header`
 `;
 
 export const BotaoSeguir = styled.button`
-  margin-top: 1rem;
-  padding: 0.8rem 2rem;
-  border-radius: 20px;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 1.6rem;
+  padding: 1.2rem 2.4rem;
+  border-radius: 3rem; /* Bordas bem arredondadas estilo pílula */
+  font-weight: 600;
+  font-size: 1.6rem;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
 
-  /* Se sigo, fundo escuro. Se não sigo, verde vibrante! */
-  background-color: ${(props) =>
-    props.$isFollowing ? "transparent" : "#28a745"};
-  color: ${(props) => (props.$isFollowing ? "#888" : "#fff")};
-  border: 1px solid ${(props) => (props.$isFollowing ? "#888" : "#28a745")};
+  /* Animação super suave para todas as transições */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  width: fit-content;
 
-  &:hover {
-    background-color: ${(props) =>
-      props.$isFollowing ? "rgba(255, 0, 0, 0.1)" : "#218838"};
-    color: ${(props) => (props.$isFollowing ? "red" : "#fff")};
-    border-color: ${(props) => (props.$isFollowing ? "red" : "#218838")};
+  /* Ajuste dos Ícones */
+  svg {
+    font-size: 2rem;
+    transition: transform 0.2s;
   }
 
+  /* Animação de Loading */
+  .spin {
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* ESTADO: NÃO SEGUE (Verde Vibrante e Convidativo) */
+  background: ${(props) =>
+    props.$isFollowing
+      ? "rgba(255, 255, 255, 0.05)" /* Fundo de vidro escuro se já segue */
+      : "linear-gradient(135deg, #28a745 0%, #218838 100%)"}; /* Gradiente se não segue */
+
+  color: ${(props) => (props.$isFollowing ? "#bcbcbc" : "#ffffff")};
+
+  border: 1px solid
+    ${(props) =>
+      props.$isFollowing ? "rgba(255, 255, 255, 0.1)" : "transparent"};
+
+  box-shadow: ${(props) =>
+    props.$isFollowing ? "none" : "0 4px 15px rgba(40, 167, 69, 0.3)"};
+
+  /* EFEITO DE HOVER (Quando o mouse passa por cima) */
+  &:hover:not(:disabled) {
+    transform: translateY(-2px); /* Botão levanta levemente */
+
+    /* Se já segue, fica vermelho sinalizando perigo (Destructive Action) */
+    background: ${(props) =>
+      props.$isFollowing
+        ? "rgba(220, 53, 69, 0.1)"
+        : "linear-gradient(135deg, #218838 0%, #1e7e34 100%)"};
+
+    border-color: ${(props) =>
+      props.$isFollowing ? "#dc3545" : "transparent"};
+    color: ${(props) => (props.$isFollowing ? "#dc3545" : "#ffffff")};
+
+    box-shadow: ${(props) =>
+      props.$isFollowing
+        ? "0 4px 15px rgba(220, 53, 69, 0.2)"
+        : "0 6px 20px rgba(40, 167, 69, 0.4)"};
+
+    /* Mudança no ícone ao passar o mouse */
+    svg {
+      transform: ${(props) =>
+        props.$isFollowing ? "scale(1.1)" : "scale(1.1) rotate(5deg)"};
+    }
+  }
+
+  /* EFEITO DE CLIQUE */
+  &:active:not(:disabled) {
+    transform: translateY(0); /* Botão afunda de volta */
+  }
+
+  /* EFEITO DESABILITADO (Carregando) */
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* RESPONSIVIDADE: MOBILE E TABLET */
+  @media ${device.tablet} {
+    width: 100%; /* Ocupa a tela inteira para facilitar o toque */
+    margin-top: 2rem;
+    padding: 1.4rem;
+    font-size: 1.8rem;
+    border-radius: 1.2rem; /* Borda menos redonda para preencher bem o espaço */
+    justify-content: center;
   }
 `;
 
