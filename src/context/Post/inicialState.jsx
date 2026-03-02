@@ -10,6 +10,8 @@ export const ESTADO_LIMPO = {
   tagInput: "",
   image: null,
   imageFileName: "",
+  projectUrl: "",
+  repoUrl: "",
 
   //Dados de posts
   allPosts: [],

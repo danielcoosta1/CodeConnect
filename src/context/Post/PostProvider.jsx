@@ -48,13 +48,24 @@ export const PostProvider = ({ children }) => {
       tagInput: state.tagInput,
       image: state.image,
       imageFileName: state.imageFileName,
+      projectUrl: state.projectUrl,
+      repoUrl: state.repoUrl,
     };
 
     // Se tiver pelo menos um título ou conteúdo, salva. Senão, não suja o storage.
     if (state.title || state.content || state.image) {
       localStorageService.salvar("rascunho_post", dadosParaSalvar);
     }
-  }, [state.title, state.content, state.tags, state.tagInput, state.image]);
+  }, [
+    state.title,
+    state.content,
+    state.tags,
+    state.tagInput,
+    state.image,
+    state.imageFileName,
+    state.projectUrl,
+    state.repoUrl,
+  ]);
   // O array acima diz: "Rode esse efeito sempre que um desses mudar"
 
   //  -------  AÇÕES DE MANIPULAÇÃO DDO ESTADO LOCAL   --------
@@ -127,6 +138,8 @@ export const PostProvider = ({ children }) => {
         image: state.image,
         imageFileName: state.imageFileName,
         tags: state.tags,
+        projectUrl: state.projectUrl,
+        repoUrl: state.repoUrl,
       };
 
       const postCriado = await createPostRequest(postData); // Sua função do service que faz axios.post
@@ -268,6 +281,8 @@ export const PostProvider = ({ children }) => {
         tagInput: state.tagInput,
         image: state.image,
         imageFileName: state.imageFileName,
+        projectUrl: state.projectUrl,
+        repoUrl: state.repoUrl,
 
         //Estado de posts
         allPosts: state.allPosts,

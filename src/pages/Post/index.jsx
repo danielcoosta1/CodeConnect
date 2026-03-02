@@ -128,16 +128,26 @@ const Post = () => {
 
           <PostTitle>{postDetails.title}</PostTitle>
           <LinksContainer>
+            {postDetails.projectUrl ? (
+              <ProjectLink
+                href={postDetails.projectUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                $primary={true}
+              >
+                <FaExternalLinkAlt /> <span>Acessar Projeto</span>
+              </ProjectLink>
+            ) : (
+              <ProjectLink as="span" $desabilitado>
+                Deploy em breve!
+              </ProjectLink>
+            )}
+
             <ProjectLink
-              href="#"
+              href={postDetails.repoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              $primary={true}
             >
-              <FaExternalLinkAlt /> <span>Acessar Projeto</span>
-            </ProjectLink>
-
-            <ProjectLink href="#" target="_blank" rel="noopener noreferrer">
               <FaGithub /> <span>Ver Código-Fonte</span>
             </ProjectLink>
           </LinksContainer>

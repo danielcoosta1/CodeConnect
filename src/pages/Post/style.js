@@ -411,6 +411,20 @@ export const ProjectLink = styled.a`
     box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.2);
   }
 
+  ${(props) =>
+    props.$desabilitado &&
+    `
+    background-color: #555555;
+    color: #cccccc;
+    cursor: not-allowed;
+    pointer-events: none;
+    transform: none;
+    box-shadow: none;
+
+    &:hover { 
+  
+  `}
+
   /* --- MÁGICA DO MOBILE AQUI --- */
   @media ${device.mobile} {
     padding: 1.2rem; /* Deixa o botão mais quadradinho */

@@ -41,6 +41,8 @@ const Publicar = () => {
     tagInput,
     image,
     imageFileName,
+    projectUrl,
+    repoUrl,
     loading,
     atualizarDado,
     atualizarTagInput,
@@ -71,6 +73,7 @@ const Publicar = () => {
 
   const isEditMode = !!id; // Verdadeiro se tiver ID, falso se não tiver
 
+  // --- EFEITOS PARA CARREGAR OS DADOS DO POST EXISTENTE (MODO EDIÇÃO) ---
   useEffect(() => {
     // Se for modo edição e a gente ainda não tiver os detalhes do post, vamos buscar!
     if (isEditMode) {
@@ -87,6 +90,8 @@ const Publicar = () => {
       prepararEdicao(postDetails);
     }
   }, [isEditMode, postDetails]);
+
+  // --- LÓGICA DE MANUSEIO DE IMAGEM ---
 
   const lidarComUpload = (event) => {
     event.preventDefault();
@@ -113,6 +118,7 @@ const Publicar = () => {
     reader.readAsDataURL(file);
   };
 
+  // --- LÓGICA DE MANUSEIO DE TAGS ---
   const lidarComKeyDown = (e) => {
     if (e.key !== "Enter") return;
     e.preventDefault();
@@ -132,7 +138,7 @@ const Publicar = () => {
     setErroTags("");
   };
 
-  // --- LÓGICA CORRIGIDA DO FORMULÁRIO ---
+  // --- LÓGICA DE PUBLICAÇÃO E EDIÇÃO ---
 
   // 1. O Form foi validado pelo HTML5 com sucesso? Abre o modal!
   const tentarPublicar = (e) => {
@@ -150,6 +156,8 @@ const Publicar = () => {
         tags,
         image,
         imageFileName,
+        projectUrl,
+        repoUrl,
       };
 
       const sucesso = await atualizarPost(id, postData);
@@ -251,6 +259,32 @@ const Publicar = () => {
               name="title"
               value={title}
               onChange={(e) => atualizarDado("title", e.target.value)}
+              disabled={loading}
+              required
+            />
+          </CampoInput>
+
+          <CampoInput>
+            <label htmlFor="projectUrl">Local do projeto (URL)</label>
+            <input
+              type="text"
+              id="projectUrl"
+              name="projectUrl"
+              value={projectUrl}
+              onChange={(e) => atualizarDado("projectUrl", e.target.value)}
+              disabled={loading}
+              required
+            />
+          </CampoInput>
+
+          <CampoInput>
+            <label htmlFor="repoUrl">Repositório (URL)</label>
+            <input
+              type="text"
+              id="repoUrl"
+              name="repoUrl"
+              value={repoUrl}
+              onChange={(e) => atualizarDado("repoUrl", e.target.value)}
               disabled={loading}
               required
             />

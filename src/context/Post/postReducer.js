@@ -159,6 +159,7 @@ export const postReducer = (state, action) => {
         errorProfile: action.payload,
       };
 
+      // Essa ação é disparada quando eu sigo ou deixo de seguir alguém. Ela atualiza a lista de seguidores do perfil que estou vendo.
       case "ATUALIZAR_SEGUIDORES_PERFIL": {
       // Se não tiver perfil carregado, não faz nada
       if (!state.userProfile) return state;
@@ -249,6 +250,9 @@ export const postReducer = (state, action) => {
         content: action.payload.content || "",
         tags: action.payload.tags || [],
         image: action.payload.image || null,
+        imageFileName: action.payload.imageFileName || "",
+        projectUrl: action.payload.projectUrl || "",
+        repoUrl: action.payload.repoUrl || "",
         // Limpa qualquer erro antigo ao entrar no modo edição
         errorUpdatePost: null,
         successUpdatePost: false,

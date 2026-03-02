@@ -34,6 +34,8 @@ export const createPost = async (req, res) => {
       .max(4, { message: "Você pode adicionar no máximo 4 tags." })
       .optional()
       .default([]), // Permite array vazio
+    projectUrl: z.string().url().optional().nullable(), ,
+    repoUrl: z.string().url().optional().nullable(),
   });
 
   const validation = postSchema.safeParse(req.body);
@@ -41,7 +43,8 @@ export const createPost = async (req, res) => {
     // Ajuste o tratamento de erro se necessário para mostrar múltiplos erros
     return res.status(400).json({ error: validation.error.issues[0].message }); //sempre o primeiro [0]
   }
-  const { title, content, image, imageFileName, tags } = validation.data;
+  const { title, content, image, imageFileName, tags, projectUrl, repoUrl } =
+    validation.data;
   const authorId = req.user.id; // Vem do authMiddleware(JWT)
   try {
     const newPost = await prisma.post.create({
@@ -51,6 +54,8 @@ export const createPost = async (req, res) => {
         image, // Vem do Zod (será null se não enviado)
         imageFileName, // Vem do Zod (será null se não enviado)
         tags, // Vem do Zod (será [] se não enviado)
+        projectUrl, // Vem do Zod (será null se não enviado)
+        repoUrl, // Vem do Zod (será null se não enviado)
         author: {
           connect: { id: authorId },
         },
@@ -165,11 +170,9 @@ export const deletePost = async (req, res) => {
 
     // 2. Trava de Segurança: O usuário logado é o dono do post?
     if (post.authorId !== userId) {
-      return res
-        .status(403)
-        .json({
-          error: "Acesso negado. Você só pode excluir seus próprios projetos.",
-        });
+      return res.status(403).json({
+        error: "Acesso negado. Você só pode excluir seus próprios projetos.",
+      });
     }
 
     // 3. Se passou pela trava, pode deletar!
@@ -189,7 +192,7 @@ export const updatePost = async (req, res) => {
   try {
     const { id } = req.params; // ID do post na URL
     const userId = req.user.id; // ID do usuário logado (vindo do token)
-    const { title, content, tags, image } = req.body; // Novos dados enviados pelo formulário // Novos dados do post
+    const { title, content, tags, image, projectUrl, repoUrl } = req.body; // Novos dados enviados pelo formulário // Novos dados do post
 
     // 1. Busca o post para verificar se ele existe e de quem é
     const post = await prisma.post.findUnique({
@@ -202,11 +205,9 @@ export const updatePost = async (req, res) => {
 
     // 2. Trava de Segurança: O usuário logado é o dono do post?
     if (post.authorId !== userId) {
-      return res
-        .status(403)
-        .json({
-          error: "Acesso negado. Você só pode editar seus próprios projetos.",
-        });
+      return res.status(403).json({
+        error: "Acesso negado. Você só pode editar seus próprios projetos.",
+      });
     }
 
     // 3. Se passou pela trava, pode atualizar!
@@ -217,6 +218,8 @@ export const updatePost = async (req, res) => {
         content: content || post.content, // Se não enviar conteúdo, mantém o antigo
         tags: tags || post.tags, // Se não enviar tags, mantém as antigas
         image: image !== undefined ? image : post.image, // Permite enviar null para remover a imagem
+        projectUrl: projectUrl !== undefined ? projectUrl : post.projectUrl, // Permite enviar null para remover a URL do projeto
+        repoUrl: repoUrl !== undefined ? repoUrl : post.repoUrl, // Permite enviar null para remover a URL do repositório
       },
     });
 
