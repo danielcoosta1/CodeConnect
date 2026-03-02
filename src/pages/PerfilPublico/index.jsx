@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { usePost } from "../../hooks/usePost";
 import { useAuth } from "../../hooks/useAuth";
 import { useEffect, useState } from "react";
@@ -23,6 +23,7 @@ import { toastSucesso } from "../../utils/toast";
 
 const PerfilPublico = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const { user: usuarioLogado, handleToggleFollow, loadingFollow } = useAuth();
 
@@ -38,9 +39,16 @@ const PerfilPublico = () => {
   useEffect(() => {
     if (id) {
       carregarPerfilPublico(id);
-      
     }
   }, [id]);
+
+  // 3. O Segurança de Rota
+  useEffect(() => {
+    // Se o ID da URL for o meu próprio ID, me mande para o perfil privado!
+    if (usuarioLogado && usuarioLogado.id === id) {
+      navigate("/perfil", { replace: true }); // O replace=true evita bugs no botão "Voltar" do navegador
+    }
+  }, [id, usuarioLogado, navigate]); // Coloquei o navigate aqui para evitar um bug onde, se eu entrasse na URL do meu próprio perfil, ele carregava o perfil público e só depois redirecionava para o privado. Agora ele já redireciona antes de tentar carregar o perfil público.
 
   const [abaAtiva, setAbaAtiva] = useState("projetos");
   const [isHoveringBtn, setIsHoveringBtn] = useState(false); // Estado para controlar o hover do botão
