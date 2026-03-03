@@ -5,11 +5,14 @@ export const ESTADO_LIMPO = {
   //Dados do formulário
   title: "",
   content: "",
+  codeContent: "",
   allTags: [],
   tags: [],
   tagInput: "",
   image: null,
   imageFileName: "",
+  projectUrl: "",
+  repoUrl: "",
 
   //Dados de posts
   allPosts: [],

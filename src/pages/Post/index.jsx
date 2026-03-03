@@ -6,9 +6,9 @@ import LoadingState from "../../components/LoadingState"; // Nossas ferramentas 
 import ErrorState from "../../components/ErrorState"; // Nossas ferramentas globais!
 import { FaArrowLeft, FaShareNodes } from "react-icons/fa6";
 import defaultImg from "../Publicar/assets/exemplo.png";
-import { FaGithub, FaPen, FaTrash } from "react-icons/fa";
+import { FaGithub, FaTrash } from "react-icons/fa";
 import { FaExternalLinkAlt } from "react-icons/fa";
-// Substitua o FaPen por FaRegEdit
+import ReactMarkdown from "react-markdown";
 import { FaRegEdit } from "react-icons/fa";
 import {
   PostContainer,
@@ -47,7 +47,6 @@ const Post = () => {
     errorPostDetails,
     carregarPostPorId,
     deletarPostPorId,
-    loadingDeletePost,
   } = usePost();
 
   const { user } = useAuth();
@@ -128,18 +127,36 @@ const Post = () => {
 
           <PostTitle>{postDetails.title}</PostTitle>
           <LinksContainer>
-            <ProjectLink
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              $primary={true}
-            >
-              <FaExternalLinkAlt /> <span>Acessar Projeto</span>
-            </ProjectLink>
+            {/* --- LÓGICA DO DEPLOY --- */}
+            {postDetails.projectUrl ? (
+              <ProjectLink
+                href={postDetails.projectUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                $primary={true}
+              >
+                <FaExternalLinkAlt /> <span>Acessar Projeto</span>
+              </ProjectLink>
+            ) : (
+              <ProjectLink as="span" $desabilitado>
+                <FaExternalLinkAlt /> <span>Deploy Indisponível</span>
+              </ProjectLink>
+            )}
 
-            <ProjectLink href="#" target="_blank" rel="noopener noreferrer">
-              <FaGithub /> <span>Ver Código-Fonte</span>
-            </ProjectLink>
+            {/* --- LÓGICA DO GITHUB --- */}
+            {postDetails.repoUrl ? (
+              <ProjectLink
+                href={postDetails.repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaGithub /> <span>Ver Código-Fonte</span>
+              </ProjectLink>
+            ) : (
+              <ProjectLink as="span" $desabilitado>
+                <FaGithub /> <span>Repositório Privado</span>
+              </ProjectLink>
+            )}
           </LinksContainer>
           <PostContent>
             <p>{postDetails.content}</p>
@@ -181,17 +198,7 @@ const Post = () => {
           </AuthorContainer>
         </PostHeader>
         <CodeContainer>
-          <pre>
-            <code>
-              {`// Trecho de código em destaque
-function saudarComunidade(usuario) {
-  console.log(\`Olá, \${usuario}! Bem-vindo ao meu projeto.\`);
-  return true;
-}
-
-saudarComunidade("Dev");`}
-            </code>
-          </pre>
+          <ReactMarkdown>{postDetails.codeContent}</ReactMarkdown>
         </CodeContainer>
         <CommentsContainer>
           <h2>Comentários</h2>

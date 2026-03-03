@@ -64,7 +64,7 @@ const Perfil = () => {
               <span>Projetos</span>
             </StatItem>
             <StatItem>
-              <strong>0</strong>
+              <strong>{user.followerIds?.length || 0}</strong>
               <span>Conexões</span>
             </StatItem>
           </StatsContainer>

@@ -292,16 +292,9 @@ export const CodeContainer = styled.section`
     margin-bottom: 2.4rem;
   }
 
-  pre {
-    margin: 0;
-  }
-
-  code {
-    font-family: "Fira Code", "Courier New", Courier, monospace;
-    font-size: 1.4rem;
-    color: #e6edf3;
-    line-height: 1.6;
-  }
+  font-size: 1.4rem;
+  color: #e6edf3;
+  line-height: 1.6;
 
   /* --- ADD RESPONSIVIDADE NO FINAL --- */
   @media ${device.mobile} {
@@ -386,13 +379,19 @@ export const LinksContainer = styled.div`
   display: flex;
   gap: 1.6rem;
   margin-bottom: 3.2rem;
-  flex-wrap: wrap; /* Se a tela for pequena, eles quebram de linha bonitinhos */
+  flex-wrap: wrap;
+
+  /* No mobile, empilha um embaixo do outro bonitão! */
+  @media ${device.mobile} {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
 `;
 
 export const ProjectLink = styled.a`
   display: flex;
   align-items: center;
-  justify-content: center; /* Centraliza o ícone quando o texto sumir */
+  justify-content: center;
   gap: 0.8rem;
   padding: 1.2rem 2.4rem;
   border-radius: 0.8rem;
@@ -401,27 +400,48 @@ export const ProjectLink = styled.a`
   text-decoration: none;
   transition: all 0.2s ease;
 
-  /* Se tiver a prop $primary, fica verdinho. Senão, fica cinza escuro. */
-  background-color: ${(props) => (props.$primary ? "#81fe88" : "#2d3538")};
-  color: ${(props) => (props.$primary ? "#171d1f" : "#ffffff")};
+  /* LÓGICA DE CORES: 
+     Se desabilitado: fundo transparente com borda cinza.
+     Se primário: Verde. 
+     Se não: Cinza escuro. */
+  background-color: ${(props) =>
+    props.$desabilitado
+      ? "transparent"
+      : props.$primary
+        ? "#81fe88"
+        : "#2d3538"};
 
+  color: ${(props) =>
+    props.$desabilitado ? "#555555" : props.$primary ? "#171d1f" : "#ffffff"};
+
+  border: 0.1rem solid
+    ${(props) => (props.$desabilitado ? "#555555" : "transparent")};
+
+  /* EFEITO HOVER (SÓ RODA SE NÃO ESTIVER DESABILITADO) */
   &:hover {
-    transform: translateY(-0.2rem);
-    background-color: ${(props) => (props.$primary ? "#6be276" : "#3a4448")};
-    box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.2);
+    transform: ${(props) =>
+      props.$desabilitado ? "none" : "translateY(-0.2rem)"};
+    background-color: ${(props) =>
+      props.$desabilitado
+        ? "transparent"
+        : props.$primary
+          ? "#6be276"
+          : "#3a4448"};
+    box-shadow: ${(props) =>
+      props.$desabilitado ? "none" : "0 0.4rem 1.2rem rgba(0, 0, 0, 0.2)"};
   }
 
-  /* --- MÁGICA DO MOBILE AQUI --- */
+  /* TRAVA DE CLIQUE */
+  ${(props) =>
+    props.$desabilitado &&
+    `
+    cursor: not-allowed;
+    pointer-events: none; /* Impede qualquer interação do mouse */
+  `}
+
+  /* MÁGICA DO MOBILE (Sem esconder texto, botão esticado) */
   @media ${device.mobile} {
-    padding: 1.2rem; /* Deixa o botão mais quadradinho */
-
-    span {
-      display: none; /* Esconde o texto */
-    }
-
-    svg {
-      width: 2.2rem; /* Aumenta um pouquinho o ícone para facilitar o clique */
-      height: 2.2rem;
-    }
+    width: 100%;
+    padding: 1.4rem;
   }
 `;
