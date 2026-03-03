@@ -323,7 +323,7 @@ const Publicar = () => {
         {/* PARTE DE BAIXO: O CÓDIGO FONTE (MARKDOWN) */}
         <ContainerWrapperCode>
           <ContainerCode>
-            <label htmlFor="codeContent">Insira o código em Markdown</label>
+            <label htmlFor="codeContent">Readme - MarkDown</label>
             <div data-color-mode="dark">
               <MDEditor
                 id="codeContent"

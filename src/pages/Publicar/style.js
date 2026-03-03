@@ -66,16 +66,16 @@ export const ContainerWrapper = styled.div`
 
 export const ContainerWrapperForm = styled.section`
   display: flex;
-  gap: 4rem;
+  gap: 3rem;
   width: 100%;
 
   @media ${device.tablet} {
     flex-direction: column;
-    gap: 3rem;
+    gap: 2rem;
   }
 
   @media ${device.mobile} {
-    gap: 2rem;
+    gap: 1.6rem;
   }
 `;
 
@@ -90,7 +90,7 @@ export const ContainerUploadImg = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 40rem;
+  max-width: 38rem;
 
   @media ${device.tablet} {
     max-width: 70%;
