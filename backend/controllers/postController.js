@@ -34,7 +34,7 @@ export const createPost = async (req, res) => {
       .max(4, { message: "Você pode adicionar no máximo 4 tags." })
       .optional()
       .default([]), // Permite array vazio
-    projectUrl: z.string().url().optional().nullable(), ,
+    projectUrl: z.string().url().optional().nullable(),
     repoUrl: z.string().url().optional().nullable(),
   });
 
