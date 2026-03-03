@@ -44,9 +44,9 @@ export const ContainerWrapper = styled.div`
   width: 100%;
   min-height: 100vh;
   background-color: #171d1f;
-  
-  padding: 4rem; 
-  gap: 4rem; 
+
+  padding: 4rem;
+  gap: 4rem;
   max-width: 120rem; /* Limita largura em telas muito grandes */
   margin: 0 auto;
 
@@ -68,19 +68,19 @@ export const ContainerUploadImg = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 40rem; 
+  max-width: 40rem;
 
   @media ${device.tablet} {
-    max-width: 70%; 
+    max-width: 70%;
   }
-   @media ${device.mobile} {
-    max-width: 100%; 
+  @media ${device.mobile} {
+    max-width: 100%;
   }
 `;
 
 export const ContainerImg = styled.div`
   background-color: #2d3538; /* Fundo escuro elegante se imagem não carregar */
-  border-radius: 1.6rem; 
+  border-radius: 1.6rem;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -145,11 +145,11 @@ export const ContainerSubtittle = styled.div`
 
   background: rgba(0, 0, 0, 0.2);
   padding: 1rem 1.6rem;
-  border-radius: 0.8rem; 
+  border-radius: 0.8rem;
 
   img {
     cursor: pointer;
-    width: 1.6rem; 
+    width: 1.6rem;
     height: 1.6rem;
     transition: 0.2s;
     &:hover {
@@ -184,6 +184,23 @@ export const Form = styled.form`
   gap: 2rem;
 `;
 
+export const InputGroupRow = styled.div`
+  display: flex;
+  gap: 1.6rem;
+  width: 100%;
+
+  /* Faz os dois CampoInput filhos dividirem o espaço 50/50 na tela grande */
+  > * {
+    flex: 1;
+  }
+
+  /* Quando chegar no Tablet/Mobile, eles quebram e ficam um embaixo do outro */
+  @media ${device.tablet} {
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+`;
+
 export const CampoInput = styled.div`
   display: flex;
   flex-direction: column;
@@ -206,7 +223,7 @@ export const ContainerInputDescricao = styled.div`
 
   textarea {
     ${commonInputStyles};
-    min-height: 20rem; 
+    min-height: 20rem;
     resize: vertical;
   }
 `;
@@ -277,7 +294,7 @@ export const ContainerBotoes = styled.div`
   margin-top: 2rem;
 
   @media ${device.mobile} {
-    flex-direction: column-reverse; 
+    flex-direction: column-reverse;
     gap: 1.6rem;
 
     button {
@@ -356,7 +373,11 @@ export const BotaoPublicar = styled.button`
   }
 
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 `;

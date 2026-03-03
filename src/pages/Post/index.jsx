@@ -128,6 +128,7 @@ const Post = () => {
 
           <PostTitle>{postDetails.title}</PostTitle>
           <LinksContainer>
+            {/* --- LÓGICA DO DEPLOY --- */}
             {postDetails.projectUrl ? (
               <ProjectLink
                 href={postDetails.projectUrl}
@@ -139,17 +140,24 @@ const Post = () => {
               </ProjectLink>
             ) : (
               <ProjectLink as="span" $desabilitado>
-                Deploy em breve!
+                <FaExternalLinkAlt /> <span>Deploy Indisponível</span>
               </ProjectLink>
             )}
 
-            <ProjectLink
-              href={postDetails.repoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaGithub /> <span>Ver Código-Fonte</span>
-            </ProjectLink>
+            {/* --- LÓGICA DO GITHUB --- */}
+            {postDetails.repoUrl ? (
+              <ProjectLink
+                href={postDetails.repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaGithub /> <span>Ver Código-Fonte</span>
+              </ProjectLink>
+            ) : (
+              <ProjectLink as="span" $desabilitado>
+                <FaGithub /> <span>Repositório Privado</span>
+              </ProjectLink>
+            )}
           </LinksContainer>
           <PostContent>
             <p>{postDetails.content}</p>

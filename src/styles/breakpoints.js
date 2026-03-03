@@ -1,21 +1,21 @@
 export const breakpoints = {
-  // 768px é o padrão mundial para "fim dos celulares/começo dos tablets"
-  mobile: "868px", 
+  // Padrão mundial para celulares e iPads em pé
+  mobile: "768px", 
   
-  // 1280px pega tablets deitados e laptops menores (telas de 13")
-  tablet: "1380px", 
+  // Padrão mundial para iPads deitados e laptops menores
+  tablet: "1024px", 
   
-  // O que sobrar acima disso é Desktop Wide
+  // Mantemos o seu original, pois o 'device.desktop' calcula tudo acima do tablet
   desktop: "1440px",
 };
 
 export const device = {
-  // Mobile: Tudo até 768px
+  // Tudo até 768px
   mobile: `(max-width: ${breakpoints.mobile})`,
   
-  // Tablet: Tudo até 1280px (Isso inclui o mobile se não cuidar, mas a gente usa a ordem certa no CSS)
+  // Tudo até 1024px
   tablet: `(max-width: ${breakpoints.tablet})`,
   
-  // Desktop: O que for maior que tablet
+  // O que for maior que 1024px (1025px em diante)
   desktop: `(min-width: ${parseInt(breakpoints.tablet) + 1}px)`,
 };

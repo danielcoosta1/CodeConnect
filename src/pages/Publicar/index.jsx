@@ -20,6 +20,7 @@ import {
   TagItem,
   TagList,
   TagRemoveButton,
+  InputGroupRow,
 } from "./style";
 
 import { FaTrash, FaUpload } from "react-icons/fa";
@@ -156,8 +157,8 @@ const Publicar = () => {
         tags,
         image,
         imageFileName,
-        projectUrl,
-        repoUrl,
+        projectUrl: projectUrl.trim() === "" ? null : projectUrl,
+        repoUrl: repoUrl.trim() === "" ? null : repoUrl,
       };
 
       const sucesso = await atualizarPost(id, postData);
@@ -251,44 +252,33 @@ const Publicar = () => {
 
         {/* O onSubmit entra aqui, resgatando a validação nativa! */}
         <Form onSubmit={tentarPublicar}>
-          <CampoInput>
-            <label htmlFor="title">Título do projeto</label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={title}
-              onChange={(e) => atualizarDado("title", e.target.value)}
-              disabled={loading}
-              required
-            />
-          </CampoInput>
+          <InputGroupRow>
+            <CampoInput>
+              <label htmlFor="projectUrl">Deploy</label>
+              <input
+                type="url"
+                id="projectUrl"
+                name="projectUrl"
+                placeholder="https://meusite.com"
+                value={projectUrl || ""}
+                onChange={(e) => atualizarDado("projectUrl", e.target.value)}
+                disabled={loading}
+              />
+            </CampoInput>
 
-          <CampoInput>
-            <label htmlFor="projectUrl">Local do projeto (URL)</label>
-            <input
-              type="text"
-              id="projectUrl"
-              name="projectUrl"
-              value={projectUrl}
-              onChange={(e) => atualizarDado("projectUrl", e.target.value)}
-              disabled={loading}
-              required
-            />
-          </CampoInput>
-
-          <CampoInput>
-            <label htmlFor="repoUrl">Repositório (URL)</label>
-            <input
-              type="text"
-              id="repoUrl"
-              name="repoUrl"
-              value={repoUrl}
-              onChange={(e) => atualizarDado("repoUrl", e.target.value)}
-              disabled={loading}
-              required
-            />
-          </CampoInput>
+            <CampoInput>
+              <label htmlFor="repoUrl">Repositório</label>
+              <input
+                type="url"
+                id="repoUrl"
+                name="repoUrl"
+                placeholder="https://github.com/usuario/repo"
+                value={repoUrl || ""}
+                onChange={(e) => atualizarDado("repoUrl", e.target.value)}
+                disabled={loading}
+              />
+            </CampoInput>
+          </InputGroupRow>
 
           <ContainerInputDescricao>
             <label htmlFor="content">Descrição</label>
