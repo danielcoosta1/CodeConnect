@@ -244,7 +244,19 @@ const Publicar = () => {
           {/* LADO DIREITO */}
           <ContainerForm>
             <h2>{isEditMode ? "Editar Projeto" : "Novo Projeto"}</h2>
-
+            <CampoInput>
+              <label htmlFor="title">Título do Projeto</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                placeholder="Ex: Meu Portfólio Pessoal"
+                value={title}
+                onChange={(e) => atualizarDado("title", e.target.value)}
+                disabled={loading}
+                required
+              />
+            </CampoInput>
             <InputGroupRow>
               <CampoInput>
                 <label htmlFor="projectUrl">Deploy</label>
@@ -279,7 +291,7 @@ const Publicar = () => {
               <textarea
                 id="content"
                 name="content"
-                placeholder="Conte um pouco sobre as tecnologias que usou, os desafios..."
+                placeholder="Conte um pouco sobre o projeto"
                 value={content}
                 onChange={(e) => atualizarDado("content", e.target.value)}
                 disabled={loading}
