@@ -6,9 +6,9 @@ import LoadingState from "../../components/LoadingState"; // Nossas ferramentas 
 import ErrorState from "../../components/ErrorState"; // Nossas ferramentas globais!
 import { FaArrowLeft, FaShareNodes } from "react-icons/fa6";
 import defaultImg from "../Publicar/assets/exemplo.png";
-import { FaGithub, FaPen, FaTrash } from "react-icons/fa";
+import { FaGithub, FaTrash } from "react-icons/fa";
 import { FaExternalLinkAlt } from "react-icons/fa";
-// Substitua o FaPen por FaRegEdit
+import ReactMarkdown from "react-markdown";
 import { FaRegEdit } from "react-icons/fa";
 import {
   PostContainer,
@@ -47,7 +47,6 @@ const Post = () => {
     errorPostDetails,
     carregarPostPorId,
     deletarPostPorId,
-    loadingDeletePost,
   } = usePost();
 
   const { user } = useAuth();
@@ -199,17 +198,7 @@ const Post = () => {
           </AuthorContainer>
         </PostHeader>
         <CodeContainer>
-          <pre>
-            <code>
-              {`// Trecho de código em destaque
-function saudarComunidade(usuario) {
-  console.log(\`Olá, \${usuario}! Bem-vindo ao meu projeto.\`);
-  return true;
-}
-
-saudarComunidade("Dev");`}
-            </code>
-          </pre>
+          <ReactMarkdown>{postDetails.codeContent}</ReactMarkdown>
         </CodeContainer>
         <CommentsContainer>
           <h2>Comentários</h2>

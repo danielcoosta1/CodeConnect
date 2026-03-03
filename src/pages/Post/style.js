@@ -292,16 +292,9 @@ export const CodeContainer = styled.section`
     margin-bottom: 2.4rem;
   }
 
-  pre {
-    margin: 0;
-  }
-
-  code {
-    font-family: "Fira Code", "Courier New", Courier, monospace;
-    font-size: 1.4rem;
-    color: #e6edf3;
-    line-height: 1.6;
-  }
+  font-size: 1.4rem;
+  color: #e6edf3;
+  line-height: 1.6;
 
   /* --- ADD RESPONSIVIDADE NO FINAL --- */
   @media ${device.mobile} {
@@ -386,7 +379,7 @@ export const LinksContainer = styled.div`
   display: flex;
   gap: 1.6rem;
   margin-bottom: 3.2rem;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
 
   /* No mobile, empilha um embaixo do outro bonitão! */
   @media ${device.mobile} {
@@ -411,21 +404,30 @@ export const ProjectLink = styled.a`
      Se desabilitado: fundo transparente com borda cinza.
      Se primário: Verde. 
      Se não: Cinza escuro. */
-  background-color: ${(props) => 
-    props.$desabilitado ? "transparent" : props.$primary ? "#81fe88" : "#2d3538"};
-  
-  color: ${(props) => 
+  background-color: ${(props) =>
+    props.$desabilitado
+      ? "transparent"
+      : props.$primary
+        ? "#81fe88"
+        : "#2d3538"};
+
+  color: ${(props) =>
     props.$desabilitado ? "#555555" : props.$primary ? "#171d1f" : "#ffffff"};
-    
-  border: 0.1rem solid ${(props) => 
-    props.$desabilitado ? "#555555" : "transparent"};
+
+  border: 0.1rem solid
+    ${(props) => (props.$desabilitado ? "#555555" : "transparent")};
 
   /* EFEITO HOVER (SÓ RODA SE NÃO ESTIVER DESABILITADO) */
   &:hover {
-    transform: ${(props) => (props.$desabilitado ? "none" : "translateY(-0.2rem)")};
-    background-color: ${(props) => 
-      props.$desabilitado ? "transparent" : props.$primary ? "#6be276" : "#3a4448"};
-    box-shadow: ${(props) => 
+    transform: ${(props) =>
+      props.$desabilitado ? "none" : "translateY(-0.2rem)"};
+    background-color: ${(props) =>
+      props.$desabilitado
+        ? "transparent"
+        : props.$primary
+          ? "#6be276"
+          : "#3a4448"};
+    box-shadow: ${(props) =>
       props.$desabilitado ? "none" : "0 0.4rem 1.2rem rgba(0, 0, 0, 0.2)"};
   }
 

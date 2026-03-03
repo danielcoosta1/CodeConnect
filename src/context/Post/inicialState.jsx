@@ -5,6 +5,7 @@ export const ESTADO_LIMPO = {
   //Dados do formulário
   title: "",
   content: "",
+  codeContent: "",
   allTags: [],
   tags: [],
   tagInput: "",

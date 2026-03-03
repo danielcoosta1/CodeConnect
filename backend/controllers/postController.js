@@ -26,7 +26,7 @@ export const createPost = async (req, res) => {
     content: z
       .string()
       .min(10, { message: "O conteúdo precisa ter pelo menos 10 caracteres." }),
-    // Adicionando validação para os novos campos (opcionais, como no schema)
+    codeContent: z.string().optional().nullable(),
     image: z.string().optional().nullable(),
     imageFileName: z.string().optional().nullable(),
     tags: z
@@ -43,7 +43,7 @@ export const createPost = async (req, res) => {
     // Ajuste o tratamento de erro se necessário para mostrar múltiplos erros
     return res.status(400).json({ error: validation.error.issues[0].message }); //sempre o primeiro [0]
   }
-  const { title, content, image, imageFileName, tags, projectUrl, repoUrl } =
+  const { title, content, codeContent, image, imageFileName, tags, projectUrl, repoUrl } =
     validation.data;
   const authorId = req.user.id; // Vem do authMiddleware(JWT)
   try {
@@ -51,6 +51,7 @@ export const createPost = async (req, res) => {
       data: {
         title, // Vem do Zod
         content, // Vem do Zod
+        codeContent,
         image, // Vem do Zod (será null se não enviado)
         imageFileName, // Vem do Zod (será null se não enviado)
         tags, // Vem do Zod (será [] se não enviado)
@@ -192,7 +193,7 @@ export const updatePost = async (req, res) => {
   try {
     const { id } = req.params; // ID do post na URL
     const userId = req.user.id; // ID do usuário logado (vindo do token)
-    const { title, content, tags, image, projectUrl, repoUrl } = req.body; // Novos dados enviados pelo formulário // Novos dados do post
+    const { title, content, codeContent, tags, image, projectUrl, repoUrl } = req.body; // Novos dados enviados pelo formulário // Novos dados do post
 
     // 1. Busca o post para verificar se ele existe e de quem é
     const post = await prisma.post.findUnique({
@@ -216,6 +217,7 @@ export const updatePost = async (req, res) => {
       data: {
         title: title || post.title, // Se não enviar título, mantém o antigo
         content: content || post.content, // Se não enviar conteúdo, mantém o antigo
+        codeContent: codeContent || post.code, // Se não enviar código, mantém o antigo
         tags: tags || post.tags, // Se não enviar tags, mantém as antigas
         image: image !== undefined ? image : post.image, // Permite enviar null para remover a imagem
         projectUrl: projectUrl !== undefined ? projectUrl : post.projectUrl, // Permite enviar null para remover a URL do projeto

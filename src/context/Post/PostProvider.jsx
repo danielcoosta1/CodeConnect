@@ -44,6 +44,7 @@ export const PostProvider = ({ children }) => {
     const dadosParaSalvar = {
       title: state.title,
       content: state.content,
+      codeContent: state.codeContent,
       tags: state.tags,
       tagInput: state.tagInput,
       image: state.image,
@@ -59,6 +60,7 @@ export const PostProvider = ({ children }) => {
   }, [
     state.title,
     state.content,
+    state.codeContent,
     state.tags,
     state.tagInput,
     state.image,
@@ -135,6 +137,7 @@ export const PostProvider = ({ children }) => {
       const postData = {
         title: state.title,
         content: state.content,
+        codeContent: state.codeContent,
         image: state.image,
         imageFileName: state.imageFileName,
         tags: state.tags,
@@ -276,6 +279,7 @@ export const PostProvider = ({ children }) => {
         //  Estado do formulário
         title: state.title,
         content: state.content,
+        codeContent: state.codeContent,
         allTags: state.allTags,
         tags: state.tags,
         tagInput: state.tagInput,

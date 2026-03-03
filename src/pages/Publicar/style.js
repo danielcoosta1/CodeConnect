@@ -41,6 +41,7 @@ const commonLabelStyles = `
 // --- WRAPPER GERAL ---
 export const ContainerWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   width: 100%;
   min-height: 100vh;
   background-color: #171d1f;
@@ -63,6 +64,27 @@ export const ContainerWrapper = styled.div`
   }
 `;
 
+export const ContainerWrapperForm = styled.section`
+  display: flex;
+  gap: 4rem;
+  width: 100%;
+
+  @media ${device.tablet} {
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  @media ${device.mobile} {
+    gap: 2rem;
+  }
+`;
+
+export const ContainerWrapperCode = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
 // --- COLUNA DA ESQUERDA (IMAGEM) ---
 export const ContainerUploadImg = styled.div`
   display: flex;
@@ -72,6 +94,8 @@ export const ContainerUploadImg = styled.div`
 
   @media ${device.tablet} {
     max-width: 70%;
+    justify-content: center;
+    align-self: center;
   }
   @media ${device.mobile} {
     max-width: 100%;
@@ -159,14 +183,17 @@ export const ContainerSubtittle = styled.div`
 `;
 
 // --- COLUNA DA DIREITA (FORMULÁRIO) ---
+// A ContainerForm que abraça os inputs da direita
 export const ContainerForm = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* Separa cada input internamente */
   width: 100%;
   color: #e1e1e1;
 
   h2 {
     font-size: 3.2rem;
-    margin-bottom: 2.4rem;
     font-weight: 700;
   }
 
@@ -181,7 +208,8 @@ export const ContainerForm = styled.div`
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 4rem; /* Distância generosa entre os blocos (topo, código, botões) */
+  width: 100%;
 `;
 
 export const InputGroupRow = styled.div`
@@ -379,5 +407,25 @@ export const BotaoPublicar = styled.button`
     to {
       transform: rotate(360deg);
     }
+  }
+`;
+
+export const ContainerCode = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  label {
+    ${commonLabelStyles}
+    font-size: 1.8rem; /* Destaca um pouco mais */
+    margin-bottom: 1.6rem;
+  }
+
+  /* Ajusta o editor MD pra ficar com os mesmos cantos arredondados */
+  .wmde-markdown-var {
+    --color-canvas-default: #1c2325; /* Um cinza mais escuro pro código */
+    border-radius: 0.8rem;
+    border: 0.1rem solid #333;
+    overflow: hidden;
   }
 `;
