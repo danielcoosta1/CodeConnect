@@ -292,9 +292,47 @@ export const CodeContainer = styled.section`
     margin-bottom: 2.4rem;
   }
 
-  font-size: 1.4rem;
   color: #e6edf3;
   line-height: 1.6;
+  font-size: 1.6rem;
+
+  h1,
+  h2,
+  h3 {
+    color: #fff;
+    margin-top: 2.4rem;
+    margin-bottom: 1.6rem;
+    border-bottom: 0.1rem solid #2d3538;
+    padding-bottom: 0.8rem;
+  }
+
+  p {
+    margin-bottom: 1.6rem;
+  }
+
+  /* Bloco de código */
+  pre {
+    background-color: #161b22;
+    padding: 1.6rem;
+    border-radius: 0.8rem;
+    overflow-x: auto;
+    border: 0.1rem solid #30363d;
+  }
+
+  /* Código na linha (inline) */
+  code {
+    font-family: "Fira Code", monospace;
+    background-color: rgba(110, 118, 129, 0.4);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.4rem;
+    font-size: 1.4rem;
+  }
+
+  /* Tira o fundo do code quando ele está dentro de um pre (bloco grande) */
+  pre code {
+    background-color: transparent;
+    padding: 0;
+  }
 
   /* --- ADD RESPONSIVIDADE NO FINAL --- */
   @media ${device.mobile} {

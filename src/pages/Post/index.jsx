@@ -197,9 +197,11 @@ const Post = () => {
             </AuthorInfo>
           </AuthorContainer>
         </PostHeader>
-        <CodeContainer>
-          <ReactMarkdown>{postDetails.codeContent}</ReactMarkdown>
-        </CodeContainer>
+        {postDetails.codeContent && (
+          <CodeContainer>
+            <ReactMarkdown>{postDetails.codeContent}</ReactMarkdown>
+          </CodeContainer>
+        )}
         <CommentsContainer>
           <h2>Comentários</h2>
           <p>Seja o primeiro a comentar neste projeto!</p>
