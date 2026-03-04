@@ -38,16 +38,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const Publicar = () => {
   const {
-    title,
-    content,
-    codeContent, // <--- NOVA VARIÁVEL
-    allTags,
-    tags,
-    tagInput,
-    image,
-    imageFileName,
-    projectUrl,
-    repoUrl,
+    formData,
     loading,
     atualizarDado,
     atualizarTagInput,
@@ -61,6 +52,7 @@ const Publicar = () => {
     carregarPostPorId,
     prepararEdicao,
     atualizarPost,
+    iniciarNovoPost,
   } = usePost();
 
   const inputRef = useRef();
@@ -81,7 +73,7 @@ const Publicar = () => {
     if (isEditMode) {
       carregarPostPorId(id);
     } else {
-      limparFormulario();
+      iniciarNovoPost(); // Se não for modo edição, iniciamos um novo post para garantir que o estado do formulário esteja limpo e pronto para receber os dados do novo post. Isso é importante para evitar que dados de um post anterior (se o usuário veio de uma edição ou visualização) permaneçam no formulário quando ele quer criar um novo post.
     }
   }, [id, isEditMode]);
 
@@ -122,12 +114,16 @@ const Publicar = () => {
     if (e.key !== "Enter") return;
     e.preventDefault();
 
-    const novaTag = tagInput.trim().toLowerCase();
+    const novaTag = formData.tagInput.trim().toLowerCase();
 
-    if (!novaTag) return setErroTags("Digite uma tag antes de pressionar Enter.");
-    if (tags && tags.includes(novaTag)) return setErroTags("Essa tag já foi adicionada.");
-    if (tags.length >= 4) return setErroTags("Você não pode adicionar mais de 4 tags.");
-    if (allTags.length > 0 && !allTags.includes(novaTag)) return setErroTags("Tag inválida. Escolha uma tag válida");
+    if (!novaTag)
+      return setErroTags("Digite uma tag antes de pressionar Enter.");
+    if (formData.tags && formData.tags.includes(novaTag))
+      return setErroTags("Essa tag já foi adicionada.");
+    if (formData.tags.length >= 4)
+      return setErroTags("Você não pode adicionar mais de 4 tags.");
+    if (formData.allTags.length > 0 && !formData.allTags.includes(novaTag))
+      return setErroTags("Tag inválida. Escolha uma tag válida");
 
     adicionarTag(novaTag);
     setErroTags("");
@@ -140,26 +136,28 @@ const Publicar = () => {
   };
 
   const confirmarPublicacao = async () => {
-    if (isEditMode) {
-      const postData = {
-        title,
-        content,
-        codeContent, // <--- ADICIONANDO NO PAYLOAD
-        tags,
-        image,
-        imageFileName,
-        projectUrl: projectUrl?.trim() === "" ? null : projectUrl,
-        repoUrl: repoUrl?.trim() === "" ? null : repoUrl,
-      };
+    // 1. Pegamos tudo do formData e só substituímos o que precisa de tratamento especial
+    const postData = {
+      ...formData,
+      projectUrl:
+        formData.projectUrl?.trim() === "" ? null : formData.projectUrl, // Se for string vazia, vira null. Senão, mantém o valor. é uma forma de garantir que a API receba null em vez de string vazia, caso o usuário limpe o campo. O mesmo vale para repoUrl. O zod quebra ao receber string vazia, mas aceita null ou string com valor. Então garantimos que seja null quando vazio. Assim, a validação do zod passa e a API recebe o formato esperado.
+      repoUrl: formData.repoUrl?.trim() === "" ? null : formData.repoUrl,
+    };
 
+    // 2. Disparamos para a API
+    if (isEditMode) {
       const sucesso = await atualizarPost(id, postData);
+
       if (sucesso) {
         limparFormulario();
         navigate(`/post/${id}`);
       }
     } else {
-      await publicarPost();
-      navigate("/feed");
+      const sucesso = await publicarPost(postData);
+
+      if (sucesso) {
+        navigate("/feed");
+      }
     }
 
     setErroTags("");
@@ -199,14 +197,17 @@ const Publicar = () => {
 
       {/* AQUI COMEÇA O FORMULÁRIO. TUDO ENVOLVIDO POR <Form> PARA ENVIAR CORRETAMENTE */}
       <Form onSubmit={tentarPublicar}>
-        
         {/* PARTE DE CIMA: IMAGEM + DADOS BÁSICOS */}
         <ContainerWrapperForm>
           {/* LADO ESQUERDO */}
           <ContainerUploadImg>
             <ContainerImg>
               <Img
-                src={image ? `data:image/png;base64,${image}` : defaultImg}
+                src={
+                  formData.image
+                    ? `data:image/png;base64,${formData.image}`
+                    : defaultImg
+                }
                 alt="Preview do projeto"
               />
             </ContainerImg>
@@ -227,9 +228,9 @@ const Publicar = () => {
                 <FaUpload />
               </ButtonUploadImg>
 
-              {image && (
+              {formData.image && (
                 <ContainerSubtittle>
-                  <p>{imageFileName}</p>
+                  <p>{formData.imageFileName}</p>
                   <img
                     src={closeIcon}
                     alt="Remover imagem"
@@ -251,7 +252,7 @@ const Publicar = () => {
                 id="title"
                 name="title"
                 placeholder="Ex: Meu Portfólio Pessoal"
-                value={title}
+                value={formData.title}
                 onChange={(e) => atualizarDado("title", e.target.value)}
                 disabled={loading}
                 required
@@ -265,7 +266,7 @@ const Publicar = () => {
                   id="projectUrl"
                   name="projectUrl"
                   placeholder="https://meusite.com"
-                  value={projectUrl || ""}
+                  value={formData.projectUrl || ""}
                   onChange={(e) => atualizarDado("projectUrl", e.target.value)}
                   disabled={loading}
                 />
@@ -278,7 +279,7 @@ const Publicar = () => {
                   id="repoUrl"
                   name="repoUrl"
                   placeholder="https://github.com/usuario/repo"
-                  value={repoUrl || ""}
+                  value={formData.repoUrl || ""}
                   onChange={(e) => atualizarDado("repoUrl", e.target.value)}
                   disabled={loading}
                 />
@@ -292,7 +293,7 @@ const Publicar = () => {
                 id="content"
                 name="content"
                 placeholder="Conte um pouco sobre o projeto"
-                value={content}
+                value={formData.content}
                 onChange={(e) => atualizarDado("content", e.target.value)}
                 disabled={loading}
                 required
@@ -306,16 +307,16 @@ const Publicar = () => {
                 name="tags"
                 type="text"
                 placeholder="Digite e pressione Enter (Ex: React, Node.js)"
-                value={tagInput}
+                value={formData.tagInput}
                 onChange={(e) => atualizarTagInput(e.target.value)}
                 onKeyDown={lidarComKeyDown}
                 disabled={loading}
               />
               {erroTags && <ErrorText>{erroTags}</ErrorText>}
 
-              {tags?.length > 0 && (
+              {formData.tags?.length > 0 && (
                 <TagList>
-                  {tags.map((tag, index) => (
+                  {formData.tags.map((tag, index) => (
                     <TagItem key={index}>
                       <span>{tag}</span>
                       <TagRemoveButton
@@ -339,10 +340,10 @@ const Publicar = () => {
             <div data-color-mode="dark">
               <MDEditor
                 id="codeContent"
-                value={codeContent || ""}
+                value={formData.codeContent || ""}
                 onChange={(value) => atualizarDado("codeContent", value || "")}
-                height={400} 
-                preview="edit" 
+                height={400}
+                preview="edit"
               />
             </div>
           </ContainerCode>
