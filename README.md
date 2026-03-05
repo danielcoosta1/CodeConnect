@@ -90,9 +90,17 @@ O CodeConnect está em constante evolução. Nossas próximas metas de engenhari
 ### Instalação
 
 **1. Clone o repositório:**
+
 ```bash
+
 git clone https://github.com/danielcoosta1/codeconnect.git
 cd codeconnect
+
+```
+**2. Configurando e Rodando o Back-end:
+
+```bash
+
 cd backend
 npm install
 
@@ -105,6 +113,12 @@ npx prisma db push
 
 # Inicie o servidor
 npm run dev
+
+```
+**3. Configurando e Rodando o Front-end:
+
+```bash
+
 # Volte para a raiz do projeto
 cd ..
 npm install
@@ -114,8 +128,6 @@ npm install
 
 # Inicie a aplicação React
 npm run dev
-
-
 
 ```
 <p align="center">
