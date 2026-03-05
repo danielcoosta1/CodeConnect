@@ -463,6 +463,10 @@ export const CommentContentContainer = styled.div`
     line-height: 1.6;
     margin: 0;
   }
+  @media ${device.mobile} {
+    flex-direction: column; /* Empilha texto em cima, lixeira embaixo */
+    gap: 1.2rem; /* Dá um respiro entre o texto e as ações */
+  }
 `;
 
 export const CommentContent = styled.div`
@@ -494,6 +498,7 @@ export const CommentHeaderInfo = styled.div`
 export const AuthorActionsComment = styled.div`
   display: flex;
   gap: 1.2rem;
+  align-items: center;
 
   button {
     font-size: 1.4rem;
@@ -510,11 +515,67 @@ export const AuthorActionsComment = styled.div`
     color: #ff5f56;
   }
 
+  .confirm-action {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background-color: #ff5f5615; /* Fundo vermelhinho super suave */
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.8rem;
+    animation: ${fadeIn} 0.2s ease-in;
+  }
+
+  .confirm-text {
+    font-size: 1.2rem;
+    color: #ff5f56;
+    font-weight: 600;
+  }
+
+  .btn-confirm-yes,
+  .btn-confirm-no {
+    font-size: 1.2rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.4rem;
+  }
+
+  .btn-confirm-yes {
+    background-color: #ff5f56;
+    color: #fff;
+    &:hover {
+      background-color: #e04a42;
+    }
+  }
+
+  .btn-confirm-no {
+    background-color: transparent;
+    color: #818388;
+    &:hover {
+      color: #333;
+    }
+  }
+
   /* --- MÁGICA DO MOBILE AQUI --- */
   @media ${device.mobile} {
+    align-self: flex-end; /* Joga a lixeira/confirmação para o canto direito inferior */
+
+    .confirm-action {
+      padding: 0.8rem 1.2rem; /* Fundo maior */
+      gap: 1.2rem; /* Mais espaço entre Sim e Não */
+    }
+
+    .confirm-text {
+      font-size: 1.4rem; /* Texto de pergunta um pouco maior */
+    }
+
+    .btn-confirm-yes,
+    .btn-confirm-no {
+      padding: 0.8rem 1.6rem; /* Botões maiores, fáceis de tocar */
+      font-size: 1.4rem;
+    }
+
     svg {
-      width: 1.6rem;
-      height: 1.6rem;
+      width: 1.8rem; /* Lixeira um pouco maior para o toque inicial */
+      height: 1.8rem;
     }
   }
 `;

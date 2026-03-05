@@ -46,3 +46,8 @@ export const fetchCommentsByPostId = async (postId) => {
   const response = await api.get(`/posts/${postId}/comments`);
   return response.data;
 };
+
+export const deleteCommentById = async (commentId) => {
+  const response = await api.delete(`/posts/${commentId}/comments`);
+  return response.data;
+};

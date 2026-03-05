@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { fetchCommentsByPostId, createCommentRequest } from "../services/postService";
+import {
+  fetchCommentsByPostId,
+  createCommentRequest,
+  deleteCommentById,
+} from "../services/postService";
 import { toastErro, toastSucesso } from "../utils/toast";
 
 export const useComments = (postId) => {
@@ -7,6 +11,8 @@ export const useComments = (postId) => {
   const [commentText, setCommentText] = useState("");
   const [loadingComments, setLoadingComments] = useState(true);
   const [enviandoComment, setEnviandoComment] = useState(false);
+
+  const [loadingDelete, setLoadingDelete] = useState(false);
 
   // Busca os comentários assim que o postId estiver disponível (ou seja, quando a página do post carregar)
   useEffect(() => {
@@ -34,7 +40,7 @@ export const useComments = (postId) => {
     setEnviandoComment(true);
     try {
       const novoComentario = await createCommentRequest(postId, commentText);
-      
+
       // UI Otimista
       setComments((prevComments) => [novoComentario, ...prevComments]);
       setCommentText("");
@@ -47,6 +53,23 @@ export const useComments = (postId) => {
     }
   };
 
+  const handleDeletarComentario = async (commentId) => {
+    if (loadingDelete) return; // Evita múltiplos cliques
+    setLoadingDelete(true);
+    try {
+      await deleteCommentById(commentId);
+      setComments((prevComments) =>
+        prevComments.filter((comment) => comment.id !== commentId),
+      );
+      toastSucesso("Comentário excluído!");
+    } catch (error) {
+      console.error("Erro ao excluir comentário", error);
+      toastErro("Não foi possível excluir o comentário.");
+    } finally {
+      setLoadingDelete(false);
+    }
+  };
+
   // O Hook "devolve" apenas o que a interface precisa usar
   return {
     comments,
@@ -55,5 +78,6 @@ export const useComments = (postId) => {
     loadingComments,
     enviandoComment,
     handleComentar,
+    handleDeletarComentario,
   };
 };

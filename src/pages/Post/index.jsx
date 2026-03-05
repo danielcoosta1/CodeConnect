@@ -60,7 +60,7 @@ const Post = () => {
 
   const { user } = useAuth();
 
-  const isAuthor = postDetails?.author?.id === user?.id;
+  const isAuthorPost = postDetails?.author?.id === user?.id;
 
   useEffect(() => {
     if (id) {
@@ -75,6 +75,7 @@ const Post = () => {
     loadingComments,
     enviandoComment,
     handleComentar,
+    handleDeletarComentario,
   } = useComments(id);
 
   const handleConfirmarExclusao = async () => {
@@ -83,6 +84,14 @@ const Post = () => {
     // Se deu certo, ele manda pro feed. (O modal já se fechou sozinho!)
     if (sucesso) {
       navigate("/feed");
+    }
+  };
+
+  const confirmarExclusaoComentario = async () => {
+    if (commentToDelete) {
+      await handleDeletarComentario(commentToDelete);
+      setIsModalCommentOpen(false); // Fecha o modal
+      setCommentToDelete(null); // Zera o ID por segurança
     }
   };
 
@@ -114,7 +123,7 @@ const Post = () => {
             </BackButton>
 
             {/* Renderização Condicional: Só aparece se for o dono! */}
-            {isAuthor && (
+            {isAuthorPost && (
               <AuthorActions>
                 <button
                   className="btn-edit"
@@ -251,38 +260,69 @@ const Post = () => {
             <p>Seja o primeiro a comentar neste projeto!</p>
           ) : (
             <CommentList>
-              {comments.map((comment) => (
-                <CommentItem key={comment.id}>
-                  <ProfileAvatar
-                    src={comment.author?.imagem}
-                    size={45}
-                    hasBorder={false} // Tira a borda verde neon porque o fundo é branco
-                  />
+              {comments.map((comment) => {
+                // A LÓGICA DE PERMISSÃO FICA AQUI DENTRO DO MAP:
+                // Pode excluir se: eu for o dono do post OU se eu escrevi o comentário.
+                const canDeleteComment =
+                  isAuthorPost || comment.authorId === user?.id;
 
-                  <CommentContentContainer>
-                    <CommentContent>
-                      <CommentHeaderInfo>
-                        <h4>
-                          {comment.author?.nome} {comment.author?.sobrenome}
-                        </h4>
-                        <span>@{comment.author?.usuario}</span>
-                      </CommentHeaderInfo>
+                return (
+                  <CommentItem key={comment.id}>
+                    <ProfileAvatar
+                      src={comment.author?.imagem}
+                      size={45}
+                      hasBorder={false}
+                    />
 
-                      <p>{comment.text}</p>
-                    </CommentContent>
-                    <AuthorActionsComment>
-                      <button
-                        className="btn-delete"
-                        onClick={() => {
-                          setIsModalCommentOpen(true);
-                        }}
-                      >
-                        <FaTrash />
-                      </button>
-                    </AuthorActionsComment>
-                  </CommentContentContainer>
-                </CommentItem>
-              ))}
+                    <CommentContentContainer>
+                      <CommentContent>
+                        <CommentHeaderInfo>
+                          <h4>
+                            {comment.author?.nome} {comment.author?.sobrenome}
+                          </h4>
+                          <span>@{comment.author?.usuario}</span>
+                        </CommentHeaderInfo>
+                        <p>{comment.text}</p>
+                      </CommentContent>
+
+                      {/* RENDERIZAÇÃO CONDICIONAL DA LIXEIRA OU CONFIRMAÇÃO */}
+                      {canDeleteComment && (
+                        <AuthorActionsComment>
+                          {commentToDelete === comment.id ? ( // Se o ID do comentário que queremos excluir for igual ao ID desse comentário, ou seja, estamos no modo de confirmação para esse comentário - ativa o Sim/Nao
+                            // MODO DE CONFIRMAÇÃO
+                            <div className="confirm-action">
+                              <span className="confirm-text">Excluir?</span>
+                              <button
+                                className="btn-confirm-yes"
+                                onClick={() =>
+                                  handleDeletarComentario(comment.id)
+                                }
+                              >
+                                Sim
+                              </button>
+                              <button
+                                className="btn-confirm-no"
+                                onClick={() => setCommentToDelete(null)}
+                              >
+                                Não
+                              </button>
+                            </div>
+                          ) : (
+                            // MODO PADRÃO (LIXEIRA)
+                            <button
+                              className="btn-delete"
+                              onClick={() => setCommentToDelete(comment.id)}
+                              title="Excluir comentário"
+                            >
+                              <FaTrash />
+                            </button>
+                          )}
+                        </AuthorActionsComment>
+                      )}
+                    </CommentContentContainer>
+                  </CommentItem>
+                );
+              })}
             </CommentList>
           )}
         </CommentsContainer>
@@ -297,6 +337,8 @@ const Post = () => {
         textoConfirmar="Sim, Excluir"
         isDestructive={true} // Ativa o botão vermelho!
       />
+
+      {/* Modal para exclusão do Comentário */}
     </>
   );
 };

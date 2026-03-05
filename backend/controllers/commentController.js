@@ -71,3 +71,48 @@ export const getCommentsByPostId = async (req, res) => {
       .json({ error: "Erro interno ao buscar comentários." });
   }
 };
+
+// Excluir comentário por ID
+
+export const deleteCommentById = async (req, res) => {
+  try {
+    const { id } = req.params; // ID do comentário a ser excluído
+    const userId = req.user.id; // ID do usuário logado (do AuthMiddleware)
+
+    // Verifica se o comentário existe e pertence ao usuário
+    const comment = await prisma.comment.findUnique({
+      where: { id: id },
+    });
+
+    if (!comment) {
+      return res.status(404).json({ error: "Comentário não encontrado." });
+    }
+
+    // Trava de segurança: só o autor do comentário pode excluir ou o dono do post pode excluir (opção para moderar comentários indesejados)
+    if (comment.authorId !== userId) {
+      // Verifica se o usuário é o dono do post
+      const post = await prisma.post.findUnique({
+        where: { id: comment.postId },
+      });
+
+      // Se o usuário não é nem o autor do comentário nem o dono do post, proíbe a ação
+      if (!post || post.authorId !== userId) {
+        return res.status(403).json({ error: "Ação proibida. Você não pode excluir este comentário." });
+      }
+    }
+
+    // Se passou por tudo isso, pode excluir o comentário
+    await prisma.comment.delete({
+      where: { id: id },
+    });
+
+    return res
+      .status(200)
+      .json({ message: "Comentário excluído com sucesso." });
+  } catch (error) {
+    console.error("Erro ao excluir comentário:", error);
+    return res
+      .status(500)
+      .json({ error: "Erro interno ao excluir comentário." });
+  }
+};
