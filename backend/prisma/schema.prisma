@@ -20,6 +20,7 @@ model User {
   email     String  @unique
   senha     String
   usuario   String? @unique
+  comments Comment[] // Um usuário pode fazer vários comentários
 
   // --- NOVOS CAMPOS PARA O PERFIL---
   imagem String? // URL ou Base64 da foto de perfil
@@ -53,7 +54,24 @@ model Post {
   repoUrl       String? // Link do GitHub/GitLab
   createdAt     DateTime @default(now())
 
+  comments Comment[] // Um post pode ter múltiplos comentários
+
   // --- A Relação com o User ---
   author   User   @relation(fields: [authorId], references: [id]) // Relaciona o post ao autor
   authorId String @db.ObjectId
+}
+
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  text      String   // O texto do comentário
+  createdAt DateTime @default(now())
+
+  // --- Quem comentou? ---
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String @db.ObjectId
+
+  // --- Onde comentou? ---
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String @db.ObjectId
 }

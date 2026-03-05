@@ -3,19 +3,21 @@ import { localStorageService } from "../../services/localStorageService";
 // 1. O Gabarito: Como o estado deve ser quando não há nada digitado
 export const ESTADO_LIMPO = {
   //Dados do formulário
-  title: "",
-  content: "",
-  codeContent: "",
-  allTags: [],
-  tags: [],
-  tagInput: "",
-  image: null,
-  imageFileName: "",
-  projectUrl: "",
-  repoUrl: "",
+  formData: {
+    title: "",
+    content: "",
+    codeContent: "",
+    tags: [],
+    tagInput: "",
+    image: null,
+    imageFileName: "",
+    projectUrl: "",
+    repoUrl: "",
+  },
 
   //Dados de posts
   allPosts: [],
+  allTags: [],
   loadingPosts: true,
   errorPosts: null,
   loading: false,
@@ -54,5 +56,8 @@ const rascunhoSalvo = localStorageService.ler("rascunho_post");
 // 3. O estado inicial do sistema:
 // Se houver rascunho, mistura com o limpo. Se não, usa o limpo.
 export const postInicialState = rascunhoSalvo
-  ? { ...ESTADO_LIMPO, ...rascunhoSalvo }
+  ? {
+      ...ESTADO_LIMPO,
+      formData: { ...ESTADO_LIMPO.formData, ...rascunhoSalvo },
+    }
   : ESTADO_LIMPO;

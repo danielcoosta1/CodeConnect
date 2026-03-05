@@ -38,37 +38,18 @@ export const PostProvider = ({ children }) => {
   }, []);
 
   // --- EFEITO: Salvar Rascunho Automaticamente ---
-
   useEffect(() => {
-    // Só salvamos os DADOS, não o status (loading/erro)
-    const dadosParaSalvar = {
-      title: state.title,
-      content: state.content,
-      codeContent: state.codeContent,
-      tags: state.tags,
-      tagInput: state.tagInput,
-      image: state.image,
-      imageFileName: state.imageFileName,
-      projectUrl: state.projectUrl,
-      repoUrl: state.repoUrl,
-    };
-
-    // Se tiver pelo menos um título ou conteúdo, salva. Senão, não suja o storage.
-    if (state.title || state.content || state.image) {
-      localStorageService.salvar("rascunho_post", dadosParaSalvar);
+    // Só salva no localStorage se o usuário tiver digitado pelo menos alguma coisa.
+    // Isso evita que ele salve um objeto "em branco" logo após você ter descartado ou publicado o projeto.
+    if (
+      state.formData.title ||
+      state.formData.content ||
+      state.formData.codeContent
+    ) {
+      localStorageService.salvar("rascunho_post", state.formData);
     }
-  }, [
-    state.title,
-    state.content,
-    state.codeContent,
-    state.tags,
-    state.tagInput,
-    state.image,
-    state.imageFileName,
-    state.projectUrl,
-    state.repoUrl,
-  ]);
-  // O array acima diz: "Rode esse efeito sempre que um desses mudar"
+  }, [state.formData]);
+  // O array acima diz: "Rode esse efeito sempre que o formData mudar"
 
   //  -------  AÇÕES DE MANIPULAÇÃO DDO ESTADO LOCAL   --------
 
@@ -96,6 +77,19 @@ export const PostProvider = ({ children }) => {
     dispatch({ type: "REMOVER_IMAGEM" });
   };
 
+  const iniciarNovoPost = () => {
+    // 1. Vai no banco do navegador (LocalStorage) e vê se tem rascunho
+    const rascunho = localStorageService.ler("rascunho_post");
+
+    if (rascunho) {
+      // Se tem rascunho, nós reaproveitamos a ação de edição para jogar o rascunho de volta na tela!
+      dispatch({ type: "PREENCHER_FORMULARIO_EDICAO", payload: rascunho });
+    } else {
+      // Se não tem rascunho nenhum, nós só limpamos a memória (sem apagar o LocalStorage na força)
+      dispatch({ type: "RESET_FORM" });
+    }
+  };
+
   const limparFormulario = () => {
     // 1. Limpamos o "banco físico" (LocalStorage)
     localStorageService.remover("rascunho_post");
@@ -120,31 +114,9 @@ export const PostProvider = ({ children }) => {
     }
   };
 
-  const publicarPost = async () => {
-    // VALIDAÇÃO BÁSICA ANTES DE ENVIAR
-    if (state.title.trim().length < 3) {
-      toastErro("O título precisa ter pelo menos 3 caracteres.");
-      return;
-    }
-
-    if (state.content.trim().length < 10) {
-      toastErro("O conteúdo precisa ter pelo menos 10 caracteres.");
-      return;
-    }
-
+  const publicarPost = async (postData) => {
     dispatch({ type: "INICIAR_PUBLICACAO" });
     try {
-      const postData = {
-        title: state.title,
-        content: state.content,
-        codeContent: state.codeContent,
-        image: state.image,
-        imageFileName: state.imageFileName,
-        tags: state.tags,
-        projectUrl: state.projectUrl,
-        repoUrl: state.repoUrl,
-      };
-
       const postCriado = await createPostRequest(postData); // Sua função do service que faz axios.post
 
       dispatch({ type: "PUBLICACAO_SUCESSO" });
@@ -277,19 +249,11 @@ export const PostProvider = ({ children }) => {
     <PostContext.Provider
       value={{
         //  Estado do formulário
-        title: state.title,
-        content: state.content,
-        codeContent: state.codeContent,
-        allTags: state.allTags,
-        tags: state.tags,
-        tagInput: state.tagInput,
-        image: state.image,
-        imageFileName: state.imageFileName,
-        projectUrl: state.projectUrl,
-        repoUrl: state.repoUrl,
+        formData: state.formData,
 
         //Estado de posts
         allPosts: state.allPosts,
+        allTags: state.allTags,
         loading: state.loading,
         error: state.error,
         success: state.success,
@@ -338,6 +302,7 @@ export const PostProvider = ({ children }) => {
         prepararEdicao,
         atualizarPost,
         atualizarSeguidoresPerfilPublico,
+        iniciarNovoPost,
       }}
     >
       {" "}

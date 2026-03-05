@@ -268,8 +268,6 @@ export const TagItem = styled.span`
   border: 0.1rem solid rgba(129, 254, 136, 0.2);
 `;
 
-// --- NOVOS CONTAINERS ---
-
 export const CodeContainer = styled.section`
   background-color: #0d1117; /* Uma cor bem escura, estilo tema de editor de código */
   border-radius: 1.6rem;
@@ -292,11 +290,48 @@ export const CodeContainer = styled.section`
     margin-bottom: 2.4rem;
   }
 
-  font-size: 1.4rem;
   color: #e6edf3;
   line-height: 1.6;
+  font-size: 1.6rem;
 
-  /* --- ADD RESPONSIVIDADE NO FINAL --- */
+  h1,
+  h2,
+  h3 {
+    color: #fff;
+    margin-top: 2.4rem;
+    margin-bottom: 1.6rem;
+    border-bottom: 0.1rem solid #2d3538;
+    padding-bottom: 0.8rem;
+  }
+
+  p {
+    margin-bottom: 1.6rem;
+  }
+
+  /* Bloco de código */
+  pre {
+    background-color: #161b22;
+    padding: 1.6rem;
+    border-radius: 0.8rem;
+    overflow-x: auto;
+    border: 0.1rem solid #30363d;
+  }
+
+  /* Código na linha (inline) */
+  code {
+    font-family: "Fira Code", monospace;
+    background-color: rgba(110, 118, 129, 0.4);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.4rem;
+    font-size: 1.4rem;
+  }
+
+  /* Tira o fundo do code quando ele está dentro de um pre (bloco grande) */
+  pre code {
+    background-color: transparent;
+    padding: 0;
+  }
+
   @media ${device.mobile} {
     padding: 1.6rem;
 
@@ -306,12 +341,14 @@ export const CodeContainer = styled.section`
   }
 `;
 
+// --- SESSÃO DE COMENTÁRIOS ---
+
 export const CommentsContainer = styled.section`
-  background-color: #ffffff; /* O fundo branco que você pediu! */
+  background-color: #ffffff;
   border-radius: 1.6rem;
   padding: 3.2rem;
   margin-bottom: 4rem;
-  color: #171d1f; /* Aqui o texto PRECISA ser escuro para dar contraste */
+  color: #171d1f;
 
   h2 {
     font-size: 2.4rem;
@@ -319,7 +356,7 @@ export const CommentsContainer = styled.section`
     margin-bottom: 0.8rem;
   }
 
-  p {
+  > p {
     font-size: 1.6rem;
     color: #555555;
     margin-bottom: 2.4rem;
@@ -330,10 +367,12 @@ export const CommentsContainer = styled.section`
   }
 `;
 
-export const FakeInputComment = styled.div`
+// Deixou de ser Fake! Agora é um Form real.
+export const InputComment = styled.form`
   display: flex;
   gap: 1.6rem;
   align-items: center;
+  margin-bottom: 3.2rem;
 
   input {
     flex: 1;
@@ -343,9 +382,18 @@ export const FakeInputComment = styled.div`
     background-color: #f9f9f9;
     font-size: 1.4rem;
     outline: none;
+    color: #171d1f;
+    transition: all 0.2s ease;
 
     &:focus {
       border-color: #81fe88;
+      background-color: #ffffff;
+      box-shadow: 0 0 0 0.3rem rgba(129, 254, 136, 0.2);
+    }
+
+    &:disabled {
+      background-color: #e9e9e9;
+      cursor: not-allowed;
     }
   }
 
@@ -355,22 +403,179 @@ export const FakeInputComment = styled.div`
     border: none;
     padding: 1.6rem 2.4rem;
     border-radius: 0.8rem;
+    font-size: 1.4rem;
     font-weight: bold;
     cursor: pointer;
     transition: background 0.2s;
 
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: #2d3538;
     }
+
+    &:disabled {
+      background-color: #cccccc;
+      color: #888888;
+      cursor: not-allowed;
+    }
   }
+
   @media ${device.mobile} {
-    flex-direction: column; /* Empilha o input e o botão */
-    align-items: stretch; /* Estica ambos até as bordas */
+    flex-direction: column;
+    align-items: stretch;
     gap: 1.2rem;
 
     button {
-      width: 100%; /* Botão grandão no mobile */
+      width: 100%;
       padding: 1.4rem;
+    }
+  }
+`;
+
+// --- ESTRUTURA VISUAL DA LISTA DE COMENTÁRIOS ---
+
+export const CommentList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  margin-top: 1.6rem;
+`;
+
+export const CommentItem = styled.div`
+  display: flex;
+  gap: 1.6rem;
+  align-items: flex-start;
+  animation: ${fadeIn} 0.3s ease-out forwards;
+`;
+
+export const CommentContentContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background-color: #f9f9f9; /* Cinza bem clarinho pro balãozinho */
+  padding: 1.6rem;
+  /* Borda arredondada estilo balão de chat (ponta superior esquerda reta) */
+  border-radius: 0 1.6rem 1.6rem 1.6rem;
+  width: 100%;
+  border: 0.1rem solid #eaeaea;
+
+  p {
+    font-size: 1.5rem;
+    color: #333333;
+    line-height: 1.6;
+    margin: 0;
+  }
+  @media ${device.mobile} {
+    flex-direction: column; /* Empilha texto em cima, lixeira embaixo */
+    gap: 1.2rem; /* Dá um respiro entre o texto e as ações */
+  }
+`;
+
+export const CommentContent = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const CommentHeaderInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+
+  h4 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #171d1f;
+    margin: 0;
+  }
+
+  span {
+    font-size: 1.4rem;
+    color: #818388;
+    font-weight: 500;
+  }
+`;
+
+export const AuthorActionsComment = styled.div`
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+
+  button {
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+
+    background-color: transparent;
+    color: #818388; /* Cinza discreto */
+  }
+
+  .btn-delete:hover {
+    color: #ff5f56;
+  }
+
+  .confirm-action {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background-color: #ff5f5615; /* Fundo vermelhinho super suave */
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.8rem;
+    animation: ${fadeIn} 0.2s ease-in;
+  }
+
+  .confirm-text {
+    font-size: 1.2rem;
+    color: #ff5f56;
+    font-weight: 600;
+  }
+
+  .btn-confirm-yes,
+  .btn-confirm-no {
+    font-size: 1.2rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.4rem;
+  }
+
+  .btn-confirm-yes {
+    background-color: #ff5f56;
+    color: #fff;
+    &:hover {
+      background-color: #e04a42;
+    }
+  }
+
+  .btn-confirm-no {
+    background-color: transparent;
+    color: #818388;
+    &:hover {
+      color: #333;
+    }
+  }
+
+  /* --- MÁGICA DO MOBILE AQUI --- */
+  @media ${device.mobile} {
+    align-self: flex-end; /* Joga a lixeira/confirmação para o canto direito inferior */
+
+    .confirm-action {
+      padding: 0.8rem 1.2rem; /* Fundo maior */
+      gap: 1.2rem; /* Mais espaço entre Sim e Não */
+    }
+
+    .confirm-text {
+      font-size: 1.4rem; /* Texto de pergunta um pouco maior */
+    }
+
+    .btn-confirm-yes,
+    .btn-confirm-no {
+      padding: 0.8rem 1.6rem; /* Botões maiores, fáceis de tocar */
+      font-size: 1.4rem;
+    }
+
+    svg {
+      width: 1.8rem; /* Lixeira um pouco maior para o toque inicial */
+      height: 1.8rem;
     }
   }
 `;

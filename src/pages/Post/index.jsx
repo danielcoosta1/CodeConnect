@@ -25,21 +25,30 @@ import {
   IconGroup,
   CodeContainer,
   CommentsContainer,
-  FakeInputComment,
+  InputComment,
+  CommentList,
+  CommentItem,
+  CommentContent,
+  CommentHeaderInfo,
   LinksContainer,
   ProjectLink,
   HeaderTop,
   AuthorActions,
+  CommentContentContainer,
+  AuthorActionsComment,
 } from "./style";
 import { usePost } from "../../hooks/usePost";
 import { useAuth } from "../../hooks/useAuth";
 import { FaCode, FaRegComment } from "react-icons/fa";
 import ModalConfirmacao from "../../components/ModalConfirmacao";
+import { useComments } from "../../hooks/useComments";
 
 const Post = () => {
   const { id } = useParams(); // Pega o ID da URL
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalCommentOpen, setIsModalCommentOpen] = useState(false); // Novo estado para o modal de comentário
+  const [commentToDelete, setCommentToDelete] = useState(null); // Armazena o comentário que queremos excluir
 
   const {
     postDetails,
@@ -51,7 +60,7 @@ const Post = () => {
 
   const { user } = useAuth();
 
-  const isAuthor = postDetails?.author?.id === user?.id;
+  const isAuthorPost = postDetails?.author?.id === user?.id;
 
   useEffect(() => {
     if (id) {
@@ -59,12 +68,30 @@ const Post = () => {
     }
   }, [id]);
 
+  const {
+    comments,
+    commentText,
+    setCommentText,
+    loadingComments,
+    enviandoComment,
+    handleComentar,
+    handleDeletarComentario,
+  } = useComments(id);
+
   const handleConfirmarExclusao = async () => {
     const sucesso = await deletarPostPorId(id);
 
     // Se deu certo, ele manda pro feed. (O modal já se fechou sozinho!)
     if (sucesso) {
       navigate("/feed");
+    }
+  };
+
+  const confirmarExclusaoComentario = async () => {
+    if (commentToDelete) {
+      await handleDeletarComentario(commentToDelete);
+      setIsModalCommentOpen(false); // Fecha o modal
+      setCommentToDelete(null); // Zera o ID por segurança
     }
   };
 
@@ -96,7 +123,7 @@ const Post = () => {
             </BackButton>
 
             {/* Renderização Condicional: Só aparece se for o dono! */}
-            {isAuthor && (
+            {isAuthorPost && (
               <AuthorActions>
                 <button
                   className="btn-edit"
@@ -197,23 +224,107 @@ const Post = () => {
             </AuthorInfo>
           </AuthorContainer>
         </PostHeader>
-        <CodeContainer>
-          <ReactMarkdown>{postDetails.codeContent}</ReactMarkdown>
-        </CodeContainer>
+        {postDetails.codeContent && (
+          <CodeContainer>
+            <ReactMarkdown>{postDetails.codeContent}</ReactMarkdown>
+          </CodeContainer>
+        )}
         <CommentsContainer>
-          <h2>Comentários</h2>
-          <p>Seja o primeiro a comentar neste projeto!</p>
+          <h2>Comentários ({comments.length})</h2>
 
-          <FakeInputComment>
-            <input
-              type="text"
-              placeholder="Adicione um comentário..."
-              disabled={loadingPostDetails}
-            />
-            <button type="button">Comentar</button>
-          </FakeInputComment>
+          {/* SÓ MOSTRA O INPUT SE O USUÁRIO ESTIVER LOGADO */}
+          {user ? (
+            <InputComment onSubmit={handleComentar}>
+              <input
+                type="text"
+                placeholder="Adicione um comentário construtivo..."
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                disabled={enviandoComment || loadingPostDetails}
+              />
+              <button
+                type="submit"
+                disabled={enviandoComment || !commentText.trim()}
+              >
+                {enviandoComment ? "Enviando..." : "Comentar"}
+              </button>
+            </InputComment>
+          ) : (
+            <p>Faça login para participar da discussão.</p>
+          )}
 
-          {/* Futuramente faremos um map() dos comentários reais aqui */}
+          {/* LISTA DE COMENTÁRIOS */}
+          {loadingComments ? (
+            <p>Carregando comentários...</p>
+          ) : comments.length === 0 ? (
+            <p>Seja o primeiro a comentar neste projeto!</p>
+          ) : (
+            <CommentList>
+              {comments.map((comment) => {
+                // A LÓGICA DE PERMISSÃO FICA AQUI DENTRO DO MAP:
+                // Pode excluir se: eu for o dono do post OU se eu escrevi o comentário.
+                const canDeleteComment =
+                  isAuthorPost || comment.authorId === user?.id;
+
+                return (
+                  <CommentItem key={comment.id}>
+                    <ProfileAvatar
+                      src={comment.author?.imagem}
+                      size={45}
+                      hasBorder={false}
+                    />
+
+                    <CommentContentContainer>
+                      <CommentContent>
+                        <CommentHeaderInfo>
+                          <h4>
+                            {comment.author?.nome} {comment.author?.sobrenome}
+                          </h4>
+                          <span>@{comment.author?.usuario}</span>
+                        </CommentHeaderInfo>
+                        <p>{comment.text}</p>
+                      </CommentContent>
+
+                      {/* RENDERIZAÇÃO CONDICIONAL DA LIXEIRA OU CONFIRMAÇÃO */}
+                      {canDeleteComment && (
+                        <AuthorActionsComment>
+                          {commentToDelete === comment.id ? ( // Se o ID do comentário que queremos excluir for igual ao ID desse comentário, ou seja, estamos no modo de confirmação para esse comentário - ativa o Sim/Nao
+                            // MODO DE CONFIRMAÇÃO
+                            <div className="confirm-action">
+                              <span className="confirm-text">Excluir?</span>
+                              <button
+                                className="btn-confirm-yes"
+                                onClick={() =>
+                                  handleDeletarComentario(comment.id)
+                                }
+                              >
+                                Sim
+                              </button>
+                              <button
+                                className="btn-confirm-no"
+                                onClick={() => setCommentToDelete(null)}
+                              >
+                                Não
+                              </button>
+                            </div>
+                          ) : (
+                            // MODO PADRÃO (LIXEIRA)
+                            <button
+                              className="btn-delete"
+                              onClick={() => setCommentToDelete(comment.id)}
+                              title="Excluir comentário"
+                            >
+                              <FaTrash />
+                            </button>
+                          )}
+                        </AuthorActionsComment>
+                      )}
+                    </CommentContentContainer>
+                  </CommentItem>
+                );
+              })}
+            </CommentList>
+          )}
         </CommentsContainer>
       </PostContainer>
 
@@ -226,6 +337,8 @@ const Post = () => {
         textoConfirmar="Sim, Excluir"
         isDestructive={true} // Ativa o botão vermelho!
       />
+
+      {/* Modal para exclusão do Comentário */}
     </>
   );
 };

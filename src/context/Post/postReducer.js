@@ -8,25 +8,37 @@ export const postReducer = (state, action) => {
     case "SET_DADO":
       return {
         ...state,
-        [action.field]: action.payload, // Ex: field: 'title', payload: 'Meu Projeto'
+        formData: {
+          ...state.formData,
+          [action.field]: action.payload, // Ex: field: 'title', payload: 'Meu Projeto'
+        },
       };
 
     case "SET_TAG_INPUT":
       return {
         ...state,
-        tagInput: action.payload,
+        formData: {
+          ...state.formData,
+          tagInput: action.payload,
+        },
       };
 
     case "SET_ALL_TAGS":
       return {
         ...state,
-        allTags: action.payload, // O payload aqui será o array vindo do JSON
+        formData: {
+          ...state.formData,
+          allTags: action.payload, // O payload aqui será o array vindo do JSON
+        },
       };
     // Adiciona uma tag ao array existente
     case "ADD_TAG":
       return {
         ...state,
-        tags: [...state.tags, action.payload],
+        formData: {
+          ...state.formData,
+          tags: [...state.formData.tags, action.payload],
+        },
         tagInput: "",
       };
 
@@ -34,22 +46,33 @@ export const postReducer = (state, action) => {
     case "REMOVE_TAG":
       return {
         ...state,
-        tags: state.tags.filter((_, index) => index !== action.payload),
+        formData: {
+          ...state.formData,
+          tags: state.formData.tags.filter(
+            (_, index) => index !== action.payload,
+          ),
+        },
       };
 
     // Define a imagem e o nome do arquivo
     case "SET_IMAGE":
       return {
         ...state,
-        image: action.payload.image,
-        imageFileName: action.payload.fileName,
+        formData: {
+          ...state.formData,
+          image: action.payload.image,
+          imageFileName: action.payload.fileName,
+        },
       };
 
     case "REMOVER_IMAGEM":
       return {
         ...state,
-        image: null,
-        imageFileName: "",
+        formData: {
+          ...state.formData,
+          image: null,
+          imageFileName: "",
+        },
       };
 
     // --- GRUPO 2: Comunicação com a API ---
@@ -57,6 +80,7 @@ export const postReducer = (state, action) => {
     case "ADD_POST":
       return {
         ...state,
+
         allPosts: [action.payload, ...state.allPosts],
       };
 
@@ -246,14 +270,17 @@ export const postReducer = (state, action) => {
     case "PREENCHER_FORMULARIO_EDICAO":
       return {
         ...state,
-        title: action.payload.title || "",
-        content: action.payload.content || "",
-        codeContent: action.payload.codeContent || "",
-        tags: action.payload.tags || [],
-        image: action.payload.image || null,
-        imageFileName: action.payload.imageFileName || "",
-        projectUrl: action.payload.projectUrl || "",
-        repoUrl: action.payload.repoUrl || "",
+        formData: {
+          ...state.formData,
+          title: action.payload.title || "",
+          content: action.payload.content || "",
+          codeContent: action.payload.codeContent || "",
+          tags: action.payload.tags || [],
+          image: action.payload.image || null,
+          imageFileName: action.payload.imageFileName || "",
+          projectUrl: action.payload.projectUrl || "",
+          repoUrl: action.payload.repoUrl || "",
+        },
         // Limpa qualquer erro antigo ao entrar no modo edição
         errorUpdatePost: null,
         successUpdatePost: false,
@@ -296,10 +323,8 @@ export const postReducer = (state, action) => {
 
     // --- GRUPO 8: Limpeza ---
 
-    // Zera tudo para o estado original (usado após publicar ou ao clicar em descartar)
     case "RESET_FORM":
-      // Retorna o estado inicial limpo, sem herdar nada do anterior (...state)
-      return ESTADO_LIMPO;
+      return { ...state, formData: ESTADO_LIMPO.formData }; // Mantém os dados de posts, perfil, etc. Só limpa o formulário
 
     default:
       return state;

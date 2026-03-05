@@ -3,6 +3,7 @@ dotenv.config();
 import authRoutes from "./routes/authRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import commentsRoutes from "./routes/commentsRoutes.js";
 /* global process */
 import express from "express";
 import cors from "cors";
@@ -24,8 +25,13 @@ app.use("/api/auth", authRoutes);
 //Rotas de posts
 app.use("/api/posts", postRoutes);
 
+//Rotas de comentários
+app.use("/api/posts", commentsRoutes);
+
 //Rotas de usuários
 app.use("/api/users", userRoutes);
+
+
 
 app.listen(PORT, () => {
   console.log(`Servidor está rodando na porta ${PORT}`);
