@@ -15,7 +15,6 @@ import {
 import { localStorageService } from "../../services/localStorageService";
 import { postInicialState } from "./inicialState";
 import { getUserById } from "../../services/userService";
-import { all } from "axios";
 
 export const PostProvider = ({ children }) => {
   const [state, dispatch] = useReducer(postReducer, postInicialState);
@@ -100,8 +99,6 @@ export const PostProvider = ({ children }) => {
     // a tela vai zerar na hora, independente do que o postInicialState guardava.
     dispatch({ type: "RESET_FORM" });
   };
-
-
 
   // -------  AÇÕES DE MANIPULAÇÃO DE POSTS (CHAMADAS AO BACKEND)   --------
 

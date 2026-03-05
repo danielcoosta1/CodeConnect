@@ -25,21 +25,30 @@ import {
   IconGroup,
   CodeContainer,
   CommentsContainer,
-  FakeInputComment,
+  InputComment,
+  CommentList,
+  CommentItem,
+  CommentContent,
+  CommentHeaderInfo,
   LinksContainer,
   ProjectLink,
   HeaderTop,
   AuthorActions,
+  CommentContentContainer,
+  AuthorActionsComment,
 } from "./style";
 import { usePost } from "../../hooks/usePost";
 import { useAuth } from "../../hooks/useAuth";
 import { FaCode, FaRegComment } from "react-icons/fa";
 import ModalConfirmacao from "../../components/ModalConfirmacao";
+import { useComments } from "../../hooks/useComments";
 
 const Post = () => {
   const { id } = useParams(); // Pega o ID da URL
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalCommentOpen, setIsModalCommentOpen] = useState(false); // Novo estado para o modal de comentário
+  const [commentToDelete, setCommentToDelete] = useState(null); // Armazena o comentário que queremos excluir
 
   const {
     postDetails,
@@ -58,6 +67,15 @@ const Post = () => {
       carregarPostPorId(id);
     }
   }, [id]);
+
+  const {
+    comments,
+    commentText,
+    setCommentText,
+    loadingComments,
+    enviandoComment,
+    handleComentar,
+  } = useComments(id);
 
   const handleConfirmarExclusao = async () => {
     const sucesso = await deletarPostPorId(id);
@@ -203,19 +221,70 @@ const Post = () => {
           </CodeContainer>
         )}
         <CommentsContainer>
-          <h2>Comentários</h2>
-          <p>Seja o primeiro a comentar neste projeto!</p>
+          <h2>Comentários ({comments.length})</h2>
 
-          <FakeInputComment>
-            <input
-              type="text"
-              placeholder="Adicione um comentário..."
-              disabled={loadingPostDetails}
-            />
-            <button type="button">Comentar</button>
-          </FakeInputComment>
+          {/* SÓ MOSTRA O INPUT SE O USUÁRIO ESTIVER LOGADO */}
+          {user ? (
+            <InputComment onSubmit={handleComentar}>
+              <input
+                type="text"
+                placeholder="Adicione um comentário construtivo..."
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                disabled={enviandoComment || loadingPostDetails}
+              />
+              <button
+                type="submit"
+                disabled={enviandoComment || !commentText.trim()}
+              >
+                {enviandoComment ? "Enviando..." : "Comentar"}
+              </button>
+            </InputComment>
+          ) : (
+            <p>Faça login para participar da discussão.</p>
+          )}
 
-          {/* Futuramente faremos um map() dos comentários reais aqui */}
+          {/* LISTA DE COMENTÁRIOS */}
+          {loadingComments ? (
+            <p>Carregando comentários...</p>
+          ) : comments.length === 0 ? (
+            <p>Seja o primeiro a comentar neste projeto!</p>
+          ) : (
+            <CommentList>
+              {comments.map((comment) => (
+                <CommentItem key={comment.id}>
+                  <ProfileAvatar
+                    src={comment.author?.imagem}
+                    size={45}
+                    hasBorder={false} // Tira a borda verde neon porque o fundo é branco
+                  />
+
+                  <CommentContentContainer>
+                    <CommentContent>
+                      <CommentHeaderInfo>
+                        <h4>
+                          {comment.author?.nome} {comment.author?.sobrenome}
+                        </h4>
+                        <span>@{comment.author?.usuario}</span>
+                      </CommentHeaderInfo>
+
+                      <p>{comment.text}</p>
+                    </CommentContent>
+                    <AuthorActionsComment>
+                      <button
+                        className="btn-delete"
+                        onClick={() => {
+                          setIsModalCommentOpen(true);
+                        }}
+                      >
+                        <FaTrash />
+                      </button>
+                    </AuthorActionsComment>
+                  </CommentContentContainer>
+                </CommentItem>
+              ))}
+            </CommentList>
+          )}
         </CommentsContainer>
       </PostContainer>
 

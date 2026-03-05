@@ -27,13 +27,22 @@ export const fetchPostById = async (postId) => {
   return response.data;
 };
 
-
 export const deletePostById = async (postId) => {
   const response = await api.delete(`/posts/${postId}`);
   return response.data;
-}
+};
 
 export const updatePostById = async (postId, postData) => {
   const response = await api.put(`/posts/${postId}`, postData);
   return response.data;
-}
+};
+
+export const createCommentRequest = async (postId, text) => {
+  const response = await api.post(`/posts/${postId}/comments`, { text });
+  return response.data;
+};
+
+export const fetchCommentsByPostId = async (postId) => {
+  const response = await api.get(`/posts/${postId}/comments`);
+  return response.data;
+};
