@@ -14,7 +14,7 @@
 
 > Uma rede social e plataforma de portfólios exclusiva para desenvolvedores compartilharem projetos, códigos e ideias.
 
-O **CodeConnect** é uma aplicação Full-Stack desenvolvida com a stack **MERN (com Prisma)**. O design inicial foi inspirado em um projeto da [Alura no Figma](https://www.figma.com/design/pMUevV7RLjHOOVZgU6RmwV/React--configurando-e-estruturando-projetos-com-Vite-%7C-CodeConnect--Community-?node-id=201-3522&t=amUl5DblRVGLEjhf-0), mas a arquitetura e as funcionalidades foram **profundamente expandidas e customizadas**, transformando um layout básico em um SaaS robusto.
+O **CodeConnect** é uma aplicação Full-Stack desenvolvida com a stack **MERN (com Prisma)**. O design inicial foi inspirado em um projeto da Alura no [Figma](https://www.figma.com/design/pMUevV7RLjHOOVZgU6RmwV/React--configurando-e-estruturando-projetos-com-Vite-%7C-CodeConnect--Community-?node-id=201-3522&t=amUl5DblRVGLEjhf-0). Salvei este projeto no inicio dos meus estudos de HTML e CSS, usanddo o figma como base para a estilização. Com tempo de estudo em ReactJS e da atmosfera NodeJS, dei vida ao projeto, sendo a arquitetura e as funcionalidades **profundamente expandidas e customizadas**, transformando um layout básico em um SaaS robusto.
 
 Mais do que um simples CRUD, esta plataforma foi desenhada com foco em **Arquitetura Limpa, Segurança (RBAC) e Experiência do Usuário (UX)**. 
 
