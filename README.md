@@ -97,7 +97,7 @@ git clone https://github.com/danielcoosta1/codeconnect.git
 cd codeconnect
 
 ```
-**2. Configurando e Rodando o Back-end:
+**2. Configurando e Rodando o Back-end:**
 
 ```bash
 
@@ -115,7 +115,7 @@ npx prisma db push
 npm run dev
 
 ```
-**3. Configurando e Rodando o Front-end:
+**3. Configurando e Rodando o Front-end:**
 
 ```bash
 
