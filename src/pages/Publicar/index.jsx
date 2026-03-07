@@ -40,6 +40,7 @@ const Publicar = () => {
   const {
     formData,
     loading,
+    loadingEditPost,
     atualizarDado,
     atualizarTagInput,
     adicionarTag,
@@ -66,6 +67,7 @@ const Publicar = () => {
 
   const navigate = useNavigate();
   const { id } = useParams();
+  const isSubmitting = loading || loadingEditPost;
   const isEditMode = !!id;
 
   // EFEITOS
@@ -354,13 +356,13 @@ const Publicar = () => {
           <BotaoDescartar
             type="button"
             onClick={() => setModalDescartarIsOpen(true)}
-            disabled={loading}
+            disabled={isSubmitting}
           >
             Descartar <FaTrash />
           </BotaoDescartar>
 
-          <BotaoPublicar type="submit" disabled={loading}>
-            {!loading ? (
+          <BotaoPublicar type="submit" disabled={isSubmitting}>
+            {!isSubmitting ? (
               <>
                 {isEditMode ? "Salvar" : "Publicar"} <MdPublish />
               </>

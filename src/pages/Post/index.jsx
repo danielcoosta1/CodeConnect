@@ -47,7 +47,7 @@ const Post = () => {
   const { id } = useParams(); // Pega o ID da URL
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalCommentOpen, setIsModalCommentOpen] = useState(false); // Novo estado para o modal de comentário
+
   const [commentToDelete, setCommentToDelete] = useState(null); // Armazena o comentário que queremos excluir
 
   const {
@@ -84,14 +84,6 @@ const Post = () => {
     // Se deu certo, ele manda pro feed. (O modal já se fechou sozinho!)
     if (sucesso) {
       navigate("/feed");
-    }
-  };
-
-  const confirmarExclusaoComentario = async () => {
-    if (commentToDelete) {
-      await handleDeletarComentario(commentToDelete);
-      setIsModalCommentOpen(false); // Fecha o modal
-      setCommentToDelete(null); // Zera o ID por segurança
     }
   };
 

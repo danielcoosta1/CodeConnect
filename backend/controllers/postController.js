@@ -43,8 +43,16 @@ export const createPost = async (req, res) => {
     // Ajuste o tratamento de erro se necessário para mostrar múltiplos erros
     return res.status(400).json({ error: validation.error.issues[0].message }); //sempre o primeiro [0]
   }
-  const { title, content, codeContent, image, imageFileName, tags, projectUrl, repoUrl } =
-    validation.data;
+  const {
+    title,
+    content,
+    codeContent,
+    image,
+    imageFileName,
+    tags,
+    projectUrl,
+    repoUrl,
+  } = validation.data;
   const authorId = req.user.id; // Vem do authMiddleware(JWT)
   try {
     const newPost = await prisma.post.create({
@@ -193,7 +201,8 @@ export const updatePost = async (req, res) => {
   try {
     const { id } = req.params; // ID do post na URL
     const userId = req.user.id; // ID do usuário logado (vindo do token)
-    const { title, content, codeContent, tags, image, projectUrl, repoUrl } = req.body; // Novos dados enviados pelo formulário // Novos dados do post
+    const { title, content, codeContent, tags, image, projectUrl, repoUrl } =
+      req.body; // Novos dados enviados pelo formulário // Novos dados do post
 
     // 1. Busca o post para verificar se ele existe e de quem é
     const post = await prisma.post.findUnique({
@@ -222,6 +231,18 @@ export const updatePost = async (req, res) => {
         image: image !== undefined ? image : post.image, // Permite enviar null para remover a imagem
         projectUrl: projectUrl !== undefined ? projectUrl : post.projectUrl, // Permite enviar null para remover a URL do projeto
         repoUrl: repoUrl !== undefined ? repoUrl : post.repoUrl, // Permite enviar null para remover a URL do repositório
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            nome: true,
+            sobrenome: true,
+            usuario: true,
+            imagem: true,
+            funcao: true,
+          },
+        },
       },
     });
 
