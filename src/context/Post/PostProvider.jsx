@@ -126,8 +126,9 @@ export const PostProvider = ({ children }) => {
 
       setTimeout(() => limparFormulario(), 1500); // Limpa após 1.5s para ver o sucesso
     } catch (error) {
-      dispatch({ type: "PUBLICACAO_ERRO", payload: error.message });
-      toastErro("Erro ao publicar o post.");
+      const msgErro = error.response?.data?.error || "Erro ao publicar o post.";
+      dispatch({ type: "PUBLICACAO_ERRO", payload: msgErro });
+      toastErro(msgErro);
     }
   };
 
