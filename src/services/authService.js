@@ -14,3 +14,9 @@ export const registerRequest = async (nome, email, senha) => {
   });
   return response.data;
 };
+
+
+export const verifyEmailRequest = async (email, code) => {
+  const response = await api.post("/auth/verify-email", { email, code });
+  return response.data;
+};

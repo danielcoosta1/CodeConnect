@@ -229,6 +229,7 @@ const AuthProvider = ({ children }) => {
         loadingRegister: state.loadingRegister,
         errorRegister: state.errorRegister,
         cadastroSucesso: state.cadastroSucesso,
+        emailCadastrado: state.emailCadastrado, // O email do usuário recém cadastrado para a etapa de verificação
 
         //Estados para login
         loadingAuth: state.loadingAuth,

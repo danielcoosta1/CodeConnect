@@ -19,6 +19,7 @@ export const authReducer = (state, action) => {
         loadingRegister: false,
         errorRegister: null,
         cadastroSucesso: true,
+        emailCadastrado: action.payload.email, // Guarda o email para a próxima etapa de verificação - não precisa pedir de novo no formulário de verificação, já preenchemos automaticamente
       };
 
     case "CADASTRO_ERROR":
@@ -26,6 +27,27 @@ export const authReducer = (state, action) => {
         ...state,
         loadingRegister: false,
         errorRegister: action.payload,
+      };
+
+    //VERIFICAÇÃO DE E-MAIL
+
+    case "VERIFICAR_START":
+      return {
+        ...state,
+        loadingAuth: true, // Reaproveitamos o loading para travar o botão
+        errorAuth: null,
+      };
+    case "VERIFICAR_SUCESSO":
+      return {
+        ...state,
+        loadingAuth: false,
+        // Você pode disparar alguma flag aqui se precisar, tipo verificacaoConcluida: true
+      };
+    case "VERIFICAR_ERROR":
+      return {
+        ...state,
+        loadingAuth: false,
+        errorAuth: action.payload,
       };
 
     //AÇOES PARA O LOGIN
@@ -141,8 +163,8 @@ export const authReducer = (state, action) => {
     case "TOGGLE_FOLLOW_START":
       return { ...state, loadingFollow: true };
 
-    case "TOGGLE_FOLLOW_SUCCESS": // Atualizamos OTIMISTAMENTE o array 'followingIds'
-    {
+    case "TOGGLE_FOLLOW_SUCCESS": {
+      // Atualizamos OTIMISTAMENTE o array 'followingIds'
       const isFollowing = action.payload.isFollowing;
       const targetId = action.payload.targetId; // ID do usuário que foi seguido ou deixado de seguir - Vindo do payload da ação(o resultado da API)
 
