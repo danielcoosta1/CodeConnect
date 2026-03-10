@@ -102,7 +102,6 @@ const AuthProvider = ({ children }) => {
       await verifyEmailRequest(email, codigo);
 
       dispatch({ type: "VERIFICAR_SUCESSO" });
-      toastSucesso("E-mail verificado com sucesso! Já podes fazer o login.");
 
       return true; // Retorna true para o teu componente saber que deu certo e redirecionar
     } catch (error) {
@@ -112,7 +111,7 @@ const AuthProvider = ({ children }) => {
         "Erro ao verificar o código. Tenta novamente.";
 
       dispatch({ type: "VERIFICAR_ERROR", payload: msg });
-      toastErro(msg); // Mostra o balãozinho vermelho se o código for inválido ou estiver expirado
+
       return false;
     }
   };
@@ -171,6 +170,9 @@ const AuthProvider = ({ children }) => {
   const definirImagemForm = (base64) => {
     dispatch({ type: "SET_IMAGEM", payload: base64 });
   };
+
+
+  //
 
   const salvarPerfil = async () => {
     dispatch({ type: "UPDATE_START" });

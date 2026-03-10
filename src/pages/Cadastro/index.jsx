@@ -19,7 +19,7 @@ import { IoLogIn } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 import imgCadastro from "./assets/img_cadastro.png";
-import { toastSucesso } from "../../utils/toast";
+import { toastErro, toastSucesso } from "../../utils/toast";
 import { useAuth } from "../../hooks/useAuth";
 
 const Cadastro = () => {
@@ -78,9 +78,14 @@ const Cadastro = () => {
     if (codigoCompleto.length < 6) return;
 
     const sucesso = await verificarCodigo(emailCadastrado, codigoCompleto);
-    console.log(emailCadastrado, codigoCompleto);
+
     if (sucesso) {
+      toastSucesso(
+        "E-mail verificado com sucesso! Agora você pode fazer login.",
+      ); // Mostra o balãozinho verde de sucesso
       navigate("/login"); // Redireciona para o login se o código estiver certo
+    } else {
+      toastErro("Código inválido ou expirado. Por favor, tente novamente."); // Mostra o balãozinho vermelho se o código for inválido ou estiver expirado
     }
   };
 
