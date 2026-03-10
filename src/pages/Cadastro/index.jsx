@@ -43,6 +43,7 @@ const Cadastro = () => {
   const [codigo, setCodigo] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef([]); // Ref para controlar o foco dos inputs
 
+  // --- Lógica do Cadastro ---
   const handleSubmitCadastro = async (e) => {
     e.preventDefault();
     await cadastro(nome, email, senha);
@@ -77,14 +78,12 @@ const Cadastro = () => {
     if (codigoCompleto.length < 6) return;
 
     const sucesso = await verificarCodigo(emailCadastrado, codigoCompleto);
-
+    console.log(emailCadastrado, codigoCompleto);
     if (sucesso) {
-      toastSucesso(
-        "E-mail verificado com sucesso! Agora você pode fazer login.",
-      );
       navigate("/login"); // Redireciona para o login se o código estiver certo
     }
   };
+
   // ------------------------------------------
 
   return (

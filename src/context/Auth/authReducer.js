@@ -34,14 +34,13 @@ export const authReducer = (state, action) => {
     case "VERIFICAR_START":
       return {
         ...state,
-        loadingAuth: true, // Reaproveitamos o loading para travar o botão
+        loadingAuth: true, // Reaproveitamos o loading para travar o botão(lá ele)
         errorAuth: null,
       };
     case "VERIFICAR_SUCESSO":
       return {
         ...state,
         loadingAuth: false,
-        // Você pode disparar alguma flag aqui se precisar, tipo verificacaoConcluida: true
       };
     case "VERIFICAR_ERROR":
       return {

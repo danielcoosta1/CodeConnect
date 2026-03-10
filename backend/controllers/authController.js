@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { sendVerificationEmail } from "../utils/emailService.js";
 
 import prisma from "../lib/prisma.js";
+
 /* global process */
 
 // Registrar novo usuário (cadastro)
@@ -35,7 +36,7 @@ export const registerUser = async (req, res) => {
         // Vamos apagar esse lixo do banco antes de criar um novo!
         await prisma.user.delete({
           where: { email },
-        });
+        }); // Apaga o usuário não verificado para liberar o e-mail para um novo cadastro. Assim evitamos confusão de códigos de verificação antigos e damos uma segunda chance pro usuário se ele errou o e-mail na primeira vez.
       }
     }
     const hashedPassword = await bcrypt.hash(senha, 10);
@@ -69,7 +70,7 @@ export const registerUser = async (req, res) => {
 
     const { senha: _, ...userSemSenha } = user; //Desestruturação para excluir a senha da resposta
 
-    res.status(201).json(userSemSenha);
+    res.status(201).json(userSemSenha); // Retorna os dados do usuário sem a senha (response data)
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ error: error.issues[0].message });
@@ -118,6 +119,7 @@ export const verifyEmailCode = async (req, res) => {
     });
 
     return res.status(200).json({ message: "E-mail verificado com sucesso!" });
+    // Mostra o balãozinho verde de sucesso
   } catch (error) {
     console.error("Erro na verificação de e-mail:", error);
     return res

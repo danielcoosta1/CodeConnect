@@ -61,7 +61,7 @@ model Post {
   comments Comment[] // Um post pode ter múltiplos comentários
 
   // --- A Relação com o User ---
-  author   User   @relation(fields: [authorId], references: [id]) // Relaciona o post ao autor
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade) // Relaciona o post ao autor
   authorId String @db.ObjectId
 }
 
@@ -71,7 +71,7 @@ model Comment {
   createdAt DateTime @default(now())
 
   // --- Quem comentou? ---
-  author   User   @relation(fields: [authorId], references: [id])
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String @db.ObjectId
 
   // --- Onde comentou? ---
