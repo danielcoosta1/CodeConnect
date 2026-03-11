@@ -5,63 +5,162 @@ import {
   ContainerForm,
   ContainerImg,
   ContainerLogin,
-  ContainerLoginSucesso,
-  ContainerSucesso,
+  ContainerVerificacao,
   ContainerWrapper,
   Form,
   LinkLogin,
-  LinkLoginSucesso,
+  InputsCodigo,
 } from "./style";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { CgArrowRight } from "react-icons/cg";
 import { FiLoader } from "react-icons/fi";
 import { IoLogIn } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 import imgCadastro from "./assets/img_cadastro.png";
-import { toastSucesso } from "../../utils/toast";
+import { toastErro, toastSucesso } from "../../utils/toast";
 import { useAuth } from "../../hooks/useAuth";
 
 const Cadastro = () => {
-  const { cadastro, loadingRegister, errorRegister, cadastroSucesso } = useAuth();
+  const {
+    cadastro,
+    loadingRegister,
+    errorRegister,
+    cadastroSucesso,
+    emailCadastrado,
+    verificarCodigo,
+    loadingAuth,
+  } = useAuth();
+
+  const navigate = useNavigate();
 
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  const handleSubmit = async (e) => {
+  // Estado para os 6 dígitos do código
+  const [codigo, setCodigo] = useState(["", "", "", "", "", ""]);
+  const inputRefs = useRef([]); // Ref para controlar o foco dos inputs
+
+  // --- Lógica do Cadastro ---
+  const handleSubmitCadastro = async (e) => {
     e.preventDefault();
-    const sucesso = await cadastro(nome, email, senha);
-    if (sucesso) {
-      toastSucesso("Cadastro efetuado com sucesso!");
+    await cadastro(nome, email, senha);
+  };
+
+  // --- Lógica do Código de Verificação ---
+  const handleCodigoChange = (index, value) => {
+    // Permite apenas números
+    if (isNaN(value)) return;
+
+    const novoCodigo = [...codigo];
+    novoCodigo[index] = value;
+    setCodigo(novoCodigo);
+
+    // Se digitou um número, pula automaticamente para o próximo quadrado
+    if (value !== "" && index < 5) {
+      inputRefs.current[index + 1].focus();
     }
   };
 
+  const handleCodigoKeyDown = (index, e) => {
+    // Se apagou e o quadrado está vazio, volta o foco para o anterior
+    if (e.key === "Backspace" && codigo[index] === "" && index > 0) {
+      inputRefs.current[index - 1].focus();
+    }
+  };
+
+  const handleSubmitVerificacao = async (e) => {
+    e.preventDefault();
+    const codigoCompleto = codigo.join(""); // Junta ["1","2","3","4","5","6"] em "123456"
+
+    if (codigoCompleto.length < 6) return;
+
+    const sucesso = await verificarCodigo(emailCadastrado, codigoCompleto);
+
+    if (sucesso) {
+      toastSucesso(
+        "E-mail verificado com sucesso! Agora você pode fazer login.",
+      ); // Mostra o balãozinho verde de sucesso
+      navigate("/login"); // Redireciona para o login se o código estiver certo
+    } else {
+      toastErro("Código inválido ou expirado. Por favor, tente novamente."); // Mostra o balãozinho vermelho se o código for inválido ou estiver expirado
+    }
+  };
+
+  // ------------------------------------------
+
   return (
-    // Passamos a imagem para o fundo dinâmico no Mobile
     <ContainerWrapper $bgImage={imgCadastro}>
       <ContainerContent>
         <ContainerImg>
           <img src={imgCadastro} alt="imagem de cadastro" border="0" />
         </ContainerImg>
-        
+
         <ContainerForm>
           {cadastroSucesso ? (
-            <ContainerSucesso>
-              <p className="success-title">Cadastro realizado com sucesso!</p>
-              <ContainerLoginSucesso>
-                <p>Você já pode acessar sua conta</p>
-                <LinkLoginSucesso to="/login">
-                  Fazer Login <IoLogIn />
-                </LinkLoginSucesso>
-              </ContainerLoginSucesso>
-            </ContainerSucesso>
+            // --- NOVA TELA DE VERIFICAÇÃO ---
+            <ContainerVerificacao>
+              <p className="success-title">Verifique seu E-mail</p>
+              <p className="verification-subtitle">
+                Enviamos um código de 6 dígitos para{" "}
+                <strong>{emailCadastrado}</strong>
+              </p>
+
+              <Form onSubmit={handleSubmitVerificacao}>
+                <InputsCodigo>
+                  {codigo.map((digito, index) => (
+                    <input
+                      key={index}
+                      type="text"
+                      maxLength="1"
+                      value={digito}
+                      onChange={(e) =>
+                        handleCodigoChange(index, e.target.value)
+                      }
+                      onKeyDown={(e) => handleCodigoKeyDown(index, e)}
+                      ref={(el) => (inputRefs.current[index] = el)} // Conecta o input ao Ref
+                      disabled={loadingAuth}
+                      required
+                    />
+                  ))}
+                </InputsCodigo>
+
+                <Button
+                  type="submit"
+                  disabled={loadingAuth || codigo.join("").length < 6}
+                >
+                  {loadingAuth ? (
+                    <>
+                      Verificando... <FiLoader className="spin" />
+                    </>
+                  ) : (
+                    <>
+                      Validar Código <CgArrowRight />
+                    </>
+                  )}
+                </Button>
+              </Form>
+
+              <ContainerLogin>
+                <p>O código não chegou?</p>
+                <LinkLogin
+                  to="#"
+                  onClick={() => toastSucesso("Função de reenvio em breve!")}
+                >
+                  Reenviar código
+                </LinkLogin>
+              </ContainerLogin>
+            </ContainerVerificacao>
           ) : (
+            // --- FORMULÁRIO DE CADASTRO NORMAL ---
             <>
               <h1>Cadastro</h1>
               <p className="subtitle">Preencha seus dados para começar</p>
-              
-              <Form onSubmit={handleSubmit}>
+
+              <Form onSubmit={handleSubmitCadastro}>
+                {/* ... teus inputs normais continuam aqui (nome, email, senha) ... */}
                 <CampoInput>
                   <label htmlFor="nome">Nome</label>
                   <input
@@ -75,7 +174,7 @@ const Cadastro = () => {
                     required
                   />
                 </CampoInput>
-                
+
                 <CampoInput>
                   <label htmlFor="email">Email</label>
                   <input
@@ -89,7 +188,7 @@ const Cadastro = () => {
                     required
                   />
                 </CampoInput>
-                
+
                 <CampoInput>
                   <label htmlFor="senha">Senha</label>
                   <input
@@ -103,9 +202,11 @@ const Cadastro = () => {
                     required
                   />
                 </CampoInput>
-                
-                {errorRegister && <p className="error-message">{errorRegister}</p>}
-                
+
+                {errorRegister && (
+                  <p className="error-message">{errorRegister}</p>
+                )}
+
                 <Button type="submit" disabled={loadingRegister}>
                   {loadingRegister ? (
                     <>
@@ -113,7 +214,7 @@ const Cadastro = () => {
                     </>
                   ) : (
                     <>
-                      Cadastrar <CgArrowRight />
+                      Continuar <CgArrowRight />
                     </>
                   )}
                 </Button>

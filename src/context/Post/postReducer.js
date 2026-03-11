@@ -26,10 +26,7 @@ export const postReducer = (state, action) => {
     case "SET_ALL_TAGS":
       return {
         ...state,
-        formData: {
-          ...state.formData,
-          allTags: action.payload, // O payload aqui será o array vindo do JSON
-        },
+        allTags: action.payload, // Substitui direto pelo array que veio do JSON
       };
     // Adiciona uma tag ao array existente
     case "ADD_TAG":
@@ -37,9 +34,9 @@ export const postReducer = (state, action) => {
         ...state,
         formData: {
           ...state.formData,
-          tags: [...state.formData.tags, action.payload],
+          tags: [...state.formData.tags, action.payload], // Adiciona a nova tag ao array de tags do formulário
         },
-        tagInput: "",
+        tagInput: "", // Limpa o input de tag após adicionar
       };
 
     // Remove uma tag baseada no índice dela no array

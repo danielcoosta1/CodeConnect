@@ -5,12 +5,14 @@ export const ESTADO_LIMPO = {
   user: null,
   token: null,
   loading: true,
+  // Guarda o email do usuário recém cadastrado para a etapa de verificação
 
   // ESTADOS PARA AÇÃO DE LOGIN
   loadingAuth: false,
   errorAuth: null,
 
   // ESTADOS PARA O CADASTRO
+  emailCadastrado: "",
   loadingRegister: false,
   errorRegister: null,
   cadastroSucesso: false,

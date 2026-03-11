@@ -38,6 +38,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const Publicar = () => {
   const {
+    allTags,
     formData,
     loading,
     loadingEditPost,
@@ -124,7 +125,7 @@ const Publicar = () => {
       return setErroTags("Essa tag já foi adicionada.");
     if (formData.tags.length >= 4)
       return setErroTags("Você não pode adicionar mais de 4 tags.");
-    if (formData.allTags.length > 0 && !formData.allTags.includes(novaTag))
+    if (!allTags?.includes(novaTag))
       return setErroTags("Tag inválida. Escolha uma tag válida");
 
     adicionarTag(novaTag);

@@ -25,14 +25,12 @@ export const ContainerWrapper = styled.main`
 
   /* --- MÁGICA DA MARCA D'ÁGUA --- */
   @media ${device.tablet} {
-    background-image: linear-gradient(
-        rgba(1, 8, 14, 0.85), 
-        rgba(1, 8, 14, 0.95)
-      ),
+    background-image:
+      linear-gradient(rgba(1, 8, 14, 0.85), rgba(1, 8, 14, 0.95)),
       url(${(props) => props.$bgImage});
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; 
+    background-attachment: fixed;
   }
 
   @media ${device.mobile} {
@@ -45,18 +43,18 @@ export const ContainerContent = styled.section`
   width: 100%;
   max-width: 100rem;
   background-color: #171d1f;
-  border-radius: 1.6rem; 
+  border-radius: 1.6rem;
   overflow: hidden;
-  box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.5); 
+  box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.5);
 
   @media ${device.tablet} {
     flex-direction: column;
-    max-width: 50rem; 
-    
+    max-width: 50rem;
+
     /* Glassmorphism */
-    background-color: rgba(23, 29, 31, 0.85); 
+    background-color: rgba(23, 29, 31, 0.85);
     backdrop-filter: blur(0.5rem);
-    border: 0.1rem solid rgba(255, 255, 255, 0.05); 
+    border: 0.1rem solid rgba(255, 255, 255, 0.05);
   }
 `;
 
@@ -83,7 +81,7 @@ export const ContainerForm = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 6rem 4rem; 
+  padding: 6rem 4rem;
   gap: 2.4rem;
   position: relative;
 
@@ -97,7 +95,7 @@ export const ContainerForm = styled.div`
   p.subtitle {
     font-size: 1.6rem;
     color: #a0a0a0;
-    margin-top: -1.6rem; 
+    margin-top: -1.6rem;
   }
 
   p.error-message {
@@ -139,7 +137,7 @@ export const CampoInput = styled.div`
   input {
     padding: 1.2rem 1.6rem;
     border: 0.2rem solid transparent;
-    border-radius: 0.8rem; 
+    border-radius: 0.8rem;
     background-color: #2a3236;
     color: white;
     font-size: 1.6rem;
@@ -171,7 +169,7 @@ export const Button = styled.button`
   gap: 0.8rem;
   padding: 1.2rem;
   border: none;
-  border-radius: 0.8rem; 
+  border-radius: 0.8rem;
   background-color: #81fe88;
   color: #132e35;
   font-weight: 800;
@@ -204,8 +202,12 @@ export const Button = styled.button`
   }
 
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 `;
 
@@ -245,16 +247,15 @@ export const LinkLogin = styled(Link)`
   }
 `;
 
-// --- TELA DE SUCESSO ---
-export const ContainerSucesso = styled.div`
+// --- ESTILOS DA TELA DE VERIFICAÇÃO ---
+
+export const ContainerVerificacao = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
   height: 100%;
-  min-height: 40rem; /* Para não encolher o container de repente */
-  gap: 3.2rem;
-  text-align: center;
+  min-height: 40rem;
+  gap: 2.4rem;
   animation: ${fadeIn} 0.5s ease-out;
 
   p.success-title {
@@ -262,8 +263,18 @@ export const ContainerSucesso = styled.div`
     font-size: 3.2rem;
     font-weight: 800;
     line-height: 1.2;
-    text-shadow: 0 0 1rem rgba(129, 254, 136, 0.3);
     margin: 0;
+  }
+
+  p.verification-subtitle {
+    font-size: 1.6rem;
+    color: #a0a0a0;
+    margin: -1.6rem 0 0 0;
+    line-height: 1.5;
+
+    strong {
+      color: #fff;
+    }
   }
 
   @media ${device.mobile} {
@@ -273,47 +284,44 @@ export const ContainerSucesso = styled.div`
   }
 `;
 
-export const ContainerLoginSucesso = styled.div`
-  width: 100%;
+export const InputsCodigo = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 2.4rem;
-  text-align: center;
-
-  p {
-    font-size: 1.6rem;
-    color: #ccc;
-    margin: 0;
-  }
-`;
-
-export const LinkLoginSucesso = styled(Link)`
-  background-color: #81fe88;
-  color: #132e35;
-  padding: 1.6rem 2.4rem;
-  width: 100%;
-  border-radius: 0.8rem;
-  font-weight: 800;
-  font-size: 1.8rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
   gap: 1.2rem;
-  text-decoration: none;
-  box-shadow: 0 0.4rem 1.2rem rgba(129, 254, 136, 0.3);
-  transition: all 0.2s ease;
+  margin-bottom: 1.6rem;
 
-  &:hover {
-    transform: translateY(-0.3rem);
-    background-color: #6be276;
-    box-shadow: 0 0.6rem 1.6rem rgba(129, 254, 136, 0.5);
+  input {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Mantém os quadrados perfeitos */
+    text-align: center;
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: #fff;
+    background-color: #2a3236;
+    border: 0.2rem solid transparent;
+    border-radius: 1.2rem;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      background-color: #333c42;
+      border-color: #81fe88;
+      transform: translateY(-0.2rem);
+      box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 
-  &:active {
-    transform: translateY(0);
-  }
+  @media ${device.mobile} {
+    gap: 0.8rem;
 
-  svg {
-    font-size: 2.4rem;
+    input {
+      font-size: 2.4rem;
+      border-radius: 0.8rem;
+    }
   }
 `;

@@ -4,7 +4,11 @@ import api from "../../services/api";
 import { localStorageService } from "../../services/localStorageService";
 import { useNavigate } from "react-router-dom";
 
-import { loginRequest, registerRequest } from "../../services/authService";
+import {
+  loginRequest,
+  registerRequest,
+  verifyEmailRequest,
+} from "../../services/authService";
 import {
   getUserProfile,
   toggleFollowRequest,
@@ -13,7 +17,6 @@ import {
 import { authReducer } from "./authReducer";
 import { authInicialState } from "./inicialState";
 import { toastErro, toastSucesso } from "../../utils/toast";
-import { toast } from "react-toastify";
 
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, authInicialState);
@@ -72,22 +75,47 @@ const AuthProvider = ({ children }) => {
     dispatch({ type: "CADASTRO_START" });
 
     try {
-      const response = await registerRequest(nome, email, senha);
-      const { user: userData } = response;
+      // Como o Back-end já devolve o usuário limpo, a resposta JÁ É o userData!
+      const userData = await registerRequest(nome, email, senha);
 
+      // Enviamos o userData direto pro Reducer
       dispatch({ type: "CADASTRO_SUCESSO", payload: userData });
 
       return true;
     } catch (error) {
       console.error("ERRO CADASTRO", error);
       const msg =
-        error.response.data.error ||
-        "Error ao fazer o cadastro, tente novamente.";
+        error.response?.data?.error || // Adicionei os "?" por segurança
+        "Erro ao fazer o cadastro, tente novamente.";
 
       dispatch({ type: "CADASTRO_ERROR", payload: msg });
       return false;
     }
   };
+
+  const verificarCodigo = async (email, codigo) => {
+    // Se quiseres, podes criar depois os types VERIFICAR_START, SUCESSO e ERROR no teu reducer
+    // para controlares um loading específico para o botão de validar código.
+    dispatch({ type: "VERIFICAR_START" });
+
+    try {
+      await verifyEmailRequest(email, codigo);
+
+      dispatch({ type: "VERIFICAR_SUCESSO" });
+
+      return true; // Retorna true para o teu componente saber que deu certo e redirecionar
+    } catch (error) {
+      console.error("ERRO AO VERIFICAR CÓDIGO", error);
+      const msg =
+        error.response?.data?.error ||
+        "Erro ao verificar o código. Tenta novamente.";
+
+      dispatch({ type: "VERIFICAR_ERROR", payload: msg });
+
+      return false;
+    }
+  };
+
   const login = async (email, senha) => {
     dispatch({ type: "LOGIN_START" }); // 1. Avisa o Reducer que começou (loadingAuth = true)
 
@@ -142,6 +170,9 @@ const AuthProvider = ({ children }) => {
   const definirImagemForm = (base64) => {
     dispatch({ type: "SET_IMAGEM", payload: base64 });
   };
+
+
+  //
 
   const salvarPerfil = async () => {
     dispatch({ type: "UPDATE_START" });
@@ -229,6 +260,7 @@ const AuthProvider = ({ children }) => {
         loadingRegister: state.loadingRegister,
         errorRegister: state.errorRegister,
         cadastroSucesso: state.cadastroSucesso,
+        emailCadastrado: state.emailCadastrado, // O email do usuário recém cadastrado para a etapa de verificação
 
         //Estados para login
         loadingAuth: state.loadingAuth,
@@ -247,6 +279,7 @@ const AuthProvider = ({ children }) => {
         errorUpdate: state.errorUpdate,
         // Ações
         cadastro,
+        verificarCodigo,
         login,
         logout,
         iniciarEdicao,

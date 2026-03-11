@@ -4,20 +4,21 @@ import { localStorageService } from "../../services/localStorageService";
 export const ESTADO_LIMPO = {
   //Dados do formulário
   formData: {
+    tags: [], // Lista de todas as tags disponíveis (vinda do JSON)
     title: "",
     content: "",
     codeContent: "",
-    tags: [],
     tagInput: "",
     image: null,
     imageFileName: "",
     projectUrl: "",
     repoUrl: "",
-  },
-
+  }, 
+  
+  allTags: [], // Lista de todas as tags disponíveis (vinda do JSON)
   //Dados de posts
   allPosts: [],
-  allTags: [],
+
   loadingPosts: true,
   errorPosts: null,
   loading: false,

@@ -14,13 +14,17 @@ datasource db {
 }
 
 model User {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   nome      String
   sobrenome String?
-  email     String  @unique
+  email     String    @unique
   senha     String
-  usuario   String? @unique
-  comments Comment[] // Um usuário pode fazer vários comentários
+  usuario   String?   @unique
+  comments  Comment[] // Um usuário pode fazer vários comentários
+
+  isEmailVerified         Boolean   @default(false) // Diz se o utilizador já validou o e-mail
+  verificationCode        String? // Guarda o código de 6 dígitos (ex: "123456")
+  verificationCodeExpires DateTime? // Guarda a hora em que o código perde a validade
 
   // --- NOVOS CAMPOS PARA O PERFIL---
   imagem String? // URL ou Base64 da foto de perfil
@@ -57,18 +61,17 @@ model Post {
   comments Comment[] // Um post pode ter múltiplos comentários
 
   // --- A Relação com o User ---
-  author   User   @relation(fields: [authorId], references: [id]) // Relaciona o post ao autor
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade) // Relaciona o post ao autor
   authorId String @db.ObjectId
 }
 
-
 model Comment {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  text      String   // O texto do comentário
+  text      String // O texto do comentário
   createdAt DateTime @default(now())
 
   // --- Quem comentou? ---
-  author   User   @relation(fields: [authorId], references: [id])
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String @db.ObjectId
 
   // --- Onde comentou? ---
