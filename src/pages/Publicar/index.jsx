@@ -129,6 +129,7 @@ const Publicar = () => {
       return setErroTags("Tag inválida. Escolha uma tag válida");
 
     adicionarTag(novaTag);
+
     setErroTags("");
   };
 
@@ -365,7 +366,7 @@ const Publicar = () => {
           <BotaoPublicar type="submit" disabled={isSubmitting}>
             {!isSubmitting ? (
               <>
-                {isEditMode ? "Salvar" : "Publicar"} <MdPublish />
+                {isEditMode ? "Salvar alterações" : "Publicar"} <MdPublish />
               </>
             ) : (
               <>

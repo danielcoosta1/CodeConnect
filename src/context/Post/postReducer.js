@@ -35,8 +35,8 @@ export const postReducer = (state, action) => {
         formData: {
           ...state.formData,
           tags: [...state.formData.tags, action.payload], // Adiciona a nova tag ao array de tags do formulário
+          tagInput: "", // Limpa o input de tag após adicionar
         },
-        tagInput: "", // Limpa o input de tag após adicionar
       };
 
     // Remove uma tag baseada no índice dela no array
