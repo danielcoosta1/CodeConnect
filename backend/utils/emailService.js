@@ -4,19 +4,23 @@ import nodemailer from "nodemailer";
 
 export const sendVerificationEmail = async (toEmail, code) => {
   try {
-    // 1. Cria o "caminhão de entrega" usando as credenciais do seu .env
+    // 1. O NOVO CAMINHÃO DE ENTREGA (BLINDADO PARA NUVEM)
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com", // Vai direto no servidor
+      port: 465,              // Porta segura
+      secure: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      // Força o uso de IPv4 e ignora o bloqueio do Render
+      family: 4, 
     });
 
-    // 2. Prepara a carta (O layout do e-mail)
+    // 2. Prepara a carta
     const mailOptions = {
-      from: `"CodeConnect Team" <${process.env.EMAIL_USER}>`, // Remetente
-      to: toEmail, // Destinatário (quem está se cadastrando)
+      from: `"CodeConnect Team" <${process.env.EMAIL_USER}>`,
+      to: toEmail,
       subject: "Seu código de verificação - CodeConnect",
       html: `
         <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4; border-radius: 8px;">
@@ -37,6 +41,6 @@ export const sendVerificationEmail = async (toEmail, code) => {
 
   } catch (error) {
     console.error("❌ Erro ao enviar e-mail:", error);
-    return false;
+    return false; // Aqui ele retorna false e o seu Controller precisa saber lidar com isso!
   }
 };
