@@ -69,6 +69,9 @@ export const createPost = async (req, res) => {
           connect: { id: authorId },
         },
       },
+      include: {
+        author: true,
+      },
     });
     res.status(201).json(newPost);
   } catch (error) {
