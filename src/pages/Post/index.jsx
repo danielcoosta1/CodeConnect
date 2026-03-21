@@ -76,6 +76,7 @@ const Post = () => {
     enviandoComment,
     handleComentar,
     handleDeletarComentario,
+    loadingDelete,
   } = useComments(id);
 
   const handleConfirmarExclusao = async () => {
@@ -289,12 +290,14 @@ const Post = () => {
                                 onClick={() =>
                                   handleDeletarComentario(comment.id)
                                 }
+                                disabled={loadingDelete} // Desabilita os botões enquanto a exclusão está em andamento
                               >
                                 Sim
                               </button>
                               <button
                                 className="btn-confirm-no"
                                 onClick={() => setCommentToDelete(null)}
+                                disabled={loadingDelete}
                               >
                                 Não
                               </button>
