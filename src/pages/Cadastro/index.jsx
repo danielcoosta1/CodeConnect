@@ -160,7 +160,6 @@ const Cadastro = () => {
               <p className="subtitle">Preencha seus dados para começar</p>
 
               <Form onSubmit={handleSubmitCadastro}>
-                {/* ... teus inputs normais continuam aqui (nome, email, senha) ... */}
                 <CampoInput>
                   <label htmlFor="nome">Nome</label>
                   <input
