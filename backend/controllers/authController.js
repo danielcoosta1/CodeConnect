@@ -36,7 +36,7 @@ export const registerUser = async (req, res) => {
         // Vamos apagar esse lixo do banco antes de criar um novo!
         await prisma.user.delete({
           where: { email },
-        }); // Apaga o usuário não verificado para liberar o e-mail para um novo cadastro. Assim evitamos confusão de códigos de verificação antigos e damos uma segunda chance pro usuário se ele errou o e-mail na primeira vez.
+        }); // Apaga o usuário não verificado é exlcuido para liberar o e-mail para um novo cadastro. Assim evitamos confusão de códigos de verificação antigos e damos uma segunda chance pro usuário se ele errou o e-mail na primeira vez.
       }
     }
     const hashedPassword = await bcrypt.hash(senha, 10);
