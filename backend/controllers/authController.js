@@ -2,7 +2,12 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 import jwt from "jsonwebtoken";
 
-import { sendVerificationEmail } from "../utils/emailService.js";
+import crypto from "crypto";
+
+import {
+  sendVerificationEmail,
+  sendPasswordResetEmail,
+} from "../utils/emailService.js";
 
 import prisma from "../lib/prisma.js";
 
@@ -51,16 +56,24 @@ export const registerUser = async (req, res) => {
     // 2. Define a validade do código (10 minutos)
     const verificationCodeExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos a partir de agora
 
-    // 3. Criar o usuário no banco de dados com o código de verificação e sua validade
+    // Pega o nome antes do @ e retira caracteres especiais
 
+    const baseUsername = email
+      .split("@")[0]
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+    const generatedUsuario = `${baseUsername}${Math.floor(1000 + Math.random() * 9000)}`;
+
+    // 3. Criar o usuário no banco de dados
     const user = await prisma.user.create({
       data: {
         nome,
         email,
         senha: hashedPassword,
+        usuario: generatedUsuario, // Gera um nome de usuário único baseado no e-mail, para não ir como null e evitar erros de banco de dados. Exemplo: "joao1234" para o e-mail "joao@exemplo.com"
         verificationCode,
         verificationCodeExpires,
-        isEmailVerified: false, // O e-mail ainda não foi verificado
+        isEmailVerified: false,
       },
     });
 
@@ -174,6 +187,59 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ error: error.issues[0].message });
     }
     res.status(500).json({ error: "Erro ao fazer login" });
+    console.error(error);
+  }
+};
+
+// Rota para solicitar redefinição de senha (envia e-mail com link)
+
+export const forgotPassword = async (req, res) => {
+  const forgotPasswordSchema = z.object({
+    email: z.string().email({ message: "Formato de e-mail inválido." }),
+  });
+
+  try {
+    const { email } = forgotPasswordSchema.parse(req.body);
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+    // Se não achar o usuário, não diz nada (por segurança, para não revelar quais e-mails estão cadastrados)
+    if (!user) {
+      return res.status(200).json({
+        message:
+          "Se este e-mail estiver cadastrado, um link de redefinição de senha foi enviado.",
+      });
+    }
+
+    const resetPasswordToken = crypto.randomBytes(32).toString("hex");
+
+    const resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hora de validade
+
+    await prisma.user.update({
+      where: { email },
+      data: {
+        resetPasswordToken: resetPasswordToken,
+        resetPasswordExpires: resetPasswordExpires,
+      },
+    });
+
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetPasswordToken}`;
+
+    await sendPasswordResetEmail(email, resetLink);
+
+    res.status(200).json({
+      message:
+        "Se este e-mail estiver cadastrado, um link de redefinição de senha foi enviado.",
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.issues[0].message });
+    }
+
+    res
+      .status(500)
+      .json({ error: "Erro ao processar solicitação de redefinição de senha" });
     console.error(error);
   }
 };
