@@ -34,7 +34,7 @@ export const authReducer = (state, action) => {
     case "VERIFICAR_START":
       return {
         ...state,
-        loadingAuth: true, // Reaproveitamos o loading para travar o botão(lá ele)
+        loadingAuth: true, // Reaproveitamos o loading para travar o botão
         errorAuth: null,
       };
     case "VERIFICAR_SUCESSO":
@@ -84,6 +84,29 @@ export const authReducer = (state, action) => {
         ...ESTADO_LIMPO,
         loading: false,
         isAuthenticated: false,
+      };
+
+    //AÇÕES PARA REDEFINIÇÃO DE SENHA - Esqueci minha senha
+
+    case "REDEFINIR_SENHA_START":
+      return {
+        ...state,
+        loadingAuth: true,
+        errorAuth: null,
+      };
+
+    case "REDEFINIR_SENHA_SUCESSO":
+      return {
+        ...state,
+        loadingAuth: false,
+        
+      };
+
+    case "REDEFINIR_SENHA_ERROR":
+      return {
+        ...state,
+        loadingAuth: false,
+        errorAuth: action.payload,
       };
 
     // AÇOES PARA A SESSAO

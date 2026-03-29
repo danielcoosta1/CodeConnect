@@ -5,6 +5,7 @@ import { localStorageService } from "../../services/localStorageService";
 import { useNavigate } from "react-router-dom";
 
 import {
+  forgotPasswordRequest,
   loginRequest,
   registerRequest,
   verifyEmailRequest,
@@ -94,8 +95,6 @@ const AuthProvider = ({ children }) => {
   };
 
   const verificarCodigo = async (email, codigo) => {
-    // Se quiseres, podes criar depois os types VERIFICAR_START, SUCESSO e ERROR no teu reducer
-    // para controlares um loading específico para o botão de validar código.
     dispatch({ type: "VERIFICAR_START" });
 
     try {
@@ -112,6 +111,23 @@ const AuthProvider = ({ children }) => {
 
       dispatch({ type: "VERIFICAR_ERROR", payload: msg });
 
+      return false;
+    }
+  };
+
+  const esqueciSenha = async (email) => {
+    dispatch({ type: "REDEFINIR_SENHA_START" });
+
+    try {
+      await forgotPasswordRequest(email);
+      dispatch({ type: "REDEFINIR_SENHA_SUCESSO" });
+      return true;
+    } catch (error) {
+      console.error("Erro ao solicitar redefinição de senha:", error);
+      const msg =
+        error.response?.data?.error ||
+        "Erro ao solicitar redefinição de senha.";
+      dispatch({ type: "REDEFINIR_SENHA_ERROR", payload: msg });
       return false;
     }
   };
@@ -171,9 +187,7 @@ const AuthProvider = ({ children }) => {
     dispatch({ type: "SET_IMAGEM", payload: base64 });
   };
 
-
-  //
-
+  // --- FUNÇÃO DE SALVAR PERFIL (GRUPO 3) ---
   const salvarPerfil = async () => {
     dispatch({ type: "UPDATE_START" });
 
@@ -279,6 +293,7 @@ const AuthProvider = ({ children }) => {
         errorUpdate: state.errorUpdate,
         // Ações
         cadastro,
+        esqueciSenha,
         verificarCodigo,
         login,
         logout,

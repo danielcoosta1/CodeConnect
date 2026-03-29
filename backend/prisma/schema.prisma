@@ -14,6 +14,7 @@ datasource db {
 }
 
 model User {
+  // --- CAMPOS BÁSICOS ---
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   nome      String
   sobrenome String?
@@ -22,11 +23,16 @@ model User {
   usuario   String?   @unique
   comments  Comment[] // Um usuário pode fazer vários comentários
 
+  // --- CAMPOS PARA REDEFINIÇÃO DE SENHA ---
+  resetPasswordToken String? // Guarda o token para redefinição de senha
+  resetPasswordExpires DateTime? // Guarda a hora em que o token perde a validade
+
+  // --- CAMPOS PARA VERIFICAÇÃO DE E-MAIL ---
   isEmailVerified         Boolean   @default(false) // Diz se o utilizador já validou o e-mail
   verificationCode        String? // Guarda o código de 6 dígitos (ex: "123456")
   verificationCodeExpires DateTime? // Guarda a hora em que o código perde a validade
 
-  // --- NOVOS CAMPOS PARA O PERFIL---
+  // --- CAMPOS PARA O PERFIL---
   imagem String? // URL ou Base64 da foto de perfil
   bio    String? // Pequeno texto sobre o dev
   funcao String? // Ex: "Front-end Developer", "Fullstack"
@@ -34,7 +40,7 @@ model User {
   // A relação inversa: um usuário pode ter múltiplos posts
   posts Post[]
 
-  // --- SISTEMA DE SEGUIDORES (Específico para MongoDB) ---
+  // --- SISTEMA DE SEGUIDORES  ---
 
   // 1. Quem este usuário ESTÁ SEGUINDO (Ele guarda a lista de IDs dos amigos)
   followingIds String[] @db.ObjectId

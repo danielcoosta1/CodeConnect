@@ -10,6 +10,7 @@ import { ToastContainer } from "react-toastify";
 import ProtectedLayout from "../ProtectedLayout";
 import PerfilPublico from "../../pages/PerfilPublico";
 import Post from "../../pages/Post";
+import EsqueciSenha from "../../pages/EsqueciSenha";
 
 const AppContent = () => {
   return (
@@ -27,6 +28,7 @@ const AppContent = () => {
         {/* Rotas Públicas */}
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/esqueci-senha" element={<EsqueciSenha />} />
 
         {/* Rotas Protegidas (Layout com Sidebar) */}
         <Route path="/" element={<ProtectedLayout />}>

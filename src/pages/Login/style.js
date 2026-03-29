@@ -157,6 +157,20 @@ export const CampoInput = styled.div`
   }
 `;
 
+export const LinkEsqueceuSenha = styled(Link)`
+  color: #a0a0a0;
+  font-size: 1.4rem;
+  text-align: right;
+  margin-top: -1rem;
+  text-decoration: none; 
+  transition: 0.2s ease;
+
+  &:hover {
+    color: #81fe88;
+    text-decoration: underline;
+  }
+`;
+
 export const Button = styled.button`
   display: flex;
   align-items: center;
@@ -236,3 +250,5 @@ export const LinkCadastro = styled(Link)`
     font-size: 1.8rem;
   }
 `;
+
+
