@@ -20,3 +20,14 @@ export const verifyEmailRequest = async (email, codigo) => {
   const response = await api.post("/auth/verify-email", { email, codigo });
   return response.data;
 };
+
+
+export const forgotPasswordRequest = async (email) => {
+  const response = await api.post("/auth/esqueci-senha", { email });
+  return response.data;
+};
+
+export const resetPasswordRequest = async (token, novaSenha) => {
+  const response = await api.post("/auth/redefinir-senha", { token, novaSenha });
+  return response.data;
+}

@@ -224,7 +224,7 @@ export const forgotPassword = async (req, res) => {
       },
     });
 
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetPasswordToken}`;
+    const resetLink = `${process.env.FRONTEND_URL}/redefinir-senha?token=${resetPasswordToken}`;
 
     await sendPasswordResetEmail(email, resetLink);
 
@@ -241,5 +241,58 @@ export const forgotPassword = async (req, res) => {
       .status(500)
       .json({ error: "Erro ao processar solicitação de redefinição de senha" });
     console.error(error);
+  }
+};
+
+// Rota para redefinir a senha usando o token
+export const resetPassword = async (req, res) => {
+  // Validamos se o token chegou e se a nova senha atende aos requisitos
+  const resetPasswordSchema = z.object({
+    token: z.string(),
+    novaSenha: z
+      .string()
+      .min(6, { message: "A senha deve ter pelo menos 6 caracteres." }),
+  });
+
+  try {
+    const { token, novaSenha } = resetPasswordSchema.parse(req.body);
+
+    // 1. Busca o usuário que tem esse token E verifica se a data de expiração ainda não passou
+    const user = await prisma.user.findFirst({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: {
+          gt: new Date(), // "gt" = greater than (a validade no banco tem que ser maior que a hora exata de agora)
+        },
+      },
+    });
+
+    // 2. Se não achar o usuário ou a data expirou
+    if (!user) {
+      return res.status(400).json({
+        error: "Token inválido ou expirado. Solicite uma nova recuperação.",
+      });
+    }
+
+    // 3. Criptografa a nova senha
+    const hashedPassword = await bcrypt.hash(novaSenha, 10);
+
+    // 4. Salva a nova senha e LIMPA os campos de segurança
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        senha: hashedPassword,
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
+      },
+    });
+
+    res.status(200).json({ message: "Senha redefinida com sucesso!" });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.issues[0].message });
+    }
+    console.error("Erro no resetPassword:", error);
+    res.status(500).json({ error: "Erro interno ao redefinir a senha." });
   }
 };

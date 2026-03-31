@@ -8,6 +8,7 @@ import {
   ContainerWrapper,
   Form,
   LinkCadastro,
+  LinkEsqueceuSenha,
 } from "./style";
 import imgLogin from "./assets/img_login.png";
 import { useEffect, useState } from "react";
@@ -33,7 +34,8 @@ const Login = () => {
 
   useEffect(() => {
     if (location.state?.from) {
-      const foiLogoutIntencional = localStorageService.ler("logout_intencional");
+      const foiLogoutIntencional =
+        localStorageService.ler("logout_intencional");
 
       navigate(location.pathname, { replace: true, state: {} });
 
@@ -65,7 +67,7 @@ const Login = () => {
         <ContainerForm>
           <h1>Login</h1>
           <p className="subtitle">Preencha seus dados para acessar</p>
-          
+
           <Form onSubmit={handleSubmit}>
             <CampoInput>
               <label htmlFor="email">Email</label>
@@ -79,7 +81,7 @@ const Login = () => {
                 required
               />
             </CampoInput>
-            
+
             <CampoInput>
               <label htmlFor="senha">Senha</label>
               <input
@@ -92,9 +94,13 @@ const Login = () => {
                 required
               />
             </CampoInput>
-            
+
+            <LinkEsqueceuSenha to="/esqueci-senha">
+              Esqueci minha senha
+            </LinkEsqueceuSenha>
+
             {errorAuth && <p className="error-message">{errorAuth}</p>}
-            
+
             <Button type="submit" disabled={loadingAuth}>
               {loadingAuth ? (
                 <>
