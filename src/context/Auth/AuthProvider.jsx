@@ -9,6 +9,7 @@ import {
   loginRequest,
   registerRequest,
   verifyEmailRequest,
+  resetPasswordRequest,
 } from "../../services/authService";
 import {
   getUserProfile,
@@ -127,6 +128,20 @@ const AuthProvider = ({ children }) => {
       const msg =
         error.response?.data?.error ||
         "Erro ao solicitar redefinição de senha.";
+      dispatch({ type: "REDEFINIR_SENHA_ERROR", payload: msg });
+      return false;
+    }
+  };
+
+  const resetarSenha = async (token, novaSenha) => {
+    dispatch({ type: "REDEFINIR_SENHA_START" });
+    try {
+      await resetPasswordRequest(token, novaSenha);
+      dispatch({ type: "REDEFINIR_SENHA_SUCESSO" });
+      return true;
+    } catch (error) {
+      console.error("Erro ao redefinir senha:", error);
+      const msg = error.response?.data?.error || "Erro ao redefinir senha.";
       dispatch({ type: "REDEFINIR_SENHA_ERROR", payload: msg });
       return false;
     }
@@ -294,6 +309,7 @@ const AuthProvider = ({ children }) => {
         // Ações
         cadastro,
         esqueciSenha,
+        resetarSenha,
         verificarCodigo,
         login,
         logout,

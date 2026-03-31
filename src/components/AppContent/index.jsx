@@ -11,6 +11,7 @@ import ProtectedLayout from "../ProtectedLayout";
 import PerfilPublico from "../../pages/PerfilPublico";
 import Post from "../../pages/Post";
 import EsqueciSenha from "../../pages/EsqueciSenha";
+import RedefinirSenha from "../../pages/RedefinirSenha";
 
 const AppContent = () => {
   return (
@@ -29,6 +30,7 @@ const AppContent = () => {
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/login" element={<Login />} />
         <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+        <Route path="/redefinir-senha" element={<RedefinirSenha />} />
 
         {/* Rotas Protegidas (Layout com Sidebar) */}
         <Route path="/" element={<ProtectedLayout />}>
