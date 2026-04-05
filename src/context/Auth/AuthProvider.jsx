@@ -10,6 +10,7 @@ import {
   registerRequest,
   verifyEmailRequest,
   resetPasswordRequest,
+  loginGoogleRequest,
 } from "../../services/authService";
 import {
   getUserProfile,
@@ -177,6 +178,40 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginGoogle = async (credential) => {
+    dispatch({ type: "LOGIN_START" });
+
+    try {
+      // 1. Chama o serviço que já está importado no seu arquivo
+      const response = await loginGoogleRequest(credential);
+      const { user: userData, token: authToken } = response;
+
+      // 2. Configura o cabeçalho do Axios para requisições futuras
+      api.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
+
+      // 3. Aplica o seu padrão de "User Diet" (remove imagem pesada antes de salvar)
+      const { imagem: _img, ...userSemPeso } = userData;
+      localStorageService.salvar("token", authToken);
+      localStorageService.salvar("user", userSemPeso);
+
+      // 4. Atualiza o estado global via Reducer
+      dispatch({
+        type: "LOGIN_SUCESSO",
+        payload: { user: userData, token: authToken },
+      });
+
+      return true;
+    } catch (error) {
+      console.error("ERRO LOGIN GOOGLE:", error);
+      const msg =
+        error.response?.data?.error ||
+        "Erro ao fazer login com Google. Tente novamente.";
+
+      dispatch({ type: "LOGIN_ERROR", payload: msg });
+      return false;
+    }
+  };
+
   const logout = () => {
     localStorageService.remover("token");
     localStorageService.remover("user");
@@ -312,6 +347,7 @@ const AuthProvider = ({ children }) => {
         resetarSenha,
         verificarCodigo,
         login,
+        loginGoogle,
         logout,
         iniciarEdicao,
         atualizarDado,

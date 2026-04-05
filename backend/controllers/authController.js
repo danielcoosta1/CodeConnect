@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { z } from "zod";
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
 
 import crypto from "crypto";
 
@@ -12,6 +13,79 @@ import {
 import prisma from "../lib/prisma.js";
 
 /* global process */
+
+//Cria um cliente OAuth2 para o Google Sign-In, usando a variável de ambiente para o ID do cliente. Isso é necessário para validar os tokens do Google durante o login social.
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+export const googleLogin = async (req, res) => {
+  try {
+    const { credenciais: credential } = req.body; // Recebe o token do Google enviado pelo frontend
+
+    // Verifica o token do Google e extrai as informações do usuário
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    // Extrai o email e nome do usuário do payload do token
+    const payload = ticket.getPayload();
+
+    const { email, name, picture } = payload;
+
+    // Verifica se o usuário já existe no banco de dados
+    let user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      // Se o usuário não existir, cria um novo registro no banco de dados
+      const senhaFantasma = crypto.randomBytes(16).toString("hex"); // Gera uma senha aleatória para o usuário do Google.
+      const hashedPassword = await bcrypt.hash(senhaFantasma, 10); // Criptografa a senha aleatória.
+
+      const baseUsername = email
+        .split("@")[0]
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
+      const generatedUsuario = `${baseUsername}${Math.floor(1000 + Math.random() * 9000)}`;
+
+      user = await prisma.user.create({
+        data: {
+          nome: name,
+          email,
+          senha: hashedPassword,
+          usuario: generatedUsuario, // Gera um nome de usuário único baseado no e-mail, para não ir como null e evitar erros de banco de dados. Exemplo: "joao1234" para o e-mail "
+          imagem: picture, // Salva a foto do perfil do Google, se disponível
+          isEmailVerified: true, // Marca o e-mail como verificado, já que o Google já fez essa verificação
+        },
+      });
+    } else {
+      if (!user.isEmailVerified) {
+        // Se o usuário existe mas não está verificado, isso pode acontecer se ele tentou se cadastrar com o e-mail do Google antes. Nesse caso, vamos atualizar o registro existente para marcar como verificado e adicionar a foto do perfil.
+        await prisma.user.update({
+          where: { email },
+          data: {
+            isEmailVerified: true,
+            imagem: user.imagem || picture, // Atualiza a imagem do perfil apenas se ainda não tiver uma (para não sobrescrever uma foto personalizada que o usuário já tenha colocado)
+          },
+        });
+      }
+    }
+
+    // Gera um token JWT para o usuário autenticado
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
+
+    const { senha: _, ...userSemSenha } = user; //Desestruturação para excluir a senha da resposta
+
+    res.json({ user: userSemSenha, token }); // Retorna o usuário sem a senha e o token(response data)
+  } catch (error) {
+    console.error("Erro no login do Google:", error);
+    res.status(500).json({ error: "Erro ao fazer login com o Google" });
+  }
+};
 
 // Registrar novo usuário (cadastro)
 export const registerUser = async (req, res) => {

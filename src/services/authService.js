@@ -6,6 +6,12 @@ export const loginRequest = async (email, senha) => {
   return response.data;
 };
 
+export const loginGoogleRequest = async (credenciais) => {
+  const response = await api.post("/auth/google", { credenciais });
+  return response.data;
+};
+
+
 export const registerRequest = async (nome, email, senha) => {
   const response = await api.post("/auth/cadastro", {
     nome,

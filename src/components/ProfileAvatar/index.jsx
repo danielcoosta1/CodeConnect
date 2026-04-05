@@ -16,10 +16,12 @@ const ProfileAvatar = ({
     );
   }
 
-  //CASO TENHA IMAGEM - RENDERIZA A IMAGEM BASE64
-  const finalSrc = src.startsWith("data:") //VERIFICA SE JÁ VEM COM O PREFIXO
-    ? src //SE SIM, USA NORMALMENTE
-    : `data:image/png;base64,${src}`; //'ENGANAMOS' O NAVEGADOR COLOCANDO O PREFIXO PARA IMAGEM BASE64 - ASSIM ELE CONSEGUE RENDERIZAR A IMAGEM CORRETAMENTE
+  // Verifica se é um link de internet comum (como a foto do Google)
+  const isHttpUrl = src.startsWith("http://") || src.startsWith("https://");
+
+  // Se já tiver o prefixo do Base64 OU for um link HTTP, usa direto. Se não, injeta o Base64.
+  const finalSrc =
+    src.startsWith("data:") || isHttpUrl ? src : `data:image/png;base64,${src}`;
 
   return (
     <AvatarWrapper $size={size} $hasBorder={hasBorder}>

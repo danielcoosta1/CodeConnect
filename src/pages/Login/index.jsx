@@ -9,6 +9,10 @@ import {
   Form,
   LinkCadastro,
   LinkEsqueceuSenha,
+  DividerContainer,
+  DividerLine,
+  DividerText,
+  GoogleButtonWrapper,
 } from "./style";
 import imgLogin from "./assets/img_login.png";
 import { useEffect, useState } from "react";
@@ -17,13 +21,15 @@ import { CgArrowRight } from "react-icons/cg";
 import { MdOutlineContentPaste } from "react-icons/md";
 import { FiLoader } from "react-icons/fi";
 
+import { GoogleLogin } from "@react-oauth/google";
+
 import { useAuth } from "../../hooks/useAuth";
 import { toastErro, toastSucesso } from "../../utils/toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import { localStorageService } from "../../services/localStorageService";
 
 const Login = () => {
-  const { login, loadingAuth, errorAuth } = useAuth();
+  const { login, loadingAuth, errorAuth, loginGoogle } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -50,6 +56,15 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const sucesso = await login(email, senha);
+
+    if (sucesso) {
+      navigate(origem, { replace: true });
+      toastSucesso("Login efetuado com sucesso!");
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    const sucesso = await loginGoogle(credentialResponse.credential);
 
     if (sucesso) {
       navigate(origem, { replace: true });
@@ -113,6 +128,23 @@ const Login = () => {
               )}
             </Button>
           </Form>
+
+          <DividerContainer>
+            <DividerLine />
+            <DividerText>ou entre com</DividerText>
+            <DividerLine />
+          </DividerContainer>
+
+          <GoogleButtonWrapper>
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => toastErro("Falha ao se comunicar com o Google.")}
+              shape="rectangular"
+              theme="filled_black" /* Força o botão a ficar escuro */
+              size="large"
+              text="continue_with"
+            />
+          </GoogleButtonWrapper>
 
           <ContainerCadastro>
             <p>Ainda não possui conta?</p>
