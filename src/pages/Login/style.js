@@ -10,15 +10,13 @@ export const ContainerWrapper = styled.main`
   justify-content: center;
   align-items: center;
   color: #e1e1e1;
-  padding: 2.4rem; 
+  padding: 2.4rem;
 
   /* --- A MÁGICA DA MARCA D'ÁGUA NO TABLET/MOBILE --- */
   @media ${device.tablet} {
     /* Máscara escura (85% a 95% de opacidade) + Imagem por baixo */
-    background-image: linear-gradient(
-        rgba(1, 8, 14, 0.85), 
-        rgba(1, 8, 14, 0.95)
-      ),
+    background-image:
+      linear-gradient(rgba(1, 8, 14, 0.85), rgba(1, 8, 14, 0.95)),
       url(${(props) => props.$bgImage});
     background-size: cover;
     background-position: center;
@@ -33,19 +31,19 @@ export const ContainerWrapper = styled.main`
 export const ContainerContent = styled.section`
   display: flex;
   width: 100%;
-  max-width: 100rem; 
+  max-width: 100rem;
   background-color: #171d1f;
-  border-radius: 1.6rem; 
-  overflow: hidden; 
-  box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.5); 
+  border-radius: 1.6rem;
+  overflow: hidden;
+  box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.5);
 
   /* Abaixo de 1024px, vira coluna e ganha leve transparência */
   @media ${device.tablet} {
     flex-direction: column;
-    max-width: 50rem; 
-    
+    max-width: 50rem;
+
     /* Efeito "Glass" (Vidro) para a imagem de fundo vazar de forma elegante */
-    background-color: rgba(23, 29, 31, 0.85); 
+    background-color: rgba(23, 29, 31, 0.85);
     backdrop-filter: blur(0.5rem);
     border: 0.1rem solid rgba(255, 255, 255, 0.05); /* Bordinha brilhante sutil */
   }
@@ -53,16 +51,16 @@ export const ContainerContent = styled.section`
 
 // --- ÁREA DA IMAGEM (ESQUERDA) ---
 export const ContainerImg = styled.div`
-  flex: 1; 
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #171d1f; 
+  background-color: #171d1f;
 
   img {
     width: 100%;
     height: 100%;
-    object-fit: cover; 
+    object-fit: cover;
   }
 
   @media ${device.tablet} {
@@ -72,15 +70,15 @@ export const ContainerImg = styled.div`
 
 // --- ÁREA DO FORMULÁRIO (DIREITA) ---
 export const ContainerForm = styled.div`
-  flex: 1; 
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 6rem 4rem; 
+  padding: 6rem 4rem;
   gap: 2.4rem;
 
   h1 {
-    font-size: 3.6rem; 
+    font-size: 3.6rem;
     font-weight: 700;
     color: #fff;
     margin: 0;
@@ -123,19 +121,19 @@ export const CampoInput = styled.div`
   flex-direction: column;
 
   label {
-    font-size: 1.4rem; 
+    font-size: 1.4rem;
     margin-bottom: 0.8rem;
     color: #e1e1e1;
     font-weight: 600;
   }
 
   input {
-    padding: 1.2rem 1.6rem; 
-    border: 0.2rem solid transparent; 
+    padding: 1.2rem 1.6rem;
+    border: 0.2rem solid transparent;
     border-radius: 0.8rem;
-    background-color: #2a3236; 
+    background-color: #2a3236;
     color: white;
-    font-size: 1.6rem; 
+    font-size: 1.6rem;
     font-family: inherit;
     transition: all 0.2s ease-in-out;
 
@@ -147,7 +145,7 @@ export const CampoInput = styled.div`
     &:focus {
       outline: none;
       background-color: #333c42;
-      border-color: #81fe88; 
+      border-color: #81fe88;
     }
 
     &:disabled {
@@ -162,7 +160,7 @@ export const LinkEsqueceuSenha = styled(Link)`
   font-size: 1.4rem;
   text-align: right;
   margin-top: -1rem;
-  text-decoration: none; 
+  text-decoration: none;
   transition: 0.2s ease;
 
   &:hover {
@@ -189,7 +187,7 @@ export const Button = styled.button`
 
   &:hover:not(:disabled) {
     background-color: #6be276;
-    transform: translateY(-0.2rem); 
+    transform: translateY(-0.2rem);
     box-shadow: 0 0.4rem 1.2rem rgba(129, 254, 136, 0.3);
   }
 
@@ -211,8 +209,12 @@ export const Button = styled.button`
   }
 
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 `;
 
@@ -251,4 +253,30 @@ export const LinkCadastro = styled(Link)`
   }
 `;
 
+// --- DIVISOR DO GOOGLE ---
+export const DividerContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 1rem 0; /* Espaçamento equilibrado entre o form e o botão */
+`;
 
+export const DividerLine = styled.div`
+  flex: 1;
+  height: 0.1rem;
+  background-color: #333c42; /* Mesma cor da borda do input no focus */
+`;
+
+export const DividerText = styled.span`
+  padding: 0 1.6rem;
+  color: #a0a0a0; /* Mesma cor do seu subtítulo */
+  font-size: 1.4rem;
+`;
+
+// --- CONTAINER DO BOTÃO GOOGLE ---
+export const GoogleButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 0.8rem;
+`;
