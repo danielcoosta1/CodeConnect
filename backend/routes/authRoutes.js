@@ -7,6 +7,7 @@ import {
   forgotPassword,
   resetPassword,
   googleLogin,
+  loginGithub,
 } from "../controllers/authController.js";
 
 const router = express.Router();
@@ -14,6 +15,7 @@ const router = express.Router();
 router.post("/cadastro", registerUser);
 router.post("/login", loginUser);
 router.post("/google", googleLogin);
+router.post("/github", loginGithub);
 
 router.post("/verify-email", verifyEmailCode);
 router.post("/esqueci-senha", forgotPassword);

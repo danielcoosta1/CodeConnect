@@ -11,6 +11,7 @@ import {
   verifyEmailRequest,
   resetPasswordRequest,
   loginGoogleRequest,
+  loginGithubRequest,
 } from "../../services/authService";
 import {
   getUserProfile,
@@ -212,6 +213,40 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginGithub = async (code) => {
+    dispatch({ type: "LOGIN_START" });
+
+    try {
+      // 1. Chama o serviço que manda o "code" para o backend
+      const response = await loginGithubRequest(code);
+      const { user: userData, token: authToken } = response;
+
+      // 2. Configura o cabeçalho do Axios para as rotas de Posts/Comentários
+      api.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
+
+      // 3. Aplica o "User Diet"
+      const { imagem: _img, ...userSemPeso } = userData;
+      localStorageService.salvar("token", authToken);
+      localStorageService.salvar("user", userSemPeso);
+
+      // 4. Atualiza o estado global
+      dispatch({
+        type: "LOGIN_SUCESSO",
+        payload: { user: userData, token: authToken },
+      });
+
+      return true;
+    } catch (error) {
+      console.error("ERRO LOGIN GITHUB:", error);
+      const msg =
+        error.response?.data?.error ||
+        "Erro ao fazer login com GitHub. Tente novamente.";
+
+      dispatch({ type: "LOGIN_ERROR", payload: msg });
+      return false;
+    }
+  };
+
   const logout = () => {
     localStorageService.remover("token");
     localStorageService.remover("user");
@@ -348,6 +383,7 @@ const AuthProvider = ({ children }) => {
         verificarCodigo,
         login,
         loginGoogle,
+        loginGithub,
         logout,
         iniciarEdicao,
         atualizarDado,

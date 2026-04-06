@@ -274,9 +274,48 @@ export const DividerText = styled.span`
 `;
 
 // --- CONTAINER DO BOTÃO GOOGLE ---
-export const GoogleButtonWrapper = styled.div`
+export const SocialButtonsContainer = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem; /* Espaço entre os botões do Google e GitHub */
   width: 100%;
   margin-bottom: 0.8rem;
+
+  /* Garante que a div gerada pelo Google fique centralizada */
+  > div {
+    display: flex;
+    justify-content: center;
+  }
+`;
+
+export const BotaoGitHub = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  
+  /* Largura aproximada do botão do Google para manter a harmonia */
+  min-width: 215px; 
+  height: 40px; /* Altura exata do size="large" do Google */
+  
+  border: none;
+  border-radius: 4px; /* Mesma borda do shape="rectangular" */
+  
+  background-color: #131314; /* Tom de preto que combina com o tema filled_black */
+  color: #e3e3e3;
+  
+  font-family: inherit;
+  font-size: 1.4rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #2b2b2b;
+  }
+
+  svg {
+    font-size: 1.8rem;
+  }
 `;
