@@ -12,14 +12,16 @@ import {
   DividerContainer,
   DividerLine,
   DividerText,
-  GoogleButtonWrapper,
+  SocialButtonsContainer,
+  BotaoGitHub,
 } from "./style";
 import imgLogin from "./assets/img_login.png";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { CgArrowRight } from "react-icons/cg";
 import { MdOutlineContentPaste } from "react-icons/md";
 import { FiLoader } from "react-icons/fi";
+import { FaGithub } from "react-icons/fa";
 
 import { GoogleLogin } from "@react-oauth/google";
 
@@ -29,7 +31,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { localStorageService } from "../../services/localStorageService";
 
 const Login = () => {
-  const { login, loadingAuth, errorAuth, loginGoogle } = useAuth();
+  const { login, loadingAuth, errorAuth, loginGoogle, loginGithub } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -37,6 +39,8 @@ const Login = () => {
   const [senha, setSenha] = useState("");
 
   const origem = location.state?.from?.pathname || "/feed";
+
+  const codeProcessado = useRef(false);
 
   useEffect(() => {
     if (location.state?.from) {
@@ -51,7 +55,37 @@ const Login = () => {
 
       localStorageService.remover("logout_intencional");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const githubCode = urlParams.get("code");
+
+    // Se tem código na URL E a gente ainda não processou ele...
+    if (githubCode && !codeProcessado.current) {
+      // 1. Levanta a bandeira para o React não rodar isso duas vezes!
+      codeProcessado.current = true;
+
+      // 2. Limpa a URL do jeito que o React Router entende
+      navigate("/login", { replace: true });
+
+      const processarLoginGithub = async () => {
+        const sucesso = await loginGithub(githubCode);
+
+        if (sucesso) {
+          navigate(origem, { replace: true });
+          toastSucesso("Login com GitHub efetuado com sucesso!");
+        } else {
+          toastErro("Falha ao entrar com o GitHub.");
+          codeProcessado.current = false; // Abaixa a bandeira se deu erro, para tentar de novo
+        }
+      };
+
+      processarLoginGithub();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search, navigate, origem]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,6 +104,12 @@ const Login = () => {
       navigate(origem, { replace: true });
       toastSucesso("Login efetuado com sucesso!");
     }
+  };
+
+  const handleGithubLogin = () => {
+    const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
+    const GITHUB_URL = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=user:email`;
+    window.location.assign(GITHUB_URL);
   };
 
   return (
@@ -135,16 +175,20 @@ const Login = () => {
             <DividerLine />
           </DividerContainer>
 
-          <GoogleButtonWrapper>
+          <SocialButtonsContainer>
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => toastErro("Falha ao se comunicar com o Google.")}
               shape="rectangular"
-              theme="filled_black" /* Força o botão a ficar escuro */
+              theme="filled_black"
               size="large"
               text="continue_with"
             />
-          </GoogleButtonWrapper>
+
+            <BotaoGitHub type="button" onClick={handleGithubLogin}>
+              <FaGithub /> Continuar com GitHub
+            </BotaoGitHub>
+          </SocialButtonsContainer>
 
           <ContainerCadastro>
             <p>Ainda não possui conta?</p>

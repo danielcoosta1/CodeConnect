@@ -24,7 +24,7 @@ model User {
   comments  Comment[] // Um usuário pode fazer vários comentários
 
   // --- CAMPOS PARA REDEFINIÇÃO DE SENHA ---
-  resetPasswordToken String? // Guarda o token para redefinição de senha
+  resetPasswordToken   String? // Guarda o token para redefinição de senha
   resetPasswordExpires DateTime? // Guarda a hora em que o token perde a validade
 
   // --- CAMPOS PARA VERIFICAÇÃO DE E-MAIL ---
@@ -49,9 +49,11 @@ model User {
   // 2. Quem ESTÁ SEGUINDO este usuário (A relação inversa)
   followerIds String[] @db.ObjectId
   followers   User[]   @relation("UserFollows", fields: [followerIds], references: [id]) // Relaciona os IDs dos seguidores com os usuários correspondentes
+
+  // --- INTEGRAÇÕES ---
+  github_username String? // Guarda o username do GitHub 
 }
 
-// O novo model, baseado na sua ideia do Figma
 model Post {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   title         String // Equivalente ao "nome" da publicação

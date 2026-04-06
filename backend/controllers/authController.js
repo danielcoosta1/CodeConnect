@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import axios from "axios";
 import { z } from "zod";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
@@ -262,6 +263,117 @@ export const loginUser = async (req, res) => {
     }
     res.status(500).json({ error: "Erro ao fazer login" });
     console.error(error);
+  }
+};
+
+export const loginGithub = async (req, res) => {
+  console.log("chegou no back-end com o código:", req.body.code); // Log para verificar se o código está chegando
+  try {
+    const { code } = req.body;
+
+    if (!code) {
+      return res.status(400).json({ error: "Código do GitHub não fornecido." });
+    }
+
+    // 1. O Back-end pede o Token de Acesso para o GitHub
+    const tokenResponse = await axios.post(
+      "https://github.com/login/oauth/access_token",
+      {
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        code: code,
+      },
+      { headers: { Accept: "application/json" } },
+    );
+
+    console.log("RESPOSTA DO GITHUB:", tokenResponse.data);
+
+    const accessToken = tokenResponse.data.access_token;
+
+    if (!accessToken) {
+      return res.status(401).json({ error: "Falha ao obter token do GitHub." });
+    }
+
+    // 2. Com o Token em mãos, pede os dados do perfil
+    const userResponse = await axios.get("https://api.github.com/user", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    const githubUser = userResponse.data;
+
+    // 3. Pede o e-mail (Muitos devs deixam o e-mail privado no perfil do GitHub)
+    const emailResponse = await axios.get(
+      "https://api.github.com/user/emails",
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      },
+    );
+
+    // Filtra para pegar o e-mail principal e que já foi verificado pelo GitHub
+    const primaryEmailObj = emailResponse.data.find(
+      (email) => email.primary === true && email.verified === true,
+    );
+    const email = primaryEmailObj ? primaryEmailObj.email : githubUser.email;
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ error: "Não foi possível acessar o e-mail do GitHub." });
+    }
+
+    // 4. Lógica de Banco de Dados (Exatamente igual ao seu Google Login)
+    let user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      const senhaFantasma = crypto.randomBytes(16).toString("hex");
+      const hashedPassword = await bcrypt.hash(senhaFantasma, 10);
+
+      const baseUsername = email
+        .split("@")[0]
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
+      const generatedUsuario = `${baseUsername}${Math.floor(1000 + Math.random() * 9000)}`;
+
+      user = await prisma.user.create({
+        data: {
+          nome: githubUser.name || githubUser.login, // Usa o nome real, se não tiver, usa o @
+          email,
+          senha: hashedPassword,
+          usuario: generatedUsuario,
+          imagem: githubUser.avatar_url,
+          isEmailVerified: true,
+          github_username: githubUser.login, // Preenchendo o campo novo do Prisma!
+        },
+      });
+    } else {
+      await prisma.user.update({
+        where: { email },
+        data: {
+          isEmailVerified: true,
+          imagem: user.imagem || githubUser.avatar_url,
+          github_username: githubUser.login, // Atualiza para vincular a conta
+        },
+      });
+    }
+
+    // 5. Gera o NOSSO Token JWT do CodeConnect
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
+
+    const { senha: _, ...userSemSenha } = user;
+
+    // 6. Devolve tudo certinho para o Front-end
+    res.json({ user: userSemSenha, token });
+  } catch (error) {
+    console.error(
+      "Erro no login do GitHub:",
+      error.response?.data || error.message,
+    );
+    res.status(500).json({ error: "Erro ao fazer login com o GitHub" });
   }
 };
 

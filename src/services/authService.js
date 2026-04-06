@@ -11,6 +11,12 @@ export const loginGoogleRequest = async (credenciais) => {
   return response.data;
 };
 
+// No seu arquivo authService.js (Front-end)
+
+export const loginGithubRequest = async (code) => {
+  const response = await api.post("/auth/github", { code });
+  return response.data;
+};
 
 export const registerRequest = async (nome, email, senha) => {
   const response = await api.post("/auth/cadastro", {
@@ -21,12 +27,10 @@ export const registerRequest = async (nome, email, senha) => {
   return response.data;
 };
 
-
 export const verifyEmailRequest = async (email, codigo) => {
   const response = await api.post("/auth/verify-email", { email, codigo });
   return response.data;
 };
-
 
 export const forgotPasswordRequest = async (email) => {
   const response = await api.post("/auth/esqueci-senha", { email });
@@ -34,6 +38,9 @@ export const forgotPasswordRequest = async (email) => {
 };
 
 export const resetPasswordRequest = async (token, novaSenha) => {
-  const response = await api.post("/auth/redefinir-senha", { token, novaSenha });
+  const response = await api.post("/auth/redefinir-senha", {
+    token,
+    novaSenha,
+  });
   return response.data;
-}
+};
