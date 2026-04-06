@@ -4,7 +4,7 @@ import prisma from "../lib/prisma.js";
 export const createComment = async (req, res) => {
   try {
     const { postId } = req.params; // Pegamos o ID do post pela URL
-    const { text } = req.body; // O texto que o usuário digitou
+    const { text, parentId } = req.body; // O texto que o usuário digitou e o ID do comentário pai (se for resposta)
     const authorId = req.user.id; // O ID do usuário logado (Vem do AuthMiddleware)
 
     //Validação básica
@@ -21,6 +21,7 @@ export const createComment = async (req, res) => {
         text,
         postId,
         authorId,
+        parentId: parentId || null, // Se for resposta a outro comentário, tem parentId. Se for comentário principal, é null
       },
       include: {
         author: {
@@ -48,8 +49,9 @@ export const getCommentsByPostId = async (req, res) => {
     const { postId } = req.params;
 
     const comments = await prisma.comment.findMany({
-      where: { postId: postId }, // Filtra só os comentários daquele post específico
-      orderBy: { createdAt: "asc" }, // Ordena do mais antigo para o mais novo
+      // ---> SÓ TRAZ COMENTÁRIOS PRINCIPAIS (QUE NÃO TÊM PAI)
+      where: { postId: postId, parentId: null },
+      orderBy: { createdAt: "asc" },
       include: {
         author: {
           select: {
@@ -57,8 +59,23 @@ export const getCommentsByPostId = async (req, res) => {
             nome: true,
             sobrenome: true,
             usuario: true,
-            imagem: true, // Precisamos da imagem para renderizar o Avatar no Front!
+            imagem: true,
           },
+        },
+        // ---> TRAZ AS RESPOSTAS (THREADS) DE CADA COMENTÁRIO
+        replies: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                nome: true,
+                sobrenome: true,
+                usuario: true,
+                imagem: true,
+              },
+            },
+          },
+          orderBy: { createdAt: "asc" },
         },
       },
     });
@@ -97,7 +114,11 @@ export const deleteCommentById = async (req, res) => {
 
       // Se o usuário não é nem o autor do comentário nem o dono do post, proíbe a ação
       if (!post || post.authorId !== userId) {
-        return res.status(403).json({ error: "Ação proibida. Você não pode excluir este comentário." });
+        return res
+          .status(403)
+          .json({
+            error: "Ação proibida. Você não pode excluir este comentário.",
+          });
       }
     }
 
@@ -114,5 +135,77 @@ export const deleteCommentById = async (req, res) => {
     return res
       .status(500)
       .json({ error: "Erro interno ao excluir comentário." });
+  }
+};
+
+//Curtir ou descurtir um comentário (toggle)
+export const toggleLikeComment = async (req, res) => {
+  try {
+    const { id } = req.params; // ID do comentário
+    const userId = req.user.id; // Usuário que está curtindo
+
+    const comment = await prisma.comment.findUnique({
+      where: { id },
+    });
+
+    if (!comment) {
+      return res.status(404).json({ error: "Comentário não encontrado." });
+    }
+
+    let updatedLikeIds = [...comment.likeIds];
+    const hasLiked = updatedLikeIds.includes(userId);
+
+    // Se já curtiu, remove o ID da lista. Se não curtiu, adiciona.
+    if (hasLiked) {
+      updatedLikeIds = updatedLikeIds.filter((likeId) => likeId !== userId);
+    } else {
+      updatedLikeIds.push(userId);
+    }
+
+    const updatedComment = await prisma.comment.update({
+      where: { id },
+      data: { likeIds: updatedLikeIds },
+    });
+
+    return res.status(200).json(updatedComment);
+  } catch (error) {
+    console.error("Erro ao curtir comentário:", error);
+    return res
+      .status(500)
+      .json({ error: "Erro interno ao curtir comentário." });
+  }
+};
+
+
+// Marcar ou desmarcar um comentário como a "Solução de Ouro"
+export const toggleSolutionStatus = async (req, res) => {
+  try {
+    const { id } = req.params; // ID do comentário
+    const userId = req.user.id;
+
+    // Busca o comentário e já traz as informações do Post junto
+    const comment = await prisma.comment.findUnique({
+      where: { id },
+      include: { post: true }, // Precisamos do post para verificar se o usuário é o autor do post
+    });
+
+    if (!comment) {
+      return res.status(404).json({ error: "Comentário não encontrado." });
+    }
+
+    // Trava de segurança: Verifica se quem clicou é realmente o dono do Post
+    if (comment.post.authorId !== userId) {
+      return res.status(403).json({ error: "Apenas o autor do post pode marcar a Solução de Ouro." });
+    }
+
+    const updatedComment = await prisma.comment.update({
+      where: { id },
+      data: { isSolution: !comment.isSolution }, // Inverte o valor (se era true, vira false e vice-versa)
+    });
+
+    return res.status(200).json(updatedComment);
+  } catch (error) {
+    console.error("Erro ao marcar solução:", error);
+    return res.status(500).json({ error: "Erro interno ao atualizar comentário." });
   }
 };
