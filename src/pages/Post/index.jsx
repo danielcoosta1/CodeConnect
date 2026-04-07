@@ -2,14 +2,25 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import ProfileAvatar from "../../components/ProfileAvatar";
-import LoadingState from "../../components/LoadingState"; // Nossas ferramentas globais!
-import ErrorState from "../../components/ErrorState"; // Nossas ferramentas globais!
+import LoadingState from "../../components/LoadingState";
+import ErrorState from "../../components/ErrorState";
 import { FaArrowLeft, FaShareNodes } from "react-icons/fa6";
 import defaultImg from "../Publicar/assets/exemplo.png";
-import { FaGithub, FaTrash } from "react-icons/fa";
-import { FaExternalLinkAlt } from "react-icons/fa";
+import {
+  FaGithub,
+  FaTrash,
+  FaCode,
+  FaRegComment,
+  FaExternalLinkAlt,
+  FaRegEdit,
+  FaHeart,
+  FaRegHeart,
+  FaStar,
+  FaRegStar,
+  FaReply,
+} from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
-import { FaRegEdit } from "react-icons/fa";
+
 import {
   PostContainer,
   CoverImage,
@@ -24,31 +35,36 @@ import {
   ActionIcons,
   IconGroup,
   CodeContainer,
-  CommentsContainer,
   InputComment,
   CommentList,
   CommentItem,
-  CommentContent,
   CommentHeaderInfo,
   LinksContainer,
   ProjectLink,
   HeaderTop,
   AuthorActions,
   CommentContentContainer,
+  CommentsContent,
   AuthorActionsComment,
+  RepliesContainer,
+  CommentsContainer,
+  ActionButton,
+  SolutionBadge,
 } from "./style";
+
 import { usePost } from "../../hooks/usePost";
 import { useAuth } from "../../hooks/useAuth";
-import { FaCode, FaRegComment } from "react-icons/fa";
 import ModalConfirmacao from "../../components/ModalConfirmacao";
 import { useComments } from "../../hooks/useComments";
 
 const Post = () => {
-  const { id } = useParams(); // Pega o ID da URL
+  const { id } = useParams();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState(null);
 
-  const [commentToDelete, setCommentToDelete] = useState(null); // Armazena o comentário que queremos excluir
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [replyText, setReplyText] = useState("");
 
   const {
     postDetails,
@@ -59,13 +75,13 @@ const Post = () => {
   } = usePost();
 
   const { user } = useAuth();
-
   const isAuthorPost = postDetails?.author?.id === user?.id;
 
   useEffect(() => {
     if (id) {
       carregarPostPorId(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const {
@@ -77,35 +93,173 @@ const Post = () => {
     handleComentar,
     handleDeletarComentario,
     loadingDelete,
+    handleToggleLike,
+    handleToggleSolution,
   } = useComments(id);
 
   const handleConfirmarExclusao = async () => {
     const sucesso = await deletarPostPorId(id);
-
-    // Se deu certo, ele manda pro feed. (O modal já se fechou sozinho!)
     if (sucesso) {
       navigate("/feed");
     }
   };
 
-  if (loadingPostDetails) {
-    return <LoadingState texto="Carregando post..." size={45} />;
-  }
+  // FUNÇÃO AUXILIAR PARA O ENVIO DA RESPOSTA
+  const submitReply = async (e, parentId) => {
+    e.preventDefault();
+    if (!replyText.trim()) return;
 
-  if (errorPostDetails) {
+    // Chama o hook passando o evento, o texto da resposta e o ID do comentário pai
+    await handleComentar(e, parentId, replyText);
+
+    setReplyText("");
+    setReplyingTo(null); // Fecha a caixinha de resposta
+  };
+
+  if (loadingPostDetails)
+    return <LoadingState texto="Carregando post..." size={45} />;
+  if (errorPostDetails)
     return (
       <ErrorState
         mensagem={errorPostDetails}
         onRetry={() => carregarPostPorId(id)}
       />
     );
-  }
+  if (!postDetails) return null;
 
-  if (!postDetails) {
-    return null;
-  }
+  // =======================================================================
+  // MOTOR DE RENDERIZAÇÃO DE COMENTÁRIOS (PAIS E FILHOS)
+  // =======================================================================
+  const renderComment = (comment, isReply = false) => {
+    const canDeleteComment = isAuthorPost || comment.authorId === user?.id;
+    const hasLiked = comment.likeIds?.includes(user?.id);
 
-  // Renderização de Sucesso
+    return (
+      <CommentItem key={comment.id} $isSolution={comment.isSolution}>
+        <ProfileAvatar
+          src={comment.author?.imagem}
+          size={
+            isReply ? 35 : 45
+          } /* Menor nas respostas para hierarquia visual */
+          hasBorder={false}
+        />
+
+        <CommentContentContainer>
+          <CommentsContent>
+            <CommentHeaderInfo>
+              <h4>
+                {comment.author?.nome} {comment.author?.sobrenome}
+              </h4>
+              <span>@{comment.author?.usuario}</span>
+              {/* COMPONENTE EXCLUSIVO PARA O BADGE */}
+              {comment.isSolution && <SolutionBadge>🌟 Solução</SolutionBadge>}
+            </CommentHeaderInfo>
+            <p>{comment.text}</p>
+          </CommentsContent>
+
+          {/* BARRA DE AÇÕES DO COMENTÁRIO */}
+          <AuthorActionsComment>
+            {/* BOTÃO DE CURTIR */}
+            <ActionButton
+              onClick={() => handleToggleLike(comment.id)}
+              $active={hasLiked}
+              $activeColor="#ff5f56"
+              $hoverColor="#ff5f56"
+              title="Curtir comentário"
+            >
+              {hasLiked ? <FaHeart /> : <FaRegHeart />}{" "}
+              {comment.likeIds?.length || 0}
+            </ActionButton>
+
+            {/* BOTÃO DE RESPONDER (SÓ MOSTRA SE NÃO FOR UMA RESPOSTA) */}
+            {!isReply && user && (
+              <ActionButton
+                onClick={() =>
+                  setReplyingTo(replyingTo === comment.id ? null : comment.id)
+                }
+                $hoverColor="#81fe88"
+              >
+                <FaReply /> Responder
+              </ActionButton>
+            )}
+
+            {/* BOTÃO DE SOLUÇÃO DE OURO (SÓ O DONO DO POST VÊ) */}
+            {isAuthorPost && !isReply && (
+              <ActionButton
+                onClick={() => handleToggleSolution(comment.id)}
+                $active={comment.isSolution}
+                $activeColor="#d4af37"
+                $hoverColor="#d4af37"
+                title="Marcar como Solução"
+              >
+                {comment.isSolution ? <FaStar /> : <FaRegStar />}
+              </ActionButton>
+            )}
+
+            {/* LIXEIRA / CONFIRMAÇÃO */}
+            {canDeleteComment &&
+              (commentToDelete === comment.id ? (
+                <div className="confirm-action">
+                  <span className="confirm-text">Excluir?</span>
+                  <button
+                    className="btn-confirm-yes"
+                    onClick={() => handleDeletarComentario(comment.id)}
+                    disabled={loadingDelete}
+                  >
+                    Sim
+                  </button>
+                  <button
+                    className="btn-confirm-no"
+                    onClick={() => setCommentToDelete(null)}
+                    disabled={loadingDelete}
+                  >
+                    Não
+                  </button>
+                </div>
+              ) : (
+                <ActionButton
+                  onClick={() => setCommentToDelete(comment.id)}
+                  $hoverColor="#ff5f56"
+                  title="Excluir"
+                >
+                  <FaTrash />
+                </ActionButton>
+              ))}
+          </AuthorActionsComment>
+
+          {/* CAIXA DE INPUT PARA RESPONDER (Renderizada dentro do fluxo do conteúdo) */}
+          {replyingTo === comment.id && (
+            <div style={{ marginTop: "1.6rem" }}>
+              {" "}
+              <InputComment onSubmit={(e) => submitReply(e, comment.id)}>
+                <input
+                  type="text"
+                  placeholder="Escreva sua resposta..."
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                  disabled={enviandoComment}
+                  autoFocus
+                />
+                <button
+                  type="submit"
+                  disabled={enviandoComment || !replyText.trim()}
+                >
+                  Enviar
+                </button>
+              </InputComment>
+            </div>
+          )}
+
+          {/* RENDERIZA AS RESPOSTAS DESSE COMENTÁRIO (RECURSIVIDADE) */}
+          {!isReply && comment.replies && comment.replies.length > 0 && (
+            <RepliesContainer>
+              {comment.replies.map((reply) => renderComment(reply, true))}
+            </RepliesContainer>
+          )}
+        </CommentContentContainer>
+      </CommentItem>
+    );
+  };
   return (
     <>
       <PostContainer>
@@ -114,8 +268,6 @@ const Post = () => {
             <BackButton onClick={() => navigate(-1)}>
               <FaArrowLeft /> Voltar
             </BackButton>
-
-            {/* Renderização Condicional: Só aparece se for o dono! */}
             {isAuthorPost && (
               <AuthorActions>
                 <button
@@ -141,13 +293,13 @@ const Post = () => {
                   ? `data:image/png;base64,${postDetails.image}`
                   : defaultImg
               }
-              alt={`Capa do projeto ${postDetails.title}`}
+              alt="Capa do projeto"
             />
           </CoverImage>
 
           <PostTitle>{postDetails.title}</PostTitle>
           <LinksContainer>
-            {/* --- LÓGICA DO DEPLOY --- */}
+            {/* LÓGICA DO DEPLOY */}
             {postDetails.projectUrl ? (
               <ProjectLink
                 href={postDetails.projectUrl}
@@ -162,8 +314,7 @@ const Post = () => {
                 <FaExternalLinkAlt /> <span>Deploy Indisponível</span>
               </ProjectLink>
             )}
-
-            {/* --- LÓGICA DO GITHUB --- */}
+            {/* LÓGICA DO GITHUB */}
             {postDetails.repoUrl ? (
               <ProjectLink
                 href={postDetails.repoUrl}
@@ -178,6 +329,7 @@ const Post = () => {
               </ProjectLink>
             )}
           </LinksContainer>
+
           <PostContent>
             <p>{postDetails.content}</p>
           </PostContent>
@@ -217,17 +369,21 @@ const Post = () => {
             </AuthorInfo>
           </AuthorContainer>
         </PostHeader>
+
         {postDetails.codeContent && (
           <CodeContainer>
             <ReactMarkdown>{postDetails.codeContent}</ReactMarkdown>
           </CodeContainer>
         )}
+
         <CommentsContainer>
           <h2>Comentários ({comments.length})</h2>
 
-          {/* SÓ MOSTRA O INPUT SE O USUÁRIO ESTIVER LOGADO */}
+          {/* INPUT DO COMENTÁRIO PRINCIPAL */}
           {user ? (
-            <InputComment onSubmit={handleComentar}>
+            <InputComment
+              onSubmit={(e) => handleComentar(e, null, commentText)}
+            >
               <input
                 type="text"
                 placeholder="Adicione um comentário construtivo..."
@@ -246,78 +402,14 @@ const Post = () => {
             <p>Faça login para participar da discussão.</p>
           )}
 
-          {/* LISTA DE COMENTÁRIOS */}
+          {/* LISTA DE COMENTÁRIOS USANDO A FUNÇÃO AUXILIAR */}
           {loadingComments ? (
             <p>Carregando comentários...</p>
           ) : comments.length === 0 ? (
             <p>Seja o primeiro a comentar neste projeto!</p>
           ) : (
             <CommentList>
-              {comments.map((comment) => {
-                // A LÓGICA DE PERMISSÃO FICA AQUI DENTRO DO MAP:
-                // Pode excluir se: eu for o dono do post OU se eu escrevi o comentário.
-                const canDeleteComment =
-                  isAuthorPost || comment.authorId === user?.id;
-
-                return (
-                  <CommentItem key={comment.id}>
-                    <ProfileAvatar
-                      src={comment.author?.imagem}
-                      size={45}
-                      hasBorder={false}
-                    />
-
-                    <CommentContentContainer>
-                      <CommentContent>
-                        <CommentHeaderInfo>
-                          <h4>
-                            {comment.author?.nome} {comment.author?.sobrenome}
-                          </h4>
-                          <span>@{comment.author?.usuario}</span>
-                        </CommentHeaderInfo>
-                        <p>{comment.text}</p>
-                      </CommentContent>
-
-                      {/* RENDERIZAÇÃO CONDICIONAL DA LIXEIRA OU CONFIRMAÇÃO */}
-                      {canDeleteComment && (
-                        <AuthorActionsComment>
-                          {commentToDelete === comment.id ? ( // Se o ID do comentário que queremos excluir for igual ao ID desse comentário, ou seja, estamos no modo de confirmação para esse comentário - ativa o Sim/Nao
-                            // MODO DE CONFIRMAÇÃO
-                            <div className="confirm-action">
-                              <span className="confirm-text">Excluir?</span>
-                              <button
-                                className="btn-confirm-yes"
-                                onClick={() =>
-                                  handleDeletarComentario(comment.id)
-                                }
-                                disabled={loadingDelete} // Desabilita os botões enquanto a exclusão está em andamento
-                              >
-                                Sim
-                              </button>
-                              <button
-                                className="btn-confirm-no"
-                                onClick={() => setCommentToDelete(null)}
-                                disabled={loadingDelete}
-                              >
-                                Não
-                              </button>
-                            </div>
-                          ) : (
-                            // MODO PADRÃO (LIXEIRA)
-                            <button
-                              className="btn-delete"
-                              onClick={() => setCommentToDelete(comment.id)}
-                              title="Excluir comentário"
-                            >
-                              <FaTrash />
-                            </button>
-                          )}
-                        </AuthorActionsComment>
-                      )}
-                    </CommentContentContainer>
-                  </CommentItem>
-                );
-              })}
+              {comments.map((comment) => renderComment(comment, false))}
             </CommentList>
           )}
         </CommentsContainer>
@@ -330,10 +422,8 @@ const Post = () => {
         titulo="Excluir Projeto"
         mensagem="Tem certeza de que deseja excluir este projeto? Esta ação não poderá ser desfeita."
         textoConfirmar="Sim, Excluir"
-        isDestructive={true} // Ativa o botão vermelho!
+        isDestructive={true}
       />
-
-      {/* Modal para exclusão do Comentário */}
     </>
   );
 };

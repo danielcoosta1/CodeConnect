@@ -37,8 +37,13 @@ export const updatePostById = async (postId, postData) => {
   return response.data;
 };
 
-export const createCommentRequest = async (postId, text) => {
-  const response = await api.post(`/posts/${postId}/comments`, { text });
+// Comentários
+
+export const createCommentRequest = async (postId, text, parentId = null) => {
+  const response = await api.post(`/posts/${postId}/comments`, {
+    text,
+    parentId,
+  });
   return response.data;
 };
 
@@ -49,5 +54,15 @@ export const fetchCommentsByPostId = async (postId) => {
 
 export const deleteCommentById = async (commentId) => {
   const response = await api.delete(`/posts/${commentId}/comments`);
+  return response.data;
+};
+
+export const toggleLikeComment = async (commentId) => {
+  const response = await api.patch(`/posts/${commentId}/like`);
+  return response.data;
+};
+
+export const toggleSolutionStatus = async (commentId) => {
+  const response = await api.patch(`/posts/${commentId}/solution`);
   return response.data;
 };
