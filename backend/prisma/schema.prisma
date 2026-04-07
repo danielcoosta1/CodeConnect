@@ -75,14 +75,26 @@ model Post {
 
 model Comment {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  text      String // O texto do comentário
+  text      String
   createdAt DateTime @default(now())
 
-  // --- Quem comentou? ---
+  // --- 1. SOLUÇÃO DE OURO ---
+  isSolution Boolean @default(false) // Define se este comentário resolveu a dúvida
+
+  // --- 2. CURTIDAS ---
+  // Seguindo a nossa estratégia de performance para o MongoDB:
+  likeIds String[] @db.ObjectId // Lista de IDs de quem curtiu o comentário
+
+  // --- 3. RESPOSTAS (THREADS) ---
+  // Um comentário pode ter um "pai" e vários "filhos" (respostas)
+  parentId String?  @db.ObjectId
+  parent   Comment? @relation("CommentToComment", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies  Comment[] @relation("CommentToComment")
+
+  // --- RELAÇÕES EXISTENTES ---
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String @db.ObjectId
 
-  // --- Onde comentou? ---
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId String @db.ObjectId
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId   String @db.ObjectId
 }

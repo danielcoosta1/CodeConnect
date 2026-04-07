@@ -343,6 +343,8 @@ export const CodeContainer = styled.section`
 
 // --- SESSÃO DE COMENTÁRIOS ---
 
+// --- SESSÃO DE COMENTÁRIOS (MINIMALISTA E RESPONSIVA) ---
+
 export const CommentsContainer = styled.section`
   background-color: #ffffff;
   border-radius: 1.6rem;
@@ -356,18 +358,17 @@ export const CommentsContainer = styled.section`
     margin-bottom: 0.8rem;
   }
 
-  > p {
-    font-size: 1.6rem;
-    color: #555555;
-    margin-bottom: 2.4rem;
+  @media (max-width: 1024px) {
+    /* TABLET */
+    padding: 2.4rem;
   }
 
   @media ${device.mobile} {
     padding: 2.4rem 1.6rem;
+    border-radius: 0.8rem;
   }
 `;
 
-// Deixou de ser Fake! Agora é um Form real.
 export const InputComment = styled.form`
   display: flex;
   gap: 1.6rem;
@@ -423,21 +424,18 @@ export const InputComment = styled.form`
     flex-direction: column;
     align-items: stretch;
     gap: 1.2rem;
-
+    input,
     button {
-      width: 100%;
       padding: 1.4rem;
     }
   }
 `;
 
-// --- ESTRUTURA VISUAL DA LISTA DE COMENTÁRIOS ---
-
 export const CommentList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2.4rem;
-  margin-top: 1.6rem;
+  gap: 3.2rem; /* Mais respiro entre comentários principais */
+  margin-top: 2.4rem;
 `;
 
 export const CommentItem = styled.div`
@@ -445,40 +443,44 @@ export const CommentItem = styled.div`
   gap: 1.6rem;
   align-items: flex-start;
   animation: ${fadeIn} 0.3s ease-out forwards;
+
+  /* Se for marcado como Solução, ganha um destaque sutil no fundo e borda */
+  background-color: ${(props) =>
+    props.$isSolution ? "rgba(255, 215, 0, 0.05)" : "transparent"};
+  border: 0.1rem solid
+    ${(props) => (props.$isSolution ? "rgba(255, 215, 0, 0.5)" : "transparent")};
+  border-radius: 1.2rem;
+  padding: ${(props) => (props.$isSolution ? "1.6rem" : "0")};
+
+  @media ${device.mobile} {
+    gap: 1.2rem;
+  }
 `;
 
 export const CommentContentContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  background-color: #f9f9f9; /* Cinza bem clarinho pro balãozinho */
-  padding: 1.6rem;
-  /* Borda arredondada estilo balão de chat (ponta superior esquerda reta) */
-  border-radius: 0 1.6rem 1.6rem 1.6rem;
+  flex-direction: column;
   width: 100%;
-  border: 0.1rem solid #eaeaea;
 
+  /* Removemos o fundo cinza de balão para um visual mais limpo (estilo Twitter/Threads) */
   p {
     font-size: 1.5rem;
     color: #333333;
     line-height: 1.6;
-    margin: 0;
-  }
-  @media ${device.mobile} {
-    flex-direction: column; /* Empilha texto em cima, lixeira embaixo */
-    gap: 1.2rem; /* Dá um respiro entre o texto e as ações */
+    margin: 0.8rem 0;
   }
 `;
 
-export const CommentContent = styled.div`
+export const CommentsContent = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 export const CommentHeaderInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  margin-bottom: 0.8rem;
   flex-wrap: wrap;
 
   h4 {
@@ -495,34 +497,32 @@ export const CommentHeaderInfo = styled.div`
   }
 `;
 
+export const SolutionBadge = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #d4af37 !important; /* Dourado */
+  font-weight: 700 !important;
+  font-size: 1.2rem !important;
+  background-color: rgba(255, 215, 0, 0.1);
+  padding: 0.2rem 0.8rem;
+  border-radius: 1.2rem;
+`;
+
 export const AuthorActionsComment = styled.div`
   display: flex;
-  gap: 1.2rem;
+  gap: 1.6rem;
   align-items: center;
-
-  button {
-    font-size: 1.4rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: none;
-
-    background-color: transparent;
-    color: #818388; /* Cinza discreto */
-  }
-
-  .btn-delete:hover {
-    color: #ff5f56;
-  }
+  margin-top: 0.8rem;
+  flex-wrap: wrap; /* Para não quebrar em telas finas */
 
   .confirm-action {
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    background-color: #ff5f5615; /* Fundo vermelhinho super suave */
+    background-color: #ff5f5615;
     padding: 0.4rem 0.8rem;
     border-radius: 0.8rem;
-    animation: ${fadeIn} 0.2s ease-in;
   }
 
   .confirm-text {
@@ -530,55 +530,74 @@ export const AuthorActionsComment = styled.div`
     color: #ff5f56;
     font-weight: 600;
   }
-
   .btn-confirm-yes,
   .btn-confirm-no {
     font-size: 1.2rem;
     padding: 0.2rem 0.6rem;
     border-radius: 0.4rem;
+    border: none;
+    cursor: pointer;
   }
-
   .btn-confirm-yes {
     background-color: #ff5f56;
     color: #fff;
-    &:hover {
-      background-color: #e04a42;
-    }
   }
-
   .btn-confirm-no {
     background-color: transparent;
     color: #818388;
-    &:hover {
-      color: #333;
-    }
-  }
-
-  /* --- MÁGICA DO MOBILE AQUI --- */
-  @media ${device.mobile} {
-    align-self: flex-end; /* Joga a lixeira/confirmação para o canto direito inferior */
-
-    .confirm-action {
-      padding: 0.8rem 1.2rem; /* Fundo maior */
-      gap: 1.2rem; /* Mais espaço entre Sim e Não */
-    }
-
-    .confirm-text {
-      font-size: 1.4rem; /* Texto de pergunta um pouco maior */
-    }
-
-    .btn-confirm-yes,
-    .btn-confirm-no {
-      padding: 0.8rem 1.6rem; /* Botões maiores, fáceis de tocar */
-      font-size: 1.4rem;
-    }
-
-    svg {
-      width: 1.8rem; /* Lixeira um pouco maior para o toque inicial */
-      height: 1.8rem;
-    }
   }
 `;
+
+// Botão Genérico Minimalista para Curtir, Responder e Favoritar
+export const ActionButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  /* Recebe a prop $active (ex: se já curtiu, fica vermelho. Se for solução, dourado) */
+  color: ${(props) =>
+    props.$active ? props.$activeColor || "#171d1f" : "#818388"};
+
+  &:hover {
+    color: ${(props) => props.$hoverColor || "#171d1f"};
+  }
+
+  svg {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+`;
+
+export const RepliesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  margin-top: 2.4rem;
+  padding-left: 2.4rem;
+  border-left: 0.2rem solid #eaeaea; /* Linha de thread minimalista */
+
+  @media (max-width: 1024px) {
+    /* TABLET */
+    padding-left: 1.6rem;
+    gap: 1.6rem;
+  }
+
+  @media ${device.mobile} {
+    padding-left: 1.2rem;
+    margin-top: 1.6rem;
+    border-left-width: 0.1rem; /* Linha mais fina no mobile */
+  }
+`;
+
+
+
+// --- LINKS DE PROJETO (GITHUB, DEMO, ETC) ---
 
 export const LinksContainer = styled.div`
   display: flex;

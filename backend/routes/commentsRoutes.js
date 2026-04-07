@@ -5,6 +5,8 @@ import {
   createComment,
   deleteCommentById,
   getCommentsByPostId,
+  toggleLikeComment,
+  toggleSolutionStatus,
 } from "../controllers/commentController.js";
 
 
@@ -17,5 +19,12 @@ router.post("/:postId/comments", authMiddleware, createComment);
 router.get("/:postId/comments", getCommentsByPostId);
 
 router.delete("/:id/comments", authMiddleware, deleteCommentById);
+
+// Rota para curtir ou descurtir um comentário
+router.patch("/:id/like", authMiddleware, toggleLikeComment);
+
+// Rota para marcar ou desmarcar a Solução de Ouro (Protegida no Controller para apenas o dono do Post)
+router.patch("/:id/solution", authMiddleware, toggleSolutionStatus);
+
 
 export default router;
