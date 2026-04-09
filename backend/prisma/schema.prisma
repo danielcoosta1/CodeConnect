@@ -66,6 +66,9 @@ model Post {
   repoUrl       String? // Link do GitHub/GitLab
   createdAt     DateTime @default(now())
 
+  likeIds String[] @db.ObjectId // Lista de IDs de quem curtiu o post
+  shares  Int      @default(0) // Contador de compartilhamentos
+
   comments Comment[] // Um post pode ter múltiplos comentários
 
   // --- A Relação com o User ---
@@ -87,14 +90,14 @@ model Comment {
 
   // --- 3. RESPOSTAS (THREADS) ---
   // Um comentário pode ter um "pai" e vários "filhos" (respostas)
-  parentId String?  @db.ObjectId
-  parent   Comment? @relation("CommentToComment", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parentId String?   @db.ObjectId
+  parent   Comment?  @relation("CommentToComment", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   replies  Comment[] @relation("CommentToComment")
 
   // --- RELAÇÕES EXISTENTES ---
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String @db.ObjectId
 
-  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId   String @db.ObjectId
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String @db.ObjectId
 }

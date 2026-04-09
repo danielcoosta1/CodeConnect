@@ -13,8 +13,8 @@ export const ESTADO_LIMPO = {
     imageFileName: "",
     projectUrl: "",
     repoUrl: "",
-  }, 
-  
+  },
+
   allTags: [], // Lista de todas as tags disponíveis (vinda do JSON)
   //Dados de posts
   allPosts: [],
@@ -49,6 +49,10 @@ export const ESTADO_LIMPO = {
   loadingEditPost: false,
   errorEditPost: null,
   sucessUpdatePost: false,
+
+  // Dados para interações sociais
+  loadingSocial: false,
+  errorSocial: null,
 };
 
 // 2. Tenta ler o rascunho

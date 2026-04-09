@@ -11,6 +11,8 @@ import {
   getPostsByUserId,
   deletePostById,
   updatePostById,
+  toggleLikePostRequest,
+  sharePostRequest,
 } from "../../services/postService";
 import { localStorageService } from "../../services/localStorageService";
 import { postInicialState } from "./inicialState";
@@ -246,6 +248,46 @@ export const PostProvider = ({ children }) => {
     }
   };
 
+  const curtirPost = async (postId) => {
+    // 1. Avisa o sistema que a ação começou (loading true)
+    dispatch({ type: "ACAO_SOCIAL_INICIO" });
+
+    try {
+      // 2. Chama a API
+      const postAtualizado = await toggleLikePostRequest(postId);
+
+      // 3. Deu certo! Substitui o post na tela
+      dispatch({
+        type: "ATUALIZAR_POST_SOCIAL_SUCESSO",
+        payload: postAtualizado,
+      });
+    } catch (error) {
+      // 4. Deu erro! Registra o erro e para o loading
+      console.error("Erro ao curtir o post:", error);
+      dispatch({ type: "ACAO_SOCIAL_ERRO", payload: "Erro ao curtir o post" });
+      toastErro("Não foi possível curtir o post.");
+    }
+  };
+
+  const compartilharPost = async (postId) => {
+    dispatch({ type: "ACAO_SOCIAL_INICIO" });
+
+    try {
+      const postAtualizado = await sharePostRequest(postId);
+
+      dispatch({
+        type: "ATUALIZAR_POST_SOCIAL_SUCESSO",
+        payload: postAtualizado,
+      });
+    } catch (error) {
+      console.error("Erro ao registrar compartilhamento:", error);
+      dispatch({
+        type: "ACAO_SOCIAL_ERRO",
+        payload: "Erro ao compartilhar o post",
+      });
+    }
+  };
+
   return (
     <PostContext.Provider
       value={{
@@ -286,6 +328,10 @@ export const PostProvider = ({ children }) => {
         errorEditPost: state.errorEditPost,
         successUpdatePost: state.successUpdatePost,
 
+        // Estado social
+        loadingSocial: state.loadingSocial,
+        errorSocial: state.errorSocial,
+
         //AÇÕES / FUNÇÕES
         carregarPerfilPublico,
         atualizarDado,
@@ -304,6 +350,8 @@ export const PostProvider = ({ children }) => {
         atualizarPost,
         atualizarSeguidoresPerfilPublico,
         iniciarNovoPost,
+        curtirPost,
+        compartilharPost,
       }}
     >
       {" "}

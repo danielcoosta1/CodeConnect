@@ -6,6 +6,8 @@ import {
   getMyPosts,
   getPostById,
   getPostsByUserId,
+  sharePost,
+  toggleLikePost,
   updatePost,
 } from "../controllers/postController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
@@ -26,5 +28,9 @@ router.get("/:id", authMiddleware, getPostById);
 router.delete("/:id", authMiddleware, deletePost);
 
 router.put("/:id", authMiddleware, updatePost);
+
+router.patch("/:id/like", authMiddleware, toggleLikePost);
+
+router.patch("/:id/share", authMiddleware, sharePost);
 
 export default router;

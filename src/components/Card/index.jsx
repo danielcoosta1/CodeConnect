@@ -11,15 +11,56 @@ import {
   ActionIcons,
   IconGroup,
 } from "./style";
-import { FaCode, FaRegComment, FaShareNodes } from "react-icons/fa6";
+
+import {
+  FaRegComment,
+  FaShareNodes,
+  FaHeart,
+  FaRegHeart,
+} from "react-icons/fa6";
+
+import { useAuth } from "../../hooks/useAuth";
+import { usePost } from "../../hooks/usePost";
+import { toastSucesso } from "../../utils/toast";
 
 const Card = ({ post }) => {
   const navigate = useNavigate();
+  const { user } = useAuth(); // Pega o usuário logado
+  const { curtirPost, compartilharPost } = usePost(); // Pega as funções de ação
+
+  // Verifica se o usuário atual logado está na lista de curtidas desse post
+  const hasLiked = post.likeIds?.includes(user?.id);
+
   // Função que abre o post inteiro
   const abrirPost = () => {
     navigate(`/post/${post.id}`);
   };
 
+const handleShare = async (e) => {
+    e.stopPropagation(); // Evita abrir o post ao clicar no botão
+    const link = `${window.location.origin}/post/${post.id}`;
+
+    // 1. CHAMA A API IMEDIATAMENTE! (Isso garante que o contador suba na hora)
+    compartilharPost(post.id);
+
+    try {
+      // 2. Tenta abrir a gaveta nativa do celular (WhatsApp, Insta, Twitter)
+      if (navigator.share) {
+        await navigator.share({
+          title: "CodeConnect",
+          text: `Dá uma olhada no projeto "${post.title}" no CodeConnect!`,
+          url: link,
+        });
+      } else {
+        // 3. Plano B para PCs antigos: Copia o link
+        await navigator.clipboard.writeText(link);
+        toastSucesso("Link copiado para a área de transferência!");
+      }
+    } catch (error) {
+      console.log("Compartilhamento cancelado pelo usuário.", error);
+      // Como já chamamos a API lá em cima, não importa se ele cancelou, o +1 já contou!
+    }
+  };
   return (
     <CardContainer onClick={abrirPost}>
       {post.image && (
@@ -44,17 +85,31 @@ const Card = ({ post }) => {
         >
           {post.author && (
             <ActionIcons>
-              <IconGroup>
-                <FaCode /> <span>0</span>
+              {/* --- BOTÃO DE CURTIR --- */}
+              <IconGroup
+                onClick={() => {
+                  if (user) curtirPost(post.id);
+                }}
+                style={{ color: hasLiked ? "#ff5f56" : "inherit" }}
+              >
+                {hasLiked ? <FaHeart /> : <FaRegHeart />}
+                <span>{post.likeIds?.length || 0}</span>
               </IconGroup>
-              <IconGroup>
-                <FaShareNodes /> <span>0</span>
+
+              {/* --- BOTÃO DE COMPARTILHAR --- */}
+              <IconGroup onClick={handleShare}>
+                <FaShareNodes />
+                <span>{post.shares || 0}</span>
               </IconGroup>
+
+              {/* --- CONTADOR DE COMENTÁRIOS --- */}
               <IconGroup>
-                <FaRegComment /> <span>0</span>
+                <FaRegComment />
+                <span>{post.comments?.length || 0}</span>
               </IconGroup>
             </ActionIcons>
           )}
+
           <AuthorInfo to={`/perfil/${post.author.id}`}>
             <ProfileAvatar
               src={post.author?.imagem}

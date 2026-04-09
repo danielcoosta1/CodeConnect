@@ -297,7 +297,7 @@ export const postReducer = (state, action) => {
         loadingEditPost: false,
         errorEditPost: null,
         successUpdatePost: true,
-        // Opcional: Aqui você poderia atualizar o postDetails e os arrays de posts para refletir a edição
+
         allPosts: state.allPosts.map((post) =>
           post.id === action.payload.id ? action.payload : post,
         ),
@@ -322,6 +322,43 @@ export const postReducer = (state, action) => {
 
     case "RESET_FORM":
       return { ...state, formData: ESTADO_LIMPO.formData }; // Mantém os dados de posts, perfil, etc. Só limpa o formulário
+
+    // GRUPO 9: Interações Sociais (Curtidas e Compartilhamentos)
+
+    case "ACAO_SOCIAL_INICIO":
+      return {
+        ...state,
+        loadingSocial: true,
+        errorSocial: null,
+      };
+
+    case "ATUALIZAR_POST_SOCIAL_SUCESSO":
+      return {
+        ...state,
+        loadingSocial: false,
+        errorSocial: null,
+        // Varre todas as listas substituindo o post antigo pelo novo que veio da API
+        allPosts: state.allPosts.map((post) =>
+          post.id === action.payload.id ? action.payload : post,
+        ),
+        myPosts: state.myPosts.map((post) =>
+          post.id === action.payload.id ? action.payload : post,
+        ),
+        userPosts: state.userPosts.map((post) =>
+          post.id === action.payload.id ? action.payload : post,
+        ),
+        postDetails:
+          state.postDetails?.id === action.payload.id
+            ? action.payload
+            : state.postDetails,
+      };
+
+    case "ACAO_SOCIAL_ERRO":
+      return {
+        ...state,
+        loadingSocial: false,
+        errorSocial: action.payload,
+      };
 
     default:
       return state;
