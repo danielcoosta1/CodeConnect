@@ -263,6 +263,19 @@ export const postReducer = (state, action) => {
 
     // --- GRUPO 7: Edição de Post ---
 
+    // Injeta dados do GitHub preservando o que o usuário já preencheu
+    case "PREENCHER_DADOS_GITHUB":
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          title: state.formData.title || action.payload.title,
+          content: state.formData.content || action.payload.content,
+          projectUrl: state.formData.projectUrl || action.payload.projectUrl,
+          codeContent: state.formData.codeContent || action.payload.codeContent,
+        },
+      };
+
     // Essa ação pega os dados do post e joga para dentro dos inputs do formulário!
     case "PREENCHER_FORMULARIO_EDICAO":
       return {

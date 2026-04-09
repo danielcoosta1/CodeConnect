@@ -17,6 +17,7 @@ import {
 import { localStorageService } from "../../services/localStorageService";
 import { postInicialState } from "./inicialState";
 import { getUserById } from "../../services/userService";
+import { buscarDadosDoRepo, buscarReadme, extrairDadosDoLink } from "../../services/githubService";
 
 export const PostProvider = ({ children }) => {
   const [state, dispatch] = useReducer(postReducer, postInicialState);
@@ -218,6 +219,31 @@ export const PostProvider = ({ children }) => {
     }
   };
 
+  // API GITHUB
+
+  const importarDadosDoGithub = async (repoUrl) => {
+    try {
+      const { owner, repo } = extrairDadosDoLink(repoUrl);
+      const repoData = await buscarDadosDoRepo(owner, repo);
+      const readmeContent = await buscarReadme(owner, repo);
+
+      dispatch({
+        type: "PREENCHER_DADOS_GITHUB",
+        payload: {
+          title: repoData.name.replace(/-/g, " "),
+          content: repoData.description || "",
+          projectUrl: repoData.homepage || "",
+          codeContent: readmeContent,
+        },
+      });
+      toastSucesso("Importado!");
+      return true;
+    } catch (error) {
+      toastErro(error.message);
+      return false;
+    }
+  };
+
   // Ação para preparar os dados para edição (preenche o formulário com os dados do post)
 
   const prepararEdicao = (post) => {
@@ -346,6 +372,7 @@ export const PostProvider = ({ children }) => {
         carregarMeusPostsDoBanco,
         carregarPostPorId,
         deletarPostPorId,
+        importarDadosDoGithub,
         prepararEdicao,
         atualizarPost,
         atualizarSeguidoresPerfilPublico,
