@@ -114,13 +114,15 @@ export const deleteCommentById = async (req, res) => {
 
       // Se o usuário não é nem o autor do comentário nem o dono do post, proíbe a ação
       if (!post || post.authorId !== userId) {
-        return res
-          .status(403)
-          .json({
-            error: "Ação proibida. Você não pode excluir este comentário.",
-          });
+        return res.status(403).json({
+          error: "Ação proibida. Você não pode excluir este comentário.",
+        });
       }
     }
+
+    await prisma.comment.deleteMany({
+      where: { parentId: id },
+    });
 
     // Se passou por tudo isso, pode excluir o comentário
     await prisma.comment.delete({
@@ -176,7 +178,6 @@ export const toggleLikeComment = async (req, res) => {
   }
 };
 
-
 // Marcar ou desmarcar um comentário como a "Solução de Ouro"
 export const toggleSolutionStatus = async (req, res) => {
   try {
@@ -195,7 +196,11 @@ export const toggleSolutionStatus = async (req, res) => {
 
     // Trava de segurança: Verifica se quem clicou é realmente o dono do Post
     if (comment.post.authorId !== userId) {
-      return res.status(403).json({ error: "Apenas o autor do post pode marcar a Solução de Ouro." });
+      return res
+        .status(403)
+        .json({
+          error: "Apenas o autor do post pode marcar a Solução de Ouro.",
+        });
     }
 
     const updatedComment = await prisma.comment.update({
@@ -206,6 +211,8 @@ export const toggleSolutionStatus = async (req, res) => {
     return res.status(200).json(updatedComment);
   } catch (error) {
     console.error("Erro ao marcar solução:", error);
-    return res.status(500).json({ error: "Erro interno ao atualizar comentário." });
+    return res
+      .status(500)
+      .json({ error: "Erro interno ao atualizar comentário." });
   }
 };

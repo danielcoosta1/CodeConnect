@@ -66,3 +66,15 @@ export const toggleSolutionStatus = async (commentId) => {
   const response = await api.patch(`/posts/${commentId}/solution`);
   return response.data;
 };
+
+// Rotas Sociais
+
+export const toggleLikePostRequest = async (postId) => {
+  const response = await api.patch(`/posts/${postId}/like`);
+  return response.data;
+};
+
+export const sharePostRequest = async (postId) => {
+  const response = await api.patch(`/posts/${postId}/share`);
+  return response.data;
+};

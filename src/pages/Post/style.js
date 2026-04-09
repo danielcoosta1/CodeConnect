@@ -595,53 +595,62 @@ export const RepliesContainer = styled.div`
   }
 `;
 
-
-
-// --- LINKS DE PROJETO (GITHUB, DEMO, ETC) ---
-
-export const LinksContainer = styled.div`
+export const ActionContainer = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 1.6rem;
-  margin-bottom: 3.2rem;
-  flex-wrap: wrap;
+  margin-bottom: 4rem;
 
-  /* No mobile, empilha um embaixo do outro bonitão! */
+  /* A MÁGICA: Limita a largura no PC para não virarem botões gigantes */
+  max-width: 65rem;
+`;
+
+export const ActionRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.6rem;
+
   @media ${device.mobile} {
-    flex-direction: column;
     gap: 1.2rem;
   }
 `;
+
+export const ActionDivider = styled.hr`
+  border: none;
+  height: 0.1rem;
+  background-color: #2d3538; /* Linha bem sutil */
+  width: 100%;
+  margin: 0.4rem 0;
+`;
+
+// --- BOTÕES GÊMEOS (MENORES NO PC, ÍCONES NO CELULAR) ---
 
 export const ProjectLink = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.8rem;
+  gap: 1.2rem;
+  width: 100%;
+
+  /* Menos "gordos" no desktop */
   padding: 1.2rem 2.4rem;
   border-radius: 0.8rem;
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-size: 1.4rem;
+  font-weight: 600;
   text-decoration: none;
   transition: all 0.2s ease;
 
-  /* LÓGICA DE CORES: 
-     Se desabilitado: fundo transparente com borda cinza.
-     Se primário: Verde. 
-     Se não: Cinza escuro. */
   background-color: ${(props) =>
     props.$desabilitado
       ? "transparent"
       : props.$primary
         ? "#81fe88"
         : "#2d3538"};
-
   color: ${(props) =>
     props.$desabilitado ? "#555555" : props.$primary ? "#171d1f" : "#ffffff"};
-
   border: 0.1rem solid
     ${(props) => (props.$desabilitado ? "#555555" : "transparent")};
 
-  /* EFEITO HOVER (SÓ RODA SE NÃO ESTIVER DESABILITADO) */
   &:hover {
     transform: ${(props) =>
       props.$desabilitado ? "none" : "translateY(-0.2rem)"};
@@ -651,21 +660,101 @@ export const ProjectLink = styled.a`
         : props.$primary
           ? "#6be276"
           : "#3a4448"};
-    box-shadow: ${(props) =>
-      props.$desabilitado ? "none" : "0 0.4rem 1.2rem rgba(0, 0, 0, 0.2)"};
   }
 
-  /* TRAVA DE CLIQUE */
   ${(props) =>
-    props.$desabilitado &&
-    `
-    cursor: not-allowed;
-    pointer-events: none; /* Impede qualquer interação do mouse */
-  `}
+    props.$desabilitado && `cursor: not-allowed; pointer-events: none;`}
 
-  /* MÁGICA DO MOBILE (Sem esconder texto, botão esticado) */
+  svg {
+    width: 1.8rem;
+    height: 1.8rem;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover svg {
+    transform: ${(props) => (props.$desabilitado ? "none" : "scale(1.1)")};
+  }
+
+  /* MÁGICA DO MOBILE (Apenas Ícones Grandes) */
   @media ${device.mobile} {
-    width: 100%;
     padding: 1.4rem;
+    border-radius: 1.2rem; /* Arredondado estilo app */
+
+    span {
+      display: none; /* Some com o texto */
+    }
+
+    svg {
+      width: 2.2rem; /* Aumenta o ícone para o dedo acertar fácil */
+      height: 2.2rem;
+    }
+  }
+`;
+
+export const BigSocialButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  width: 100%;
+
+  padding: 1.2rem 2.4rem;
+  border-radius: 0.8rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  background-color: ${(props) => {
+    if (props.$variant === "like")
+      return props.$hasLiked ? "rgba(255, 95, 86, 0.1)" : "#2d3538";
+    return "#2d3538";
+  }};
+
+  border: 0.1rem solid
+    ${(props) => {
+      if (props.$variant === "like")
+        return props.$hasLiked ? "#ff5f56" : "transparent";
+      return "transparent";
+    }};
+
+  color: ${(props) => {
+    if (props.$variant === "like") return props.$hasLiked ? "#ff5f56" : "#fff";
+    return "#fff";
+  }};
+
+  &:hover {
+    transform: translateY(-0.2rem);
+    background-color: ${(props) => {
+      if (props.$variant === "like")
+        return props.$hasLiked ? "rgba(255, 95, 86, 0.2)" : "#3a4448";
+      return "#3a4448";
+    }};
+    color: ${(props) => (props.$variant === "share" ? "#81fe88" : "")};
+  }
+
+  svg {
+    width: 1.8rem;
+    height: 1.8rem;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover svg {
+    transform: scale(1.1);
+  }
+
+  /* MÁGICA DO MOBILE (Apenas Ícones Grandes) */
+  @media ${device.mobile} {
+    padding: 1.4rem;
+    border-radius: 1.2rem;
+
+    span {
+      display: none;
+    }
+
+    svg {
+      width: 2.2rem;
+      height: 2.2rem;
+    }
   }
 `;

@@ -64,6 +64,101 @@ export const ContainerWrapper = styled.div`
   }
 `;
 
+// --- NOVA BARRA DE IMPORTAÇÃO DO GITHUB ---
+export const GithubImportContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  background-color: rgba(129, 254, 136, 0.05); /* Fundo verde super sutil */
+  border: 0.1rem solid rgba(129, 254, 136, 0.2);
+  padding: 1.6rem;
+  border-radius: 1.2rem;
+  margin-bottom: 2rem; /* Separa do resto do formulário */
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #81fe88;
+    margin-bottom: 0;
+
+    svg {
+      font-size: 1.6rem;
+    }
+  }
+
+  p {
+    font-size: 1.2rem;
+    color: #a0a0a0;
+    margin-bottom: 0.8rem;
+  }
+`;
+
+export const GithubInputWrapper = styled.div`
+  display: flex;
+  gap: 1.2rem;
+  width: 100%;
+
+  /* O input dentro desse wrapper vai perder as bordas da direita para grudar no botão */
+  input {
+    ${commonInputStyles}
+    flex: 1;
+    background-color: #2d3538;
+    border-color: #3a4448;
+
+    &:focus {
+      border-color: #81fe88;
+      background-color: #3a4448;
+    }
+  }
+
+  /* O botão estilizado para casar com o input */
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 0 2.4rem;
+
+    background-color: #81fe88;
+    color: #171d1f;
+    font-weight: 700;
+    font-size: 1.4rem;
+
+    border: none;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background-color: #6be276;
+      transform: translateY(-0.2rem);
+      box-shadow: 0 0.4rem 1.2rem rgba(129, 254, 136, 0.2);
+    }
+
+    &:disabled {
+      background-color: #3a4448;
+      color: #888888;
+      cursor: not-allowed;
+    }
+
+    /* Animação do Loader */
+    .spin {
+      animation: spin 2s linear infinite;
+    }
+  }
+
+  @media ${device.mobile} {
+    flex-direction: column;
+
+    button {
+      padding: 1.4rem; /* Botão gordinho no mobile para facilitar o clique */
+    }
+  }
+`;
+
 export const ContainerWrapperForm = styled.section`
   display: flex;
   gap: 3rem;

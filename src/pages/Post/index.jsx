@@ -39,8 +39,6 @@ import {
   CommentList,
   CommentItem,
   CommentHeaderInfo,
-  LinksContainer,
-  ProjectLink,
   HeaderTop,
   AuthorActions,
   CommentContentContainer,
@@ -50,12 +48,18 @@ import {
   CommentsContainer,
   ActionButton,
   SolutionBadge,
+  ActionContainer,
+  ActionRow,
+  ActionDivider,
+  ProjectLink,
+  BigSocialButton,
 } from "./style";
 
 import { usePost } from "../../hooks/usePost";
 import { useAuth } from "../../hooks/useAuth";
 import ModalConfirmacao from "../../components/ModalConfirmacao";
 import { useComments } from "../../hooks/useComments";
+import { toastErro, toastSucesso } from "../../utils/toast";
 
 const Post = () => {
   const { id } = useParams();
@@ -72,10 +76,14 @@ const Post = () => {
     errorPostDetails,
     carregarPostPorId,
     deletarPostPorId,
+    curtirPost,
+    compartilharPost,
   } = usePost();
 
   const { user } = useAuth();
   const isAuthorPost = postDetails?.author?.id === user?.id;
+
+  const hasLikedPost = postDetails?.likeIds?.includes(user?.id);
 
   useEffect(() => {
     if (id) {
@@ -126,6 +134,30 @@ const Post = () => {
       />
     );
   if (!postDetails) return null;
+
+  const handleShare = async () => {
+    const link = window.location.href; // Aqui já estamos na URL certa!
+
+    // 1. CHAMA A API IMEDIATAMENTE!
+    compartilharPost(id);
+
+    try {
+      // 2. Abre a gaveta do celular
+      if (navigator.share) {
+        await navigator.share({
+          title: "CodeConnect",
+          text: `Dá uma olhada no projeto "${postDetails.title}" no CodeConnect!`,
+          url: link,
+        });
+      } else {
+        // 3. Copia o link no PC
+        await navigator.clipboard.writeText(link);
+        toastSucesso("Link copiado para a área de transferência!");
+      }
+    } catch (error) {
+      console.log("Compartilhamento cancelado pelo usuário.", error);
+    }
+  };
 
   // =======================================================================
   // MOTOR DE RENDERIZAÇÃO DE COMENTÁRIOS (PAIS E FILHOS)
@@ -298,37 +330,66 @@ const Post = () => {
           </CoverImage>
 
           <PostTitle>{postDetails.title}</PostTitle>
-          <LinksContainer>
-            {/* LÓGICA DO DEPLOY */}
-            {postDetails.projectUrl ? (
-              <ProjectLink
-                href={postDetails.projectUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                $primary={true}
+
+          <ActionContainer>
+            {/* LINHA 1: REPOSITÓRIO E DEPLOY */}
+            <ActionRow>
+              {postDetails.projectUrl ? (
+                <ProjectLink
+                  href={postDetails.projectUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  $primary={true}
+                >
+                  <FaExternalLinkAlt /> <span>Acessar Projeto</span>
+                </ProjectLink>
+              ) : (
+                <ProjectLink as="span" $desabilitado>
+                  <FaExternalLinkAlt /> <span>Deploy Indisponível</span>
+                </ProjectLink>
+              )}
+
+              {postDetails.repoUrl ? (
+                <ProjectLink
+                  href={postDetails.repoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaGithub /> <span>Ver Código-Fonte</span>
+                </ProjectLink>
+              ) : (
+                <ProjectLink as="span" $desabilitado>
+                  <FaGithub /> <span>Repositório Privado</span>
+                </ProjectLink>
+              )}
+            </ActionRow>
+
+            {/* A LINHA SUTIL DE SEPARAÇÃO */}
+            <ActionDivider />
+
+            {/* LINHA 2: ENGAJAMENTO SOCIAL */}
+            <ActionRow>
+              <BigSocialButton
+                $variant="like"
+                $hasLiked={hasLikedPost}
+                onClick={() => {
+                  if (user) {
+                    curtirPost(id);
+                  } else {
+                    toastErro("Você precisa estar logado para curtir!");
+                  }
+                }}
               >
-                <FaExternalLinkAlt /> <span>Acessar Projeto</span>
-              </ProjectLink>
-            ) : (
-              <ProjectLink as="span" $desabilitado>
-                <FaExternalLinkAlt /> <span>Deploy Indisponível</span>
-              </ProjectLink>
-            )}
-            {/* LÓGICA DO GITHUB */}
-            {postDetails.repoUrl ? (
-              <ProjectLink
-                href={postDetails.repoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaGithub /> <span>Ver Código-Fonte</span>
-              </ProjectLink>
-            ) : (
-              <ProjectLink as="span" $desabilitado>
-                <FaGithub /> <span>Repositório Privado</span>
-              </ProjectLink>
-            )}
-          </LinksContainer>
+                {hasLikedPost ? <FaHeart /> : <FaRegHeart />}
+                {/* Envolvendo o texto num SPAN para o CSS sumir com ele no mobile */}
+                <span>{hasLikedPost ? "Curtiu!" : "Curtir Projeto"}</span>
+              </BigSocialButton>
+
+              <BigSocialButton $variant="share" onClick={handleShare}>
+                <FaShareNodes /> <span>Compartilhar</span>
+              </BigSocialButton>
+            </ActionRow>
+          </ActionContainer>
 
           <PostContent>
             <p>{postDetails.content}</p>
@@ -344,16 +405,34 @@ const Post = () => {
 
           <AuthorContainer>
             <ActionIcons>
-              <IconGroup>
-                <FaCode /> <span>0</span>
+              {/* --- ESTATÍSTICA DE CURTIDAS (Somente Leitura) --- */}
+              <IconGroup
+                style={{ color: hasLikedPost ? "#ff5f56" : "inherit" }}
+              >
+                {hasLikedPost ? <FaHeart /> : <FaRegHeart />}
+                <span>{postDetails.likeIds?.length || 0}</span>
               </IconGroup>
+
+              {/* --- ESTATÍSTICA DE COMPARTILHAMENTOS (Somente Leitura) --- */}
               <IconGroup>
-                <FaShareNodes /> <span>0</span>
+                <FaShareNodes />
+                <span>{postDetails.shares || 0}</span>
               </IconGroup>
-              <IconGroup>
-                <FaRegComment /> <span>0</span>
+
+              {/* --- ÍCONE DE COMENTÁRIOS (Continua clicável para rolar a tela) --- */}
+              <IconGroup
+                onClick={() =>
+                  window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: "smooth",
+                  })
+                }
+              >
+                <FaRegComment />
+                <span>{comments.length}</span>
               </IconGroup>
             </ActionIcons>
+
             <AuthorInfo to={`/perfil/${postDetails.author.id}`}>
               <ProfileAvatar
                 src={postDetails.author?.imagem}

@@ -24,8 +24,11 @@ import {
   ContainerWrapperForm,
   ContainerWrapperCode,
   ContainerCode,
+  GithubImportContainer,
+  GithubInputWrapper,
 } from "./style";
 
+import { FaGithub } from "react-icons/fa";
 import { FaTrash, FaUpload } from "react-icons/fa";
 import { MdPublish } from "react-icons/md";
 import { LuLoader } from "react-icons/lu";
@@ -55,11 +58,15 @@ const Publicar = () => {
     prepararEdicao,
     atualizarPost,
     iniciarNovoPost,
+    importarDadosDoGithub,
   } = usePost();
 
   const inputRef = useRef();
 
+  const [loadingGithub, setLoadingGithub] = useState(false);
+
   // Estados dos Modais
+
   const [modalPublicarIsOpen, setModalPublicarIsOpen] = useState(false);
   const [modalDescartarIsOpen, setModalDescartarIsOpen] = useState(false);
 
@@ -78,12 +85,14 @@ const Publicar = () => {
     } else {
       iniciarNovoPost(); // Se não for modo edição, iniciamos um novo post para garantir que o estado do formulário esteja limpo e pronto para receber os dados do novo post. Isso é importante para evitar que dados de um post anterior (se o usuário veio de uma edição ou visualização) permaneçam no formulário quando ele quer criar um novo post.
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isEditMode]);
 
   useEffect(() => {
     if (isEditMode && postDetails?.id === id) {
       prepararEdicao(postDetails);
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditMode, postDetails]);
 
   // MANUSEIO DE IMAGEM
@@ -249,6 +258,45 @@ const Publicar = () => {
           {/* LADO DIREITO */}
           <ContainerForm>
             <h2>{isEditMode ? "Editar Projeto" : "Novo Projeto"}</h2>
+            <GithubImportContainer>
+              <label htmlFor="repoUrl">
+                <FaGithub /> Importar do GitHub
+              </label>
+              <p>
+                Caso tenha um repositório e queira importar os dados diretamente
+                do github.
+              </p>
+
+              <GithubInputWrapper>
+                <input
+                  type="url"
+                  id="repoUrl"
+                  name="repoUrl"
+                  placeholder="https://github.com/usuario/repo"
+                  value={formData.repoUrl || ""}
+                  onChange={(e) => atualizarDado("repoUrl", e.target.value)}
+                  disabled={loading || loadingGithub}
+                />
+
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setLoadingGithub(true);
+                    await importarDadosDoGithub(formData.repoUrl);
+                    setLoadingGithub(false);
+                  }}
+                  disabled={loading || loadingGithub || !formData.repoUrl}
+                >
+                  {loadingGithub ? (
+                    <>
+                      <LuLoader className="spin" /> Buscando...
+                    </>
+                  ) : (
+                    "Importar"
+                  )}
+                </button>
+              </GithubInputWrapper>
+            </GithubImportContainer>
             <CampoInput>
               <label htmlFor="title">Título do Projeto</label>
               <input
@@ -272,19 +320,6 @@ const Publicar = () => {
                   placeholder="https://meusite.com"
                   value={formData.projectUrl || ""}
                   onChange={(e) => atualizarDado("projectUrl", e.target.value)}
-                  disabled={loading}
-                />
-              </CampoInput>
-
-              <CampoInput>
-                <label htmlFor="repoUrl">Repositório</label>
-                <input
-                  type="url"
-                  id="repoUrl"
-                  name="repoUrl"
-                  placeholder="https://github.com/usuario/repo"
-                  value={formData.repoUrl || ""}
-                  onChange={(e) => atualizarDado("repoUrl", e.target.value)}
                   disabled={loading}
                 />
               </CampoInput>
@@ -340,7 +375,7 @@ const Publicar = () => {
         {/* PARTE DE BAIXO: O CÓDIGO FONTE (MARKDOWN) */}
         <ContainerWrapperCode>
           <ContainerCode>
-            <label htmlFor="codeContent">Readme - MarkDown</label>
+            <label htmlFor="codeContent">README.md</label>
             <div data-color-mode="dark">
               <MDEditor
                 id="codeContent"

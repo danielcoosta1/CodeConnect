@@ -11,10 +11,13 @@ import {
   getPostsByUserId,
   deletePostById,
   updatePostById,
+  toggleLikePostRequest,
+  sharePostRequest,
 } from "../../services/postService";
 import { localStorageService } from "../../services/localStorageService";
 import { postInicialState } from "./inicialState";
 import { getUserById } from "../../services/userService";
+import { buscarDadosDoRepo, buscarReadme, extrairDadosDoLink } from "../../services/githubService";
 
 export const PostProvider = ({ children }) => {
   const [state, dispatch] = useReducer(postReducer, postInicialState);
@@ -216,6 +219,31 @@ export const PostProvider = ({ children }) => {
     }
   };
 
+  // API GITHUB
+
+  const importarDadosDoGithub = async (repoUrl) => {
+    try {
+      const { owner, repo } = extrairDadosDoLink(repoUrl);
+      const repoData = await buscarDadosDoRepo(owner, repo);
+      const readmeContent = await buscarReadme(owner, repo);
+
+      dispatch({
+        type: "PREENCHER_DADOS_GITHUB",
+        payload: {
+          title: repoData.name.replace(/-/g, " "),
+          content: repoData.description || "",
+          projectUrl: repoData.homepage || "",
+          codeContent: readmeContent,
+        },
+      });
+      toastSucesso("Importado!");
+      return true;
+    } catch (error) {
+      toastErro(error.message);
+      return false;
+    }
+  };
+
   // Ação para preparar os dados para edição (preenche o formulário com os dados do post)
 
   const prepararEdicao = (post) => {
@@ -243,6 +271,46 @@ export const PostProvider = ({ children }) => {
       toastErro(msgErro);
       console.error(error);
       return false;
+    }
+  };
+
+  const curtirPost = async (postId) => {
+    // 1. Avisa o sistema que a ação começou (loading true)
+    dispatch({ type: "ACAO_SOCIAL_INICIO" });
+
+    try {
+      // 2. Chama a API
+      const postAtualizado = await toggleLikePostRequest(postId);
+
+      // 3. Deu certo! Substitui o post na tela
+      dispatch({
+        type: "ATUALIZAR_POST_SOCIAL_SUCESSO",
+        payload: postAtualizado,
+      });
+    } catch (error) {
+      // 4. Deu erro! Registra o erro e para o loading
+      console.error("Erro ao curtir o post:", error);
+      dispatch({ type: "ACAO_SOCIAL_ERRO", payload: "Erro ao curtir o post" });
+      toastErro("Não foi possível curtir o post.");
+    }
+  };
+
+  const compartilharPost = async (postId) => {
+    dispatch({ type: "ACAO_SOCIAL_INICIO" });
+
+    try {
+      const postAtualizado = await sharePostRequest(postId);
+
+      dispatch({
+        type: "ATUALIZAR_POST_SOCIAL_SUCESSO",
+        payload: postAtualizado,
+      });
+    } catch (error) {
+      console.error("Erro ao registrar compartilhamento:", error);
+      dispatch({
+        type: "ACAO_SOCIAL_ERRO",
+        payload: "Erro ao compartilhar o post",
+      });
     }
   };
 
@@ -286,6 +354,10 @@ export const PostProvider = ({ children }) => {
         errorEditPost: state.errorEditPost,
         successUpdatePost: state.successUpdatePost,
 
+        // Estado social
+        loadingSocial: state.loadingSocial,
+        errorSocial: state.errorSocial,
+
         //AÇÕES / FUNÇÕES
         carregarPerfilPublico,
         atualizarDado,
@@ -300,10 +372,13 @@ export const PostProvider = ({ children }) => {
         carregarMeusPostsDoBanco,
         carregarPostPorId,
         deletarPostPorId,
+        importarDadosDoGithub,
         prepararEdicao,
         atualizarPost,
         atualizarSeguidoresPerfilPublico,
         iniciarNovoPost,
+        curtirPost,
+        compartilharPost,
       }}
     >
       {" "}

@@ -6,7 +6,17 @@ export const getAllPosts = async (req, res) => {
   try {
     const posts = await prisma.post.findMany({
       include: {
-        author: true,
+        author: {
+          select: {
+            id: true,
+            nome: true,
+            sobrenome: true,
+            usuario: true,
+            imagem: true,
+            funcao: true,
+          },
+        },
+        comments: true, // Para o contador no Card
       },
       orderBy: { createdAt: "desc" },
     });
@@ -33,16 +43,16 @@ export const createPost = async (req, res) => {
       .array(z.string())
       .max(4, { message: "Você pode adicionar no máximo 4 tags." })
       .optional()
-      .default([]), // Permite array vazio
+      .default([]),
     projectUrl: z.string().url().optional().nullable(),
     repoUrl: z.string().url().optional().nullable(),
   });
 
   const validation = postSchema.safeParse(req.body);
   if (!validation.success) {
-    // Ajuste o tratamento de erro se necessário para mostrar múltiplos erros
-    return res.status(400).json({ error: validation.error.issues[0].message }); //sempre o primeiro [0]
+    return res.status(400).json({ error: validation.error.issues[0].message });
   }
+
   const {
     title,
     content,
@@ -53,24 +63,36 @@ export const createPost = async (req, res) => {
     projectUrl,
     repoUrl,
   } = validation.data;
-  const authorId = req.user.id; // Vem do authMiddleware(JWT)
+
+  const authorId = req.user.id;
+
   try {
     const newPost = await prisma.post.create({
       data: {
-        title, // Vem do Zod
-        content, // Vem do Zod
+        title,
+        content,
         codeContent,
-        image, // Vem do Zod (será null se não enviado)
-        imageFileName, // Vem do Zod (será null se não enviado)
-        tags, // Vem do Zod (será [] se não enviado)
-        projectUrl, // Vem do Zod (será null se não enviado)
-        repoUrl, // Vem do Zod (será null se não enviado)
+        image,
+        imageFileName,
+        tags,
+        projectUrl,
+        repoUrl,
         author: {
           connect: { id: authorId },
         },
       },
       include: {
-        author: true,
+        author: {
+          select: {
+            id: true,
+            nome: true,
+            sobrenome: true,
+            usuario: true,
+            imagem: true,
+            funcao: true,
+          },
+        },
+        comments: true, // Trazemos vazio, mas mantém a consistência do objeto
       },
     });
     res.status(201).json(newPost);
@@ -80,20 +102,30 @@ export const createPost = async (req, res) => {
   }
 };
 
+// Busca os posts do usuário logado
 export const getMyPosts = async (req, res) => {
   try {
-    // O req.user.id veio do seu authMiddleware!
     const meuId = req.user.id;
 
     const meusPosts = await prisma.post.findMany({
       where: {
-        authorId: meuId, // Filtra só os posts que o authorId for igual ao seu ID
+        authorId: meuId,
       },
       orderBy: {
-        createdAt: "desc", // Mostra os mais recentes primeiro
+        createdAt: "desc",
       },
       include: {
-        author: true, // Inclui os dados do autor (você)
+        author: {
+          select: {
+            id: true,
+            nome: true,
+            sobrenome: true,
+            usuario: true,
+            imagem: true,
+            funcao: true,
+          },
+        },
+        comments: true, // Para o contador no Card na tela de perfil
       },
     });
 
@@ -104,10 +136,10 @@ export const getMyPosts = async (req, res) => {
   }
 };
 
-//Busca todos os posts de um usuário específico
+// Busca todos os posts de um usuário específico
 export const getPostsByUserId = async (req, res) => {
   try {
-    const { id } = req.params; // Pega o ID da URL
+    const { id } = req.params;
 
     const post = await prisma.post.findMany({
       where: { authorId: id },
@@ -122,6 +154,7 @@ export const getPostsByUserId = async (req, res) => {
             funcao: true,
           },
         },
+        comments: true,
       },
       orderBy: { createdAt: "desc" },
     });
@@ -132,12 +165,11 @@ export const getPostsByUserId = async (req, res) => {
   }
 };
 
-// Busca um post específico pelo ID (para a página de detalhes do post)
+// Busca um post específico pelo ID
 export const getPostById = async (req, res) => {
   try {
-    const { id } = req.params; // Aqui é o ID do POST
+    const { id } = req.params;
 
-    // Usamos findUnique (ou findFirst) pois queremos apenas UM
     const post = await prisma.post.findUnique({
       where: { id: id },
       include: {
@@ -151,6 +183,7 @@ export const getPostById = async (req, res) => {
             funcao: true,
           },
         },
+        comments: true,
       },
     });
 
@@ -168,10 +201,9 @@ export const getPostById = async (req, res) => {
 // Excluir um post (Apenas o autor pode fazer isso)
 export const deletePost = async (req, res) => {
   try {
-    const { id } = req.params; // ID do post na URL
-    const userId = req.user.id; // ID do usuário logado (vindo do token)
+    const { id } = req.params;
+    const userId = req.user.id;
 
-    // 1. Busca o post para verificar se ele existe e de quem é
     const post = await prisma.post.findUnique({
       where: { id: id },
     });
@@ -180,14 +212,12 @@ export const deletePost = async (req, res) => {
       return res.status(404).json({ error: "Projeto não encontrado." });
     }
 
-    // 2. Trava de Segurança: O usuário logado é o dono do post?
     if (post.authorId !== userId) {
       return res.status(403).json({
         error: "Acesso negado. Você só pode excluir seus próprios projetos.",
       });
     }
 
-    // 3. Se passou pela trava, pode deletar!
     await prisma.post.delete({
       where: { id: id },
     });
@@ -199,15 +229,14 @@ export const deletePost = async (req, res) => {
   }
 };
 
-// Rota para atualizar um post (Apenas o autor pode fazer isso)
+// Rota para atualizar um post
 export const updatePost = async (req, res) => {
   try {
-    const { id } = req.params; // ID do post na URL
-    const userId = req.user.id; // ID do usuário logado (vindo do token)
+    const { id } = req.params;
+    const userId = req.user.id;
     const { title, content, codeContent, tags, image, projectUrl, repoUrl } =
-      req.body; // Novos dados enviados pelo formulário // Novos dados do post
+      req.body;
 
-    // 1. Busca o post para verificar se ele existe e de quem é
     const post = await prisma.post.findUnique({
       where: { id: id },
     });
@@ -216,24 +245,22 @@ export const updatePost = async (req, res) => {
       return res.status(404).json({ error: "Projeto não encontrado." });
     }
 
-    // 2. Trava de Segurança: O usuário logado é o dono do post?
     if (post.authorId !== userId) {
       return res.status(403).json({
         error: "Acesso negado. Você só pode editar seus próprios projetos.",
       });
     }
 
-    // 3. Se passou pela trava, pode atualizar!
     const updatedPost = await prisma.post.update({
       where: { id: id },
       data: {
-        title: title || post.title, // Se não enviar título, mantém o antigo
-        content: content || post.content, // Se não enviar conteúdo, mantém o antigo
-        codeContent: codeContent || post.code, // Se não enviar código, mantém o antigo
-        tags: tags || post.tags, // Se não enviar tags, mantém as antigas
-        image: image !== undefined ? image : post.image, // Permite enviar null para remover a imagem
-        projectUrl: projectUrl !== undefined ? projectUrl : post.projectUrl, // Permite enviar null para remover a URL do projeto
-        repoUrl: repoUrl !== undefined ? repoUrl : post.repoUrl, // Permite enviar null para remover a URL do repositório
+        title: title || post.title,
+        content: content || post.content,
+        codeContent: codeContent || post.code,
+        tags: tags || post.tags,
+        image: image !== undefined ? image : post.image,
+        projectUrl: projectUrl !== undefined ? projectUrl : post.projectUrl,
+        repoUrl: repoUrl !== undefined ? repoUrl : post.repoUrl,
       },
       include: {
         author: {
@@ -246,6 +273,7 @@ export const updatePost = async (req, res) => {
             funcao: true,
           },
         },
+        comments: true,
       },
     });
 
@@ -257,5 +285,91 @@ export const updatePost = async (req, res) => {
     return res
       .status(500)
       .json({ error: "Erro interno ao atualizar projeto." });
+  }
+};
+
+// Alternar Curtida no Post (Like / Unlike)
+export const toggleLikePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const post = await prisma.post.findUnique({
+      where: { id },
+    });
+
+    if (!post) {
+      return res.status(404).json({ error: "Projeto não encontrado." });
+    }
+
+    const hasLiked = post.likeIds.includes(userId);
+
+    const updatedPost = await prisma.post.update({
+      where: { id },
+      data: {
+        likeIds: hasLiked
+          ? { set: post.likeIds.filter((likerId) => likerId !== userId) }
+          : { push: userId },
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            nome: true,
+            sobrenome: true,
+            usuario: true,
+            imagem: true,
+            funcao: true,
+          },
+        },
+        comments: true,
+      },
+    });
+
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    console.error("Erro ao curtir projeto:", error);
+    res.status(500).json({ error: "Erro interno ao processar curtida." });
+  }
+};
+
+// Incrementar Compartilhamentos do Post
+export const sharePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 1. Puxa o post para ver o estado atual
+    const postAtual = await prisma.post.findUnique({
+      where: { id },
+      select: { shares: true }
+    });
+
+    if (!postAtual) {
+      return res.status(404).json({ error: "Projeto não encontrado." });
+    }
+
+    // 2. Se for undefined/null (post antigo do MongoDB), vira 0, e soma 1.
+    const novosShares = (postAtual.shares || 0) + 1;
+
+    // 3. Força a criação/atualização do campo com o número absoluto
+    const updatedPost = await prisma.post.update({
+      where: { id },
+      data: {
+        shares: novosShares, 
+      },
+      include: {
+        author: {
+          select: {
+            id: true, nome: true, sobrenome: true, usuario: true, imagem: true, funcao: true,
+          },
+        },
+        comments: true,
+      },
+    });
+
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    console.error("Erro ao compartilhar projeto:", error);
+    res.status(500).json({ error: "Erro interno ao computar compartilhamento." });
   }
 };
