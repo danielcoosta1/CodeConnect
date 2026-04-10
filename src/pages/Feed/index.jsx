@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
-import { usePost } from "../../hooks/usePost"; // Importe o hook
+import { useEffect, useMemo, useState, useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { usePost } from "../../hooks/usePost";
 import { IoMdClose } from "react-icons/io";
 import {
   ExcluirTudoButton,
@@ -20,15 +22,18 @@ import LoadingState from "../../components/LoadingState";
 import ErrorState from "../../components/ErrorState";
 
 const Feed = () => {
-  const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
-    usePost();
+  const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } = usePost();
 
   const [termoBusca, setTermoBusca] = useState("");
   const [tagsFiltrosAtivos, setTagsFiltrosAtivos] = useState([]);
   const [erroLocal, setErroLocal] = useState("");
 
+  // Referência para a "Caixa Pai" da animação
+  const feedRef = useRef(null);
+
   useEffect(() => {
     carregarPostsDoBanco();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const lidarComKeyDown = (e) => {
@@ -45,134 +50,148 @@ const Feed = () => {
     }
   };
 
-  // Função que limpa TUDO (Texto + Tags)
   const limparBuscaTotal = () => {
     setTagsFiltrosAtivos([]);
     setTermoBusca("");
     setErroLocal("");
   };
 
-  // Verifica se há posts
-
   const postsFiltrados = useMemo(() => {
-    // 1. ATALHO DE PERFORMANCE (Short Circuit)
-    // Se não tem nada digitado E nenhuma tag selecionada, não perca tempo filtrando.
     if (tagsFiltrosAtivos.length === 0 && termoBusca.trim() === "") {
       return allPosts;
     }
 
     return allPosts.filter((post) => {
-      // --- PORTÃO 1: VERIFICA AS TAGS FIXAS (O que você já fez) ---
       const atendeTags =
         tagsFiltrosAtivos.length === 0 ||
         tagsFiltrosAtivos.every((termo) => {
           const termoLimpo = termo.toLowerCase();
           return (
-            post.title.toLowerCase().includes(termoLimpo) ||
-            post.content.toLowerCase().includes(termoLimpo) ||
+            post.title?.toLowerCase().includes(termoLimpo) ||
+            post.content?.toLowerCase().includes(termoLimpo) ||
             (post.tags &&
               post.tags.some((tag) => tag.toLowerCase().includes(termoLimpo)))
           );
         });
 
-      // --- PORTÃO 2: VERIFICA A BUSCA AO VIVO ---
-      // Se o termoBusca estiver vazio, assumimos "true" (passa direto).
-      // Se tiver texto, fazemos a mesma varredura que fizemos nas tags.
       const termoBuscaLimpo = termoBusca.toLowerCase().trim();
 
       const atendeBusca =
         termoBuscaLimpo === "" ||
-        post.title.toLowerCase().includes(termoBuscaLimpo) ||
-        post.content.toLowerCase().includes(termoBuscaLimpo) ||
+        post.title?.toLowerCase().includes(termoBuscaLimpo) ||
+        post.content?.toLowerCase().includes(termoBuscaLimpo) ||
         (post.tags &&
           post.tags.some((tag) => tag.toLowerCase().includes(termoBuscaLimpo)));
 
-      // --- O VEREDITO FINAL ---
-      // O post precisa atender às tags E atender à busca atual
       return atendeTags && atendeBusca;
     });
   }, [allPosts, tagsFiltrosAtivos, termoBusca]);
 
-  // 3. Renderização Condicional baseada no estado Global
-  if (loadingPosts) {
-    return <LoadingState texto="Carregando feed..." size={45} />;
-  }
-  if (errorPosts) {
-    return <ErrorState mensagem={errorPosts} onRetry={carregarPostsDoBanco} />;
-  }
+  // --- ✨ MOTOR DE ANIMAÇÃO GSAP (EFEITO MICROZOOM) ✨ ---
+  useGSAP(
+    () => {
+      // Aborta a animação se a referência não existir ou se a tela estiver pronta
+      if (!feedRef.current || loadingPosts || errorPosts) return;
 
-  // Lógica para saber se TEMOS RESULTADOS PARA MOSTRAR
-  // O hasPosts original só checava o banco. Agora precisamos saber se sobrou algo do filtro.
+      if (postsFiltrados.length > 0) {
+        // Usamos .to() porque o elemento já começa no estado 'from' (definido no HTML)
+        gsap.to(".post-animado", {
+          y: 0,           // Volta para a posição original Y: 0
+          opacity: 1,     // Fica visível
+          scale: 1,       // Volta pro tamanho original (100%)
+          duration: 1.2,  // Duração macia por card
+          stagger: 0.25,  // Atraso entre os cards (Efeito Cascata)
+          ease: "back.out(1.2)", // O "quique" elástico do microzoom
+        });
+      }
+    },
+    {
+      scope: feedRef,
+      dependencies: [postsFiltrados, loadingPosts, errorPosts], // Refaz ao filtrar
+    }
+  );
+
   const temResultados = postsFiltrados.length > 0;
 
   return (
-    <FeedContainerMain>
-      <FeedFilterContainer>
-        <InputSearch
-          id="search-feed"
-          name="search-feed"
-          type="search"
-          placeholder="Digite o que você procura..."
-          value={termoBusca}
-          onChange={(e) => setTermoBusca(e.target.value)}
-          onKeyDown={lidarComKeyDown}
-        />
-        {erroLocal && (
-          <p style={{ color: "red", marginTop: "10px" }}>{erroLocal}</p>
-        )}
-        <TagsFiltersContainer>
-          {tagsFiltrosAtivos.length > 0 && (
-            <>
-              <TagList>
-                {tagsFiltrosAtivos.map((tag, index) => (
-                  <TagItem key={index}>
-                    <span>{tag}</span>
-                    <TagRemoveButton
-                      onClick={() =>
-                        setTagsFiltrosAtivos(
-                          tagsFiltrosAtivos.filter((_, i) => i !== index),
-                        )
-                      }
-                    >
-                      <IoMdClose />
-                    </TagRemoveButton>
-                  </TagItem>
-                ))}
-              </TagList>
-              <ExcluirTudoButton onClick={() => setTagsFiltrosAtivos([])}>
-                Limpar tudo
-              </ExcluirTudoButton>
-            </>
-          )}
-        </TagsFiltersContainer>
-      </FeedFilterContainer>
-
-      {temResultados ? (
-        <CardGrid>
-          {postsFiltrados.map((post) => (
-            <Card
-              key={post.id}
-              post={post} // Passamos o objeto inteiro, o Card cuida do resto!
-            />
-          ))}
-        </CardGrid>
+    // O PAI DE TODOS: Recebe a ref do GSAP e SEMPRE é renderizado
+    <FeedContainerMain ref={feedRef}>
+      {/* RENDERIZAÇÃO CONDICIONAL SEGURA */}
+      {loadingPosts ? (
+        <LoadingState texto="Carregando feed..." size={45} />
+      ) : errorPosts ? (
+        <ErrorState mensagem={errorPosts} onRetry={carregarPostsDoBanco} />
       ) : (
-        // CENÁRIO 2: Não sobrou nada (ou banco vazio ou filtro zerou tudo)
-        <NoPostsContainer>
-          {allPosts.length === 0 ? (
-            // Banco vazio
-            <p>Nenhum post encontrado no sistema.</p>
+        <>
+          <FeedFilterContainer>
+            <InputSearch
+              id="search-feed"
+              name="search-feed"
+              type="search"
+              placeholder="Digite o que você procura..."
+              value={termoBusca}
+              onChange={(e) => setTermoBusca(e.target.value)}
+              onKeyDown={lidarComKeyDown}
+            />
+            {erroLocal && (
+              <p style={{ color: "red", marginTop: "10px" }}>{erroLocal}</p>
+            )}
+            <TagsFiltersContainer>
+              {tagsFiltrosAtivos.length > 0 && (
+                <>
+                  <TagList>
+                    {tagsFiltrosAtivos.map((tag, index) => (
+                      <TagItem key={index}>
+                        <span>{tag}</span>
+                        <TagRemoveButton
+                          onClick={() =>
+                            setTagsFiltrosAtivos(
+                              tagsFiltrosAtivos.filter((_, i) => i !== index)
+                            )
+                          }
+                        >
+                          <IoMdClose />
+                        </TagRemoveButton>
+                      </TagItem>
+                    ))}
+                  </TagList>
+                  <ExcluirTudoButton onClick={() => setTagsFiltrosAtivos([])}>
+                    Limpar tudo
+                  </ExcluirTudoButton>
+                </>
+              )}
+            </TagsFiltersContainer>
+          </FeedFilterContainer>
+
+          {temResultados ? (
+            <CardGrid>
+              {postsFiltrados.map((post) => (
+                // --- ✨ WRAPPER DE ANIMAÇÃO (MICROZOOM) ✨ ---
+                <div 
+                  key={post.id} 
+                  className="post-animado"
+                  // DEFINIMOS O ESTADO INICIAL AQUI: Invisível, menor e rebaixado
+                  style={{ opacity: 0, scale: 0.95, transform: "translateY(30px)" }}
+                >
+                  <Card post={post} />
+                </div>
+              ))}
+            </CardGrid>
           ) : (
-            // Filtro não encontrou nada
-            <>
-              <p>Nenhum post encontrado para essa busca.</p>
-              {/* BOTÃO DE RESGATE: Limpa texto E tags */}
-              <LimparBuscaButton onClick={limparBuscaTotal}>
-                Limpar buca
-              </LimparBuscaButton>
-            </>
+            <NoPostsContainer>
+              {allPosts.length === 0 ? (
+                <p>Nenhum post encontrado no sistema.</p>
+              ) : (
+                <>
+                  <p>Nenhum post encontrado para essa busca.</p>
+                  <LimparBuscaButton onClick={limparBuscaTotal}>
+                    Limpar busca
+                  </LimparBuscaButton>
+                </>
+              )}
+            </NoPostsContainer>
           )}
-        </NoPostsContainer>
+        </>
       )}
     </FeedContainerMain>
   );

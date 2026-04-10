@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger"; // ✨ 1. Importando o monstro do Scroll
 
 import ProfileAvatar from "../../components/ProfileAvatar";
 import LoadingState from "../../components/LoadingState";
 import ErrorState from "../../components/ErrorState";
-import { FaArrowLeft, FaShareNodes } from "react-icons/fa6";
+import { FaArrowLeft, FaShareNodes, FaCodeBranch } from "react-icons/fa6";
 import defaultImg from "../Publicar/assets/exemplo.png";
 import {
   FaGithub,
   FaTrash,
-  FaCode,
   FaRegComment,
   FaExternalLinkAlt,
   FaRegEdit,
@@ -48,11 +50,14 @@ import {
   CommentsContainer,
   ActionButton,
   SolutionBadge,
-  ActionContainer,
-  ActionRow,
-  ActionDivider,
   ProjectLink,
-  BigSocialButton,
+  ProjectMetaCard,
+  ProjectLinksContainer,
+  GithubBadgesContainer,
+  GithubBadge,
+  LanguageDot,
+  SocialEngagementBar,
+  SocialPill,
 } from "./style";
 
 import { usePost } from "../../hooks/usePost";
@@ -60,6 +65,14 @@ import { useAuth } from "../../hooks/useAuth";
 import ModalConfirmacao from "../../components/ModalConfirmacao";
 import { useComments } from "../../hooks/useComments";
 import { toastErro, toastSucesso } from "../../utils/toast";
+
+import {
+  buscarDadosDoRepo,
+  extrairDadosDoLink,
+} from "../../services/githubService";
+
+// ✨ 2. Registrando o plugin ANTES do componente rodar
+gsap.registerPlugin(ScrollTrigger);
 
 const Post = () => {
   const { id } = useParams();
@@ -69,6 +82,10 @@ const Post = () => {
 
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState("");
+
+  const [githubMetrics, setGithubMetrics] = useState(null);
+
+  const headerRef = useRef(null);
 
   const {
     postDetails,
@@ -92,6 +109,63 @@ const Post = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  useEffect(() => {
+    const fetchGithubMetrics = async () => {
+      if (postDetails?.repoUrl && postDetails.repoUrl.includes("github.com")) {
+        try {
+          const { owner, repo } = extrairDadosDoLink(postDetails.repoUrl);
+          const repoData = await buscarDadosDoRepo(owner, repo);
+
+          if (repoData) {
+            setGithubMetrics({
+              stars: repoData.stargazers_count || 0,
+              forks: repoData.forks_count || 0,
+              language: repoData.language,
+            });
+          }
+        } catch (error) {
+          console.error("Falha ao buscar métricas do repositório:", error);
+        }
+      }
+    };
+
+    fetchGithubMetrics();
+  }, [postDetails?.repoUrl]);
+
+  // ✨ 3. O NOVO MOTOR GSAP COM SCROLLTRIGGER ✨
+  useGSAP(
+    () => {
+      if (!headerRef.current || loadingPostDetails) return;
+
+      // Animação 1: O HERO (Roda assim que a página abre, sem depender de scroll)
+      gsap.to(".anim-hero", {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
+      });
+
+      // Animação 2: O SCROLL (A mágica acontece aqui)
+      const scrollElements = gsap.utils.toArray(".anim-scroll");
+
+      scrollElements.forEach((el) => {
+        gsap.to(el, {
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%", // Dispara quando o topo do elemento atinge 85% da altura da tela
+            toggleActions: "play none none reverse", // play(descer), none, none, reverse(subir)
+          },
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out",
+        });
+      });
+    },
+    { scope: headerRef, dependencies: [githubMetrics, postDetails] },
+  );
+
   const {
     comments,
     commentText,
@@ -107,21 +181,15 @@ const Post = () => {
 
   const handleConfirmarExclusao = async () => {
     const sucesso = await deletarPostPorId(id);
-    if (sucesso) {
-      navigate("/feed");
-    }
+    if (sucesso) navigate("/feed");
   };
 
-  // FUNÇÃO AUXILIAR PARA O ENVIO DA RESPOSTA
   const submitReply = async (e, parentId) => {
     e.preventDefault();
     if (!replyText.trim()) return;
-
-    // Chama o hook passando o evento, o texto da resposta e o ID do comentário pai
     await handleComentar(e, parentId, replyText);
-
     setReplyText("");
-    setReplyingTo(null); // Fecha a caixinha de resposta
+    setReplyingTo(null);
   };
 
   if (loadingPostDetails)
@@ -136,13 +204,9 @@ const Post = () => {
   if (!postDetails) return null;
 
   const handleShare = async () => {
-    const link = window.location.href; // Aqui já estamos na URL certa!
-
-    // 1. CHAMA A API IMEDIATAMENTE!
+    const link = window.location.href;
     compartilharPost(id);
-
     try {
-      // 2. Abre a gaveta do celular
       if (navigator.share) {
         await navigator.share({
           title: "CodeConnect",
@@ -150,7 +214,6 @@ const Post = () => {
           url: link,
         });
       } else {
-        // 3. Copia o link no PC
         await navigator.clipboard.writeText(link);
         toastSucesso("Link copiado para a área de transferência!");
       }
@@ -159,20 +222,20 @@ const Post = () => {
     }
   };
 
-  // =======================================================================
-  // MOTOR DE RENDERIZAÇÃO DE COMENTÁRIOS (PAIS E FILHOS)
-  // =======================================================================
   const renderComment = (comment, isReply = false) => {
     const canDeleteComment = isAuthorPost || comment.authorId === user?.id;
     const hasLiked = comment.likeIds?.includes(user?.id);
 
     return (
-      <CommentItem key={comment.id} $isSolution={comment.isSolution}>
+      <CommentItem
+        key={comment.id}
+        $isSolution={comment.isSolution}
+        className="anim-scroll"
+        style={{ opacity: 0, transform: "translateY(30px)" }}
+      >
         <ProfileAvatar
           src={comment.author?.imagem}
-          size={
-            isReply ? 35 : 45
-          } /* Menor nas respostas para hierarquia visual */
+          size={isReply ? 35 : 45}
           hasBorder={false}
         />
 
@@ -183,27 +246,22 @@ const Post = () => {
                 {comment.author?.nome} {comment.author?.sobrenome}
               </h4>
               <span>@{comment.author?.usuario}</span>
-              {/* COMPONENTE EXCLUSIVO PARA O BADGE */}
               {comment.isSolution && <SolutionBadge>🌟 Solução</SolutionBadge>}
             </CommentHeaderInfo>
             <p>{comment.text}</p>
           </CommentsContent>
 
-          {/* BARRA DE AÇÕES DO COMENTÁRIO */}
           <AuthorActionsComment>
-            {/* BOTÃO DE CURTIR */}
             <ActionButton
               onClick={() => handleToggleLike(comment.id)}
               $active={hasLiked}
               $activeColor="#ff5f56"
               $hoverColor="#ff5f56"
-              title="Curtir comentário"
             >
               {hasLiked ? <FaHeart /> : <FaRegHeart />}{" "}
               {comment.likeIds?.length || 0}
             </ActionButton>
 
-            {/* BOTÃO DE RESPONDER (SÓ MOSTRA SE NÃO FOR UMA RESPOSTA) */}
             {!isReply && user && (
               <ActionButton
                 onClick={() =>
@@ -215,20 +273,17 @@ const Post = () => {
               </ActionButton>
             )}
 
-            {/* BOTÃO DE SOLUÇÃO DE OURO (SÓ O DONO DO POST VÊ) */}
             {isAuthorPost && !isReply && (
               <ActionButton
                 onClick={() => handleToggleSolution(comment.id)}
                 $active={comment.isSolution}
                 $activeColor="#d4af37"
                 $hoverColor="#d4af37"
-                title="Marcar como Solução"
               >
                 {comment.isSolution ? <FaStar /> : <FaRegStar />}
               </ActionButton>
             )}
 
-            {/* LIXEIRA / CONFIRMAÇÃO */}
             {canDeleteComment &&
               (commentToDelete === comment.id ? (
                 <div className="confirm-action">
@@ -236,14 +291,12 @@ const Post = () => {
                   <button
                     className="btn-confirm-yes"
                     onClick={() => handleDeletarComentario(comment.id)}
-                    disabled={loadingDelete}
                   >
                     Sim
                   </button>
                   <button
                     className="btn-confirm-no"
                     onClick={() => setCommentToDelete(null)}
-                    disabled={loadingDelete}
                   >
                     Não
                   </button>
@@ -252,24 +305,20 @@ const Post = () => {
                 <ActionButton
                   onClick={() => setCommentToDelete(comment.id)}
                   $hoverColor="#ff5f56"
-                  title="Excluir"
                 >
                   <FaTrash />
                 </ActionButton>
               ))}
           </AuthorActionsComment>
 
-          {/* CAIXA DE INPUT PARA RESPONDER (Renderizada dentro do fluxo do conteúdo) */}
           {replyingTo === comment.id && (
             <div style={{ marginTop: "1.6rem" }}>
-              {" "}
               <InputComment onSubmit={(e) => submitReply(e, comment.id)}>
                 <input
                   type="text"
                   placeholder="Escreva sua resposta..."
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
-                  disabled={enviandoComment}
                   autoFocus
                 />
                 <button
@@ -282,7 +331,6 @@ const Post = () => {
             </div>
           )}
 
-          {/* RENDERIZA AS RESPOSTAS DESSE COMENTÁRIO (RECURSIVIDADE) */}
           {!isReply && comment.replies && comment.replies.length > 0 && (
             <RepliesContainer>
               {comment.replies.map((reply) => renderComment(reply, true))}
@@ -292,9 +340,10 @@ const Post = () => {
       </CommentItem>
     );
   };
+
   return (
     <>
-      <PostContainer>
+      <PostContainer ref={headerRef}>
         <PostHeader>
           <HeaderTop>
             <BackButton onClick={() => navigate(-1)}>
@@ -318,7 +367,69 @@ const Post = () => {
             )}
           </HeaderTop>
 
-          <CoverImage>
+          <PostTitle
+            className="anim-hero"
+            style={{ opacity: 0, transform: "translateY(30px)" }}
+          >
+            {postDetails.title}
+          </PostTitle>
+
+          <ProjectMetaCard
+            className="anim-hero"
+            style={{ opacity: 0, transform: "translateY(30px)" }}
+          >
+            {githubMetrics ? (
+              <GithubBadgesContainer>
+                {githubMetrics.language && (
+                  <GithubBadge>
+                    <LanguageDot /> {githubMetrics.language}
+                  </GithubBadge>
+                )}
+                <GithubBadge>
+                  <FaStar style={{ color: "#d4af37" }} /> {githubMetrics.stars}
+                </GithubBadge>
+                <GithubBadge>
+                  <FaCodeBranch style={{ color: "#58a6ff" }} />{" "}
+                  {githubMetrics.forks}
+                </GithubBadge>
+              </GithubBadgesContainer>
+            ) : (
+              <div style={{ color: "#818388", fontSize: "1.4rem" }}>
+                Detalhes do Projeto
+              </div>
+            )}
+
+            <ProjectLinksContainer>
+              {postDetails.projectUrl ? (
+                <ProjectLink
+                  href={postDetails.projectUrl}
+                  target="_blank"
+                  $primary={true}
+                >
+                  <FaExternalLinkAlt /> <span>Deploy</span>
+                </ProjectLink>
+              ) : (
+                <ProjectLink as="span" $desabilitado>
+                  <FaExternalLinkAlt /> <span>Offline</span>
+                </ProjectLink>
+              )}
+
+              {postDetails.repoUrl ? (
+                <ProjectLink href={postDetails.repoUrl} target="_blank">
+                  <FaGithub /> <span>Código</span>
+                </ProjectLink>
+              ) : (
+                <ProjectLink as="span" $desabilitado>
+                  <FaGithub /> <span>Privado</span>
+                </ProjectLink>
+              )}
+            </ProjectLinksContainer>
+          </ProjectMetaCard>
+
+          <CoverImage
+            className="anim-hero"
+            style={{ opacity: 0, transform: "translateY(30px)" }}
+          >
             <img
               src={
                 postDetails.image
@@ -329,110 +440,67 @@ const Post = () => {
             />
           </CoverImage>
 
-          <PostTitle>{postDetails.title}</PostTitle>
-
-          <ActionContainer>
-            {/* LINHA 1: REPOSITÓRIO E DEPLOY */}
-            <ActionRow>
-              {postDetails.projectUrl ? (
-                <ProjectLink
-                  href={postDetails.projectUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  $primary={true}
-                >
-                  <FaExternalLinkAlt /> <span>Acessar Projeto</span>
-                </ProjectLink>
-              ) : (
-                <ProjectLink as="span" $desabilitado>
-                  <FaExternalLinkAlt /> <span>Deploy Indisponível</span>
-                </ProjectLink>
-              )}
-
-              {postDetails.repoUrl ? (
-                <ProjectLink
-                  href={postDetails.repoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FaGithub /> <span>Ver Código-Fonte</span>
-                </ProjectLink>
-              ) : (
-                <ProjectLink as="span" $desabilitado>
-                  <FaGithub /> <span>Repositório Privado</span>
-                </ProjectLink>
-              )}
-            </ActionRow>
-
-            {/* A LINHA SUTIL DE SEPARAÇÃO */}
-            <ActionDivider />
-
-            {/* LINHA 2: ENGAJAMENTO SOCIAL */}
-            <ActionRow>
-              <BigSocialButton
-                $variant="like"
-                $hasLiked={hasLikedPost}
-                onClick={() => {
-                  if (user) {
-                    curtirPost(id);
-                  } else {
-                    toastErro("Você precisa estar logado para curtir!");
-                  }
-                }}
-              >
-                {hasLikedPost ? <FaHeart /> : <FaRegHeart />}
-                {/* Envolvendo o texto num SPAN para o CSS sumir com ele no mobile */}
-                <span>{hasLikedPost ? "Curtiu!" : "Curtir Projeto"}</span>
-              </BigSocialButton>
-
-              <BigSocialButton $variant="share" onClick={handleShare}>
-                <FaShareNodes /> <span>Compartilhar</span>
-              </BigSocialButton>
-            </ActionRow>
-          </ActionContainer>
-
-          <PostContent>
+          <PostContent
+            className="anim-scroll"
+            style={{ opacity: 0, transform: "translateY(40px)" }}
+          >
             <p>{postDetails.content}</p>
           </PostContent>
 
           {postDetails.tags && postDetails.tags.length > 0 && (
-            <TagList>
+            <TagList
+              className="anim-scroll"
+              style={{ opacity: 0, transform: "translateY(40px)" }}
+            >
               {postDetails.tags.map((tag, index) => (
                 <TagItem key={index}>{tag}</TagItem>
               ))}
             </TagList>
           )}
 
-          <AuthorContainer>
-            <ActionIcons>
-              {/* --- ESTATÍSTICA DE CURTIDAS (Somente Leitura) --- */}
-              <IconGroup
-                style={{ color: hasLikedPost ? "#ff5f56" : "inherit" }}
-              >
-                {hasLikedPost ? <FaHeart /> : <FaRegHeart />}
-                <span>{postDetails.likeIds?.length || 0}</span>
-              </IconGroup>
+          <SocialEngagementBar
+            className="anim-scroll"
+            style={{ opacity: 0, transform: "translateY(40px)" }}
+          >
+            <SocialPill
+              $variant="like"
+              $hasLiked={hasLikedPost}
+              onClick={() =>
+                user ? curtirPost(id) : toastErro("Logue para curtir!")
+              }
+            >
+              {hasLikedPost ? <FaHeart /> : <FaRegHeart />}
+              <span>{postDetails.likeIds?.length || 0}</span>
+            </SocialPill>
 
-              {/* --- ESTATÍSTICA DE COMPARTILHAMENTOS (Somente Leitura) --- */}
-              <IconGroup>
-                <FaShareNodes />
-                <span>{postDetails.shares || 0}</span>
-              </IconGroup>
+            <SocialPill $variant="share" onClick={handleShare}>
+              <FaShareNodes />
+              <span>{postDetails.shares || 0}</span>
+            </SocialPill>
 
-              {/* --- ÍCONE DE COMENTÁRIOS (Continua clicável para rolar a tela) --- */}
-              <IconGroup
-                onClick={() =>
-                  window.scrollTo({
-                    top: document.body.scrollHeight,
-                    behavior: "smooth",
-                  })
-                }
-              >
-                <FaRegComment />
-                <span>{comments.length}</span>
-              </IconGroup>
-            </ActionIcons>
+            <SocialPill
+              onClick={() =>
+                window.scrollTo({
+                  top: document.body.scrollHeight,
+                  behavior: "smooth",
+                })
+              }
+            >
+              <FaRegComment />
+              <span>{comments.length}</span>
+            </SocialPill>
+          </SocialEngagementBar>
 
+          <AuthorContainer
+            className="anim-scroll"
+            style={{
+              opacity: 0,
+              transform: "translateY(40px)",
+              borderTop: "none",
+              paddingTop: 0,
+              marginTop: 0,
+            }}
+          >
             <AuthorInfo to={`/perfil/${postDetails.author.id}`}>
               <ProfileAvatar
                 src={postDetails.author?.imagem}
@@ -450,15 +518,20 @@ const Post = () => {
         </PostHeader>
 
         {postDetails.codeContent && (
-          <CodeContainer>
+          <CodeContainer
+            className="anim-scroll"
+            style={{ opacity: 0, transform: "translateY(40px)" }}
+          >
             <ReactMarkdown>{postDetails.codeContent}</ReactMarkdown>
           </CodeContainer>
         )}
 
-        <CommentsContainer>
+        <CommentsContainer
+          className="anim-scroll"
+          style={{ opacity: 0, transform: "translateY(40px)" }}
+        >
           <h2>Comentários ({comments.length})</h2>
 
-          {/* INPUT DO COMENTÁRIO PRINCIPAL */}
           {user ? (
             <InputComment
               onSubmit={(e) => handleComentar(e, null, commentText)}
@@ -474,14 +547,13 @@ const Post = () => {
                 type="submit"
                 disabled={enviandoComment || !commentText.trim()}
               >
-                {enviandoComment ? "Enviando..." : "Comentar"}
+                Comentar
               </button>
             </InputComment>
           ) : (
             <p>Faça login para participar da discussão.</p>
           )}
 
-          {/* LISTA DE COMENTÁRIOS USANDO A FUNÇÃO AUXILIAR */}
           {loadingComments ? (
             <p>Carregando comentários...</p>
           ) : comments.length === 0 ? (
@@ -499,7 +571,7 @@ const Post = () => {
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleConfirmarExclusao}
         titulo="Excluir Projeto"
-        mensagem="Tem certeza de que deseja excluir este projeto? Esta ação não poderá ser desfeita."
+        mensagem="Tem certeza de que deseja excluir este projeto?"
         textoConfirmar="Sim, Excluir"
         isDestructive={true}
       />
