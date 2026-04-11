@@ -291,6 +291,7 @@ const Post = () => {
                   <button
                     className="btn-confirm-yes"
                     onClick={() => handleDeletarComentario(comment.id)}
+                    disabled={loadingDelete}
                   >
                     Sim
                   </button>

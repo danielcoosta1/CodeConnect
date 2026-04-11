@@ -53,17 +53,17 @@ export const fetchCommentsByPostId = async (postId) => {
 };
 
 export const deleteCommentById = async (commentId) => {
-  const response = await api.delete(`/posts/${commentId}/comments`);
+  const response = await api.delete(`/posts/comment/${commentId}`);
   return response.data;
 };
 
 export const toggleLikeComment = async (commentId) => {
-  const response = await api.patch(`/posts/${commentId}/like`);
+  const response = await api.patch(`/posts/comment/${commentId}/like`);
   return response.data;
 };
 
 export const toggleSolutionStatus = async (commentId) => {
-  const response = await api.patch(`/posts/${commentId}/solution`);
+  const response = await api.patch(`/posts/comment/${commentId}/solution`);
   return response.data;
 };
 
