@@ -11,7 +11,6 @@ generator client {
 datasource db {
   provider = "mongodb"
 
-  
   url = env("DATABASE_URL")
 }
 
@@ -56,8 +55,14 @@ model User {
   github_username String? // Guarda o username do GitHub 
 }
 
+enum PostType {
+  PROJECT
+  QUESTION
+}
+
 model Post {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  type          PostType @default(PROJECT)
   title         String // Equivalente ao "nome" da publicação
   content       String // Equivalente à "descricao"
   codeContent   String? // O código 

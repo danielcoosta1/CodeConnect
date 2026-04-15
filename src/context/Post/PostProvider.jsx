@@ -17,7 +17,11 @@ import {
 import { localStorageService } from "../../services/localStorageService";
 import { postInicialState } from "./inicialState";
 import { getUserById } from "../../services/userService";
-import { buscarDadosDoRepo, buscarReadme, extrairDadosDoLink } from "../../services/githubService";
+import {
+  buscarDadosDoRepo,
+  buscarReadme,
+  extrairDadosDoLink,
+} from "../../services/githubService";
 
 export const PostProvider = ({ children }) => {
   const [state, dispatch] = useReducer(postReducer, postInicialState);

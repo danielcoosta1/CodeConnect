@@ -30,6 +30,7 @@ export const getAllPosts = async (req, res) => {
 // Rota para criar um novo post
 export const createPost = async (req, res) => {
   const postSchema = z.object({
+    type: z.enum(["PROJECT", "QUESTION"]).optional().default("PROJECT"),
     title: z
       .string()
       .min(3, { message: "O título precisa ter pelo menos 3 caracteres." }),
@@ -41,7 +42,7 @@ export const createPost = async (req, res) => {
     imageFileName: z.string().optional().nullable(),
     tags: z
       .array(z.string())
-      .max(4, { message: "Você pode adicionar no máximo 4 tags." })
+      .max(4, { message: "No máximo 4 tags." })
       .optional()
       .default([]),
     projectUrl: z.string().url().optional().nullable(),
@@ -49,11 +50,11 @@ export const createPost = async (req, res) => {
   });
 
   const validation = postSchema.safeParse(req.body);
-  if (!validation.success) {
+  if (!validation.success)
     return res.status(400).json({ error: validation.error.issues[0].message });
-  }
 
   const {
+    type,
     title,
     content,
     codeContent,
@@ -63,12 +64,12 @@ export const createPost = async (req, res) => {
     projectUrl,
     repoUrl,
   } = validation.data;
-
   const authorId = req.user.id;
 
   try {
     const newPost = await prisma.post.create({
       data: {
+        type, // ✨ Salva o tipo no banco
         title,
         content,
         codeContent,
@@ -77,9 +78,7 @@ export const createPost = async (req, res) => {
         tags,
         projectUrl,
         repoUrl,
-        author: {
-          connect: { id: authorId },
-        },
+        author: { connect: { id: authorId } },
       },
       include: {
         author: {
@@ -92,7 +91,7 @@ export const createPost = async (req, res) => {
             funcao: true,
           },
         },
-        comments: true, // Trazemos vazio, mas mantém a consistência do objeto
+        comments: true,
       },
     });
     res.status(201).json(newPost);
@@ -234,29 +233,40 @@ export const updatePost = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.id;
-    const { title, content, codeContent, tags, image, projectUrl, repoUrl } =
-      req.body;
+
+    //  Extraímos o 'type' que agora vem do frontend
+    const {
+      type,
+      title,
+      content,
+      codeContent,
+      tags,
+      image,
+      projectUrl,
+      repoUrl,
+    } = req.body;
 
     const post = await prisma.post.findUnique({
       where: { id: id },
     });
 
     if (!post) {
-      return res.status(404).json({ error: "Projeto não encontrado." });
+      return res.status(404).json({ error: "Publicação não encontrada." });
     }
 
     if (post.authorId !== userId) {
       return res.status(403).json({
-        error: "Acesso negado. Você só pode editar seus próprios projetos.",
+        error: "Acesso negado. Você só pode editar suas próprias publicações.",
       });
     }
 
     const updatedPost = await prisma.post.update({
       where: { id: id },
       data: {
+        type: type || post.type,
         title: title || post.title,
         content: content || post.content,
-        codeContent: codeContent || post.code,
+        codeContent: codeContent || post.codeContent,
         tags: tags || post.tags,
         image: image !== undefined ? image : post.image,
         projectUrl: projectUrl !== undefined ? projectUrl : post.projectUrl,
@@ -277,14 +287,15 @@ export const updatePost = async (req, res) => {
       },
     });
 
-    return res
-      .status(200)
-      .json({ message: "Projeto atualizado com sucesso.", post: updatedPost });
+    return res.status(200).json({
+      message: "Publicação atualizada com sucesso.",
+      post: updatedPost,
+    });
   } catch (error) {
-    console.error("Erro ao atualizar o projeto:", error);
+    console.error("Erro ao atualizar a publicação:", error);
     return res
       .status(500)
-      .json({ error: "Erro interno ao atualizar projeto." });
+      .json({ error: "Erro interno ao atualizar a publicação." });
   }
 };
 
@@ -341,7 +352,7 @@ export const sharePost = async (req, res) => {
     // 1. Puxa o post para ver o estado atual
     const postAtual = await prisma.post.findUnique({
       where: { id },
-      select: { shares: true }
+      select: { shares: true },
     });
 
     if (!postAtual) {
@@ -355,12 +366,17 @@ export const sharePost = async (req, res) => {
     const updatedPost = await prisma.post.update({
       where: { id },
       data: {
-        shares: novosShares, 
+        shares: novosShares,
       },
       include: {
         author: {
           select: {
-            id: true, nome: true, sobrenome: true, usuario: true, imagem: true, funcao: true,
+            id: true,
+            nome: true,
+            sobrenome: true,
+            usuario: true,
+            imagem: true,
+            funcao: true,
           },
         },
         comments: true,
@@ -370,6 +386,8 @@ export const sharePost = async (req, res) => {
     res.status(200).json(updatedPost);
   } catch (error) {
     console.error("Erro ao compartilhar projeto:", error);
-    res.status(500).json({ error: "Erro interno ao computar compartilhamento." });
+    res
+      .status(500)
+      .json({ error: "Erro interno ao computar compartilhamento." });
   }
 };

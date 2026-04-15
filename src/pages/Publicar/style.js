@@ -38,6 +38,34 @@ const commonLabelStyles = `
   font-weight: 600;
 `;
 
+export const TypeSelectorContainer = styled.div`
+  display: flex;
+  gap: 1.6rem;
+  margin-bottom: 2.4rem;
+  background-color: #1e2426;
+  padding: 0.8rem;
+  border-radius: 1.2rem;
+  border: 0.1rem solid #2d3538;
+`;
+
+export const TypeTab = styled.button`
+  flex: 1;
+  padding: 1.2rem;
+  border-radius: 0.8rem;
+  background-color: ${(props) => (props.$active ? "#81fe88" : "transparent")};
+  color: ${(props) => (props.$active ? "#171d1f" : "#818388")};
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: ${(props) =>
+      props.$active ? "#6be276" : "rgba(255, 255, 255, 0.05)"};
+  }
+`;
+
 // --- WRAPPER GERAL ---
 export const ContainerWrapper = styled.div`
   display: flex;
@@ -159,14 +187,15 @@ export const GithubInputWrapper = styled.div`
   }
 `;
 
-export const ContainerWrapperForm = styled.section`
+export const ContainerWrapperForm = styled.div`
   display: flex;
-  gap: 3rem;
+  flex-direction: column;
+  gap: 3.2rem;
   width: 100%;
+  margin-bottom: 2.4rem;
 
   @media ${device.tablet} {
-    flex-direction: column;
-    gap: 2rem;
+    gap: 2.4rem;
   }
 
   @media ${device.mobile} {
@@ -180,43 +209,61 @@ export const ContainerWrapperCode = styled.div`
   width: 100%;
 `;
 
-// --- COLUNA DA ESQUERDA (IMAGEM) ---
 export const ContainerUploadImg = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 38rem;
+  gap: 1.2rem;
 
-  @media ${device.tablet} {
-    max-width: 70%;
-    justify-content: center;
-    align-self: center;
-  }
   @media ${device.mobile} {
-    max-width: 100%;
+    gap: 1rem;
+  }
+`;
+
+export const EmptyImagePlaceholder = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  background-color: #1e2426;
+  border: 0.2rem dashed #2d3538;
+  border-radius: 1.6rem;
+  color: #818388;
+
+  p {
+    font-size: 1.4rem;
+    font-weight: 500;
+  }
+
+  svg {
+    font-size: 4.8rem;
+    opacity: 0.5;
   }
 `;
 
 export const ContainerImg = styled.div`
-  background-color: #2d3538; /* Fundo escuro elegante se imagem não carregar */
+  width: 100%;
+  height: 35rem; /* Altura padrão para desktop */
+  min-height: 20rem;
   border-radius: 1.6rem;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
   border: 0.1rem solid #333;
-  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.2);
+  background-color: transparent;
+
+  @media ${device.mobile} {
+    height: 20rem;
+    border-radius: 0.8rem;
+  }
 `;
 
 export const Img = styled.img`
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
-  display: block;
-  min-height: 30rem; /* Altura mínima elegante para a capa do projeto */
 `;
-
 export const ContainerButton = styled.div`
   display: flex;
   flex-direction: column;

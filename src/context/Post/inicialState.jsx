@@ -4,6 +4,7 @@ import { localStorageService } from "../../services/localStorageService";
 export const ESTADO_LIMPO = {
   //Dados do formulário
   formData: {
+    type: "PROJECT", // Pode ser "PROJECT" ou "QUESTION"
     tags: [], // Lista de todas as tags disponíveis (vinda do JSON)
     title: "",
     content: "",
