@@ -114,6 +114,22 @@ export const PostHeader = styled.header`
   }
 `;
 
+export const QuestionBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  background-color: rgba(255, 190, 46, 0.1);
+  color: #ffbe2e;
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 0.6rem 1.4rem;
+  border-radius: 2rem;
+  margin-bottom: 1.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  width: max-content;
+`;
+
 export const PostTitle = styled.h1`
   font-size: 3.3rem;
   color: #fff;
@@ -125,7 +141,6 @@ export const PostTitle = styled.h1`
   }
 `;
 
-/* --- ✨ NOVO DESIGN PREMIUM: PAINEL DE METADADOS ✨ --- */
 export const ProjectMetaCard = styled.div`
   display: flex;
   justify-content: space-between;
@@ -243,21 +258,36 @@ export const ProjectLink = styled.a`
 
 export const CoverImage = styled.div`
   width: 100%;
-  height: 35rem;
+  /* Se for dúvida, a altura se adapta ao print. Se for projeto, fixa em 35rem */
+  height: ${(props) => (props.$isQuestion ? "auto" : "35rem")};
+  max-height: ${(props) => (props.$isQuestion ? "60rem" : "none")};
   border-radius: 1.6rem;
   overflow: hidden;
-  background-color: #2d3538;
-  border: 0.1rem solid #333;
+
+  /* Dúvidas não precisam do fundo cinza escuro se a imagem for menor */
+  background-color: ${(props) =>
+    props.$isQuestion ? "transparent" : "#2d3538"};
+  border: ${(props) => (props.$isQuestion ? "none" : "0.1rem solid #333")};
   margin-bottom: 3.2rem;
 
+  display: flex;
+  justify-content: ${(props) => (props.$isQuestion ? "center" : "flex-start")};
+
   img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: ${(props) => (props.$isQuestion ? "auto" : "100%")};
+    max-width: 100%;
+    height: ${(props) => (props.$isQuestion ? "auto" : "100%")};
+    max-height: ${(props) => (props.$isQuestion ? "60rem" : "none")};
+
+    /* object-fit: cover corta a imagem para preencher. contain garante que o print apareça inteiro! */
+    object-fit: ${(props) => (props.$isQuestion ? "contain" : "cover")};
+
+    border-radius: ${(props) => (props.$isQuestion ? "0.8rem" : "0")};
+    ${(props) => props.$isQuestion && `border: 0.1rem solid #333;`}
   }
 
   @media ${device.mobile} {
-    height: 20rem;
+    height: ${(props) => (props.$isQuestion ? "auto" : "20rem")};
     border-radius: 0.8rem;
   }
 `;
@@ -682,8 +712,7 @@ export const RepliesContainer = styled.div`
   }
 `;
 
-
-/* --- ✨ BARRA DE ENGAJAMENTO (O TAMANHO PERFEITO) ✨ --- */
+/* --- BARRA DE ENGAJAMENTO --- */
 export const SocialEngagementBar = styled.div`
   display: flex;
   align-items: center;
@@ -713,10 +742,12 @@ export const SocialPill = styled.button`
   }
 
   /* ✨ Inteligência de cores baseada na prop $variant ✨ */
-  ${props => props.$variant === 'like' && `
-    color: ${props.$hasLiked ? '#ff5f56' : '#e1e1e1'};
-    background-color: ${props.$hasLiked ? 'rgba(255, 95, 86, 0.1)' : '#1e2426'};
-    border-color: ${props.$hasLiked ? 'rgba(255, 95, 86, 0.3)' : 'transparent'};
+  ${(props) =>
+    props.$variant === "like" &&
+    `
+    color: ${props.$hasLiked ? "#ff5f56" : "#e1e1e1"};
+    background-color: ${props.$hasLiked ? "rgba(255, 95, 86, 0.1)" : "#1e2426"};
+    border-color: ${props.$hasLiked ? "rgba(255, 95, 86, 0.3)" : "transparent"};
 
     &:hover {
       color: #ff5f56;
@@ -725,7 +756,9 @@ export const SocialPill = styled.button`
     }
   `}
 
-  ${props => props.$variant === 'share' && `
+  ${(props) =>
+    props.$variant === "share" &&
+    `
     &:hover {
       color: #81fe88;
       border-color: rgba(129, 254, 136, 0.5);

@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger"; // ✨ 1. Importando o monstro do Scroll
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import ProfileAvatar from "../../components/ProfileAvatar";
 import LoadingState from "../../components/LoadingState";
@@ -34,8 +34,6 @@ import {
   TagItem,
   BackButton,
   AuthorContainer,
-  ActionIcons,
-  IconGroup,
   CodeContainer,
   InputComment,
   CommentList,
@@ -58,6 +56,7 @@ import {
   LanguageDot,
   SocialEngagementBar,
   SocialPill,
+  QuestionBadge, // ✨ O Badge importado corretamente aqui
 } from "./style";
 
 import { usePost } from "../../hooks/usePost";
@@ -71,7 +70,7 @@ import {
   extrairDadosDoLink,
 } from "../../services/githubService";
 
-// ✨ 2. Registrando o plugin ANTES do componente rodar
+// Registrando o plugin ANTES do componente rodar
 gsap.registerPlugin(ScrollTrigger);
 
 const Post = () => {
@@ -132,12 +131,10 @@ const Post = () => {
     fetchGithubMetrics();
   }, [postDetails?.repoUrl]);
 
-  // ✨ 3. O NOVO MOTOR GSAP COM SCROLLTRIGGER ✨
   useGSAP(
     () => {
       if (!headerRef.current || loadingPostDetails) return;
 
-      // Animação 1: O HERO (Roda assim que a página abre, sem depender de scroll)
       gsap.to(".anim-hero", {
         y: 0,
         opacity: 1,
@@ -146,15 +143,14 @@ const Post = () => {
         ease: "power3.out",
       });
 
-      // Animação 2: O SCROLL (A mágica acontece aqui)
       const scrollElements = gsap.utils.toArray(".anim-scroll");
 
       scrollElements.forEach((el) => {
         gsap.to(el, {
           scrollTrigger: {
             trigger: el,
-            start: "top 85%", // Dispara quando o topo do elemento atinge 85% da altura da tela
-            toggleActions: "play none none reverse", // play(descer), none, none, reverse(subir)
+            start: "top 85%",
+            toggleActions: "play none none reverse",
           },
           y: 0,
           opacity: 1,
@@ -203,6 +199,9 @@ const Post = () => {
     );
   if (!postDetails) return null;
 
+  //  O DETETIVE QUE DESCOBRE SE É DÚVIDA OU PROJETO
+  const isQuestion = postDetails.type === "QUESTION";
+
   const handleShare = async () => {
     const link = window.location.href;
     compartilharPost(id);
@@ -210,7 +209,7 @@ const Post = () => {
       if (navigator.share) {
         await navigator.share({
           title: "CodeConnect",
-          text: `Dá uma olhada no projeto "${postDetails.title}" no CodeConnect!`,
+          text: `Dá uma olhada nisso no CodeConnect!`,
           url: link,
         });
       } else {
@@ -273,6 +272,7 @@ const Post = () => {
               </ActionButton>
             )}
 
+            {/* O Dono do Post pode marcar soluções! Excelente para as Dúvidas */}
             {isAuthorPost && !isReply && (
               <ActionButton
                 onClick={() => handleToggleSolution(comment.id)}
@@ -368,6 +368,16 @@ const Post = () => {
             )}
           </HeaderTop>
 
+          {/*  ETIQUETA EXCLUSIVA PARA DÚVIDAS  */}
+          {isQuestion && (
+            <QuestionBadge
+              className="anim-hero"
+              style={{ opacity: 0, transform: "translateY(30px)" }}
+            >
+              💡 Dúvida da Comunidade
+            </QuestionBadge>
+          )}
+
           <PostTitle
             className="anim-hero"
             style={{ opacity: 0, transform: "translateY(30px)" }}
@@ -375,71 +385,79 @@ const Post = () => {
             {postDetails.title}
           </PostTitle>
 
-          <ProjectMetaCard
-            className="anim-hero"
-            style={{ opacity: 0, transform: "translateY(30px)" }}
-          >
-            {githubMetrics ? (
-              <GithubBadgesContainer>
-                {githubMetrics.language && (
+          {/* PAINEL DE METADADOS SÓ APARECE PARA PROJETOS */}
+          {!isQuestion && (
+            <ProjectMetaCard
+              className="anim-hero"
+              style={{ opacity: 0, transform: "translateY(30px)" }}
+            >
+              {githubMetrics ? (
+                <GithubBadgesContainer>
+                  {githubMetrics.language && (
+                    <GithubBadge>
+                      <LanguageDot /> {githubMetrics.language}
+                    </GithubBadge>
+                  )}
                   <GithubBadge>
-                    <LanguageDot /> {githubMetrics.language}
+                    <FaStar style={{ color: "#d4af37" }} />{" "}
+                    {githubMetrics.stars}
                   </GithubBadge>
+                  <GithubBadge>
+                    <FaCodeBranch style={{ color: "#58a6ff" }} />{" "}
+                    {githubMetrics.forks}
+                  </GithubBadge>
+                </GithubBadgesContainer>
+              ) : (
+                <div style={{ color: "#818388", fontSize: "1.4rem" }}>
+                  Detalhes do Projeto
+                </div>
+              )}
+
+              <ProjectLinksContainer>
+                {postDetails.projectUrl ? (
+                  <ProjectLink
+                    href={postDetails.projectUrl}
+                    target="_blank"
+                    $primary={true}
+                  >
+                    <FaExternalLinkAlt /> <span>Deploy</span>
+                  </ProjectLink>
+                ) : (
+                  <ProjectLink as="span" $desabilitado>
+                    <FaExternalLinkAlt /> <span>Offline</span>
+                  </ProjectLink>
                 )}
-                <GithubBadge>
-                  <FaStar style={{ color: "#d4af37" }} /> {githubMetrics.stars}
-                </GithubBadge>
-                <GithubBadge>
-                  <FaCodeBranch style={{ color: "#58a6ff" }} />{" "}
-                  {githubMetrics.forks}
-                </GithubBadge>
-              </GithubBadgesContainer>
-            ) : (
-              <div style={{ color: "#818388", fontSize: "1.4rem" }}>
-                Detalhes do Projeto
-              </div>
-            )}
 
-            <ProjectLinksContainer>
-              {postDetails.projectUrl ? (
-                <ProjectLink
-                  href={postDetails.projectUrl}
-                  target="_blank"
-                  $primary={true}
-                >
-                  <FaExternalLinkAlt /> <span>Deploy</span>
-                </ProjectLink>
-              ) : (
-                <ProjectLink as="span" $desabilitado>
-                  <FaExternalLinkAlt /> <span>Offline</span>
-                </ProjectLink>
-              )}
+                {postDetails.repoUrl ? (
+                  <ProjectLink href={postDetails.repoUrl} target="_blank">
+                    <FaGithub /> <span>Código</span>
+                  </ProjectLink>
+                ) : (
+                  <ProjectLink as="span" $desabilitado>
+                    <FaGithub /> <span>Privado</span>
+                  </ProjectLink>
+                )}
+              </ProjectLinksContainer>
+            </ProjectMetaCard>
+          )}
 
-              {postDetails.repoUrl ? (
-                <ProjectLink href={postDetails.repoUrl} target="_blank">
-                  <FaGithub /> <span>Código</span>
-                </ProjectLink>
-              ) : (
-                <ProjectLink as="span" $desabilitado>
-                  <FaGithub /> <span>Privado</span>
-                </ProjectLink>
-              )}
-            </ProjectLinksContainer>
-          </ProjectMetaCard>
-
-          <CoverImage
-            className="anim-hero"
-            style={{ opacity: 0, transform: "translateY(30px)" }}
-          >
-            <img
-              src={
-                postDetails.image
-                  ? `data:image/png;base64,${postDetails.image}`
-                  : defaultImg
-              }
-              alt="Capa do projeto"
-            />
-          </CoverImage>
+          {/* IMAGEM INTELIGENTE: Banner se Projeto, Anexo se Dúvida */}
+          {(!isQuestion || postDetails.image) && (
+            <CoverImage
+              $isQuestion={isQuestion}
+              className="anim-hero"
+              style={{ opacity: 0, transform: "translateY(30px)" }}
+            >
+              <img
+                src={
+                  postDetails.image
+                    ? `data:image/png;base64,${postDetails.image}`
+                    : defaultImg
+                }
+                alt={isQuestion ? "Print do erro anexado" : "Capa do projeto"}
+              />
+            </CoverImage>
+          )}
 
           <PostContent
             className="anim-scroll"
@@ -539,7 +557,11 @@ const Post = () => {
             >
               <input
                 type="text"
-                placeholder="Adicione um comentário construtivo..."
+                placeholder={
+                  isQuestion
+                    ? "Contribua com uma solução..."
+                    : "Adicione um comentário construtivo..."
+                }
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
                 disabled={enviandoComment || loadingPostDetails}
@@ -548,7 +570,7 @@ const Post = () => {
                 type="submit"
                 disabled={enviandoComment || !commentText.trim()}
               >
-                Comentar
+                Enviar
               </button>
             </InputComment>
           ) : (
@@ -558,7 +580,7 @@ const Post = () => {
           {loadingComments ? (
             <p>Carregando comentários...</p>
           ) : comments.length === 0 ? (
-            <p>Seja o primeiro a comentar neste projeto!</p>
+            <p>Seja o primeiro a interagir!</p>
           ) : (
             <CommentList>
               {comments.map((comment) => renderComment(comment, false))}
@@ -571,8 +593,8 @@ const Post = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleConfirmarExclusao}
-        titulo="Excluir Projeto"
-        mensagem="Tem certeza de que deseja excluir este projeto?"
+        titulo="Excluir Publicação"
+        mensagem="Tem certeza de que deseja excluir?"
         textoConfirmar="Sim, Excluir"
         isDestructive={true}
       />

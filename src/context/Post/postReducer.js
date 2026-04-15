@@ -282,6 +282,7 @@ export const postReducer = (state, action) => {
         ...state,
         formData: {
           ...state.formData,
+          type: action.payload.type || "PROJECT", // Agora também preenche o tipo do post (projeto ou dúvida)
           title: action.payload.title || "",
           content: action.payload.content || "",
           codeContent: action.payload.codeContent || "",
