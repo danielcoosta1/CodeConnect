@@ -9,6 +9,9 @@ import {
   StatItem,
   ProfileNav,
   ProfileTab,
+  Divider,
+  TabContent,
+  EmptyMessage,
 } from "./style";
 import { FaPen } from "react-icons/fa";
 
@@ -20,18 +23,19 @@ import ErrorState from "../../components/ErrorState/index.jsx";
 import ModalEditarPerfil from "../../components/ModalEditarPerfil/index.jsx";
 import ProfileAvatar from "../../components/ProfileAvatar/index.jsx";
 
+// O componente inteligente faz todo o trabalho pesado agora
+import GithubDashboard from "../../components/GithubDashboard/index.jsx";
+
 const Perfil = () => {
   const { user } = useAuth();
-  const { carregarMeusPostsDoBanco, myPosts, loadingMyPosts, errorMyPosts } =
-    usePost();
+  const { carregarMeusPostsDoBanco, myPosts, loadingMyPosts, errorMyPosts } = usePost();
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [abaAtiva, setAbaAtiva] = useState("projetos");
 
   useEffect(() => {
     carregarMeusPostsDoBanco();
   }, []);
-
-  const [abaAtiva, setAbaAtiva] = useState("projetos");
 
   if (!user) return null;
 
@@ -71,15 +75,11 @@ const Perfil = () => {
         </InfoContainer>
 
         <BtnEditar onClick={() => setModalIsOpen(true)}>
-          {/* Tamanho controlado pelo CSS agora */}
           <FaPen /> Editar Perfil
         </BtnEditar>
       </PerfilHeader>
 
-      {/* Linha divisória com REM */}
-      <div
-        style={{ height: "0.1rem", backgroundColor: "#333", width: "100%" }}
-      />
+      <Divider />
 
       <ProfileNav>
         <ProfileTab
@@ -88,76 +88,48 @@ const Perfil = () => {
         >
           Meus Projetos
         </ProfileTab>
+
         <ProfileTab
-          $active={abaAtiva === "compartilhados"}
-          onClick={() => setAbaAtiva("compartilhados")}
+          $active={abaAtiva === "estatisticas"}
+          onClick={() => setAbaAtiva("estatisticas")}
         >
-          Compartilhados
-        </ProfileTab>
-        <ProfileTab
-          $active={abaAtiva === "aprovados"}
-          onClick={() => setAbaAtiva("aprovados")}
-        >
-          Aprovados
+          Estatísticas
         </ProfileTab>
       </ProfileNav>
 
-      <>
-        {abaAtiva === "projetos" && (
-          <>
-            {loadingMyPosts ? (
-              <LoadingState texto="Carregando seus projetos..." size={45} />
-            ) : errorMyPosts ? (
-              <ErrorState
-                mensagem={errorMyPosts}
-                onRetry={carregarMeusPostsDoBanco}
-              />
-            ) : myPosts.length > 0 ? (
-              <CardGrid>
-                {myPosts.map((post) => (
-                  <Card key={post.id} post={post} />
-                ))}
-              </CardGrid>
-            ) : (
-              <div
-                style={{
-                  textAlign: "center",
-                  padding: "4rem",
-                  color: "#888",
-                  fontSize: "1.6rem",
-                }}
-              >
-                <p>Você ainda não publicou nenhum projeto.</p>
-              </div>
-            )}
-          </>
-        )}
+      {/* BLOCO DA ABA DE PROJETOS */}
+      {abaAtiva === "projetos" && (
+        <TabContent>
+          {loadingMyPosts ? (
+            <LoadingState texto="Carregando seus projetos..." size={45} />
+          ) : errorMyPosts ? (
+            <ErrorState
+              mensagem={errorMyPosts}
+              onRetry={carregarMeusPostsDoBanco}
+            />
+          ) : myPosts.length > 0 ? (
+            <CardGrid>
+              {myPosts.map((post) => (
+                <Card key={post.id} post={post} />
+              ))}
+            </CardGrid>
+          ) : (
+            <EmptyMessage>
+              <p>Você ainda não publicou nenhum projeto.</p>
+            </EmptyMessage>
+          )}
+        </TabContent>
+      )}
 
-        {abaAtiva === "compartilhados" && (
-          <p
-            style={{
-              color: "#888",
-              fontSize: "1.6rem",
-              textAlign: "center",
-              padding: "2rem",
-            }}
-          >
-            Projetos compartilhados...
-          </p>
-        )}
-        {abaAtiva === "aprovados" && (
-          <p
-            style={{
-              color: "#888",
-              fontSize: "1.6rem",
-              textAlign: "center",
-              padding: "2rem",
-            }}
-          >
-            Projetos aprovados...
-          </p>
-        )}
-      </>
+      {/* BLOCO DA ABA DE ESTATÍSTICAS (NOVO COMPONENTE) */}
+      {abaAtiva === "estatisticas" && (
+        <TabContent>
+          <GithubDashboard
+            githubUsername={user.github_username}
+            isOwner={true} // Define que é o perfil do dono
+          />
+        </TabContent>
+      )}
     </PerfilContainer>
   );
 };

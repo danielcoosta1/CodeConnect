@@ -26,11 +26,11 @@ export const PerfilHeader = styled.header`
   gap: 3.2rem;
 
   background-color: #171d1f;
-  padding: 3.2rem; 
-  border-radius: 1.6rem; 
+  padding: 3.2rem;
+  border-radius: 1.6rem;
 
   position: relative;
-  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.2); 
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.2);
 
   /* Abaixo de 1024px (Tablet), o layout vira vertical para não quebrar */
   @media ${device.tablet} {
@@ -45,7 +45,7 @@ export const PerfilHeader = styled.header`
 export const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.8rem; 
+  gap: 0.8rem;
   flex: 1;
 
   h2 {
@@ -71,11 +71,11 @@ export const InfoContainer = styled.div`
   }
 
   p.bio {
-    margin-top: 1.2rem; 
+    margin-top: 1.2rem;
     font-size: 1.6rem; /* 16px - Leitura agradável */
     line-height: 1.5;
     color: #cccccc;
-    max-width: 60rem; 
+    max-width: 60rem;
   }
 
   @media ${device.tablet} {
@@ -132,15 +132,15 @@ export const StatItem = styled.div`
 
 export const BtnEditar = styled.button`
   position: absolute;
-  top: 3.2rem; 
-  right: 3.2rem; 
+  top: 3.2rem;
+  right: 3.2rem;
 
   background: transparent;
   border: 0.1rem solid #81fe88;
   color: #81fe88;
 
-  padding: 0.8rem 1.6rem; 
-  border-radius: 0.8rem; 
+  padding: 0.8rem 1.6rem;
+  border-radius: 0.8rem;
 
   font-size: 1.4rem;
   font-weight: bold;
@@ -148,7 +148,7 @@ export const BtnEditar = styled.button`
 
   display: flex;
   align-items: center;
-  gap: 0.8rem; 
+  gap: 0.8rem;
 
   transition: all 0.2s;
 
@@ -164,7 +164,7 @@ export const BtnEditar = styled.button`
   }
 
   @media ${device.tablet} {
-    position: static; 
+    position: static;
     width: 100%;
     justify-content: center;
     margin-top: 1rem;
@@ -189,7 +189,7 @@ export const ProfileTab = styled.button`
   background: none;
   border: none;
   font-size: 1.6rem; /* Aumentado para leitura no mobile */
-  padding-bottom: 1rem; 
+  padding-bottom: 1rem;
   cursor: pointer;
   color: ${({ $active }) => ($active ? "#81fe88" : "#888888")};
 
@@ -201,7 +201,7 @@ export const ProfileTab = styled.button`
     bottom: -0.1rem;
     left: 0;
     width: 100%;
-    height: 0.2rem; 
+    height: 0.2rem;
     background-color: #81fe88;
     transform: scaleX(${({ $active }) => ($active ? "1" : "0")});
     transition: transform 0.3s ease;
@@ -212,5 +212,104 @@ export const ProfileTab = styled.button`
 
   &:hover {
     color: #ffffff;
+  }
+`;
+
+export const Divider = styled.div`
+  height: 0.1rem;
+  background-color: #333333;
+  width: 100%;
+`;
+
+export const TabContent = styled.div`
+  padding: 4rem 2rem;
+  text-align: center;
+  width: 100%;
+`;
+
+export const SectionTitle = styled.h3`
+  color: #ffffff;
+  margin-bottom: 3.2rem;
+  font-size: 2rem;
+`;
+
+export const EmptyMessage = styled.div`
+  text-align: center;
+  padding: 4rem;
+  color: #888888;
+  font-size: 1.6rem;
+
+  p.small {
+    margin-top: 0.8rem;
+    font-size: 1.4rem;
+  }
+`;
+
+export const DashboardGrid = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3.2rem;
+  width: 100%;
+`;
+
+export const MetricsRow = styled.div`
+  display: flex;
+  gap: 2.4rem;
+  justify-content: center;
+  flex-wrap: wrap;
+`;
+
+export const MetricCard = styled.div`
+  background: #171d1f;
+  padding: 2.4rem;
+  border-radius: 1.2rem;
+  min-width: 18rem;
+  border: 0.1rem solid #333333;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  h4 {
+    font-size: 3.2rem;
+    margin-bottom: 0.8rem;
+    color: ${({ $color }) => $color || "#ffffff"};
+  }
+
+  p {
+    color: #888888;
+    font-size: 1.4rem;
+    font-weight: 500;
+  }
+`;
+
+export const ChartSection = styled.div`
+  background: #171d1f;
+  padding: 3.2rem;
+  border-radius: 1.2rem;
+  border: 0.1rem solid #333333;
+  width: 100%;
+`;
+
+export const CalendarSection = styled.div`
+  background: #171d1f;
+  padding: 3.2rem;
+  border-radius: 1.2rem;
+  border: 0.1rem solid #333333;
+  overflow-x: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h3 {
+    text-align: left;
+    width: 100%;
+    margin-bottom: 2.4rem;
+  }
+
+  /* Ajuste interno pro calendário não quebrar em telas menores */
+  .react-activity-calendar {
+    padding: 1rem;
   }
 `;

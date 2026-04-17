@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import LoadingState from "../../components/LoadingState";
 import ErrorState from "../../components/ErrorState";
 import {
-  BotaoSeguir,
   InfoContainer,
   PerfilContainer,
   PerfilHeader,
@@ -13,13 +12,19 @@ import {
   ProfileTab,
   StatItem,
   StatsContainer,
-} from "./style";
+  Divider,
+  TabContent,
+  EmptyMessage,
+} from "../Perfil/style"; // Importando do style.js unificado do Perfil
 import ProfileAvatar from "../../components/ProfileAvatar";
 import { CardGrid } from "../../components/CardGrid/style";
 import Card from "../../components/Card";
 import { FiUserPlus, FiUserCheck, FiUserX } from "react-icons/fi";
 import { LuLoader } from "react-icons/lu";
 import { toastSucesso } from "../../utils/toast";
+
+import GithubDashboard from "../../components/GithubDashboard";
+import { BotaoSeguir } from "./style";
 
 const PerfilPublico = () => {
   const { id } = useParams();
@@ -36,39 +41,28 @@ const PerfilPublico = () => {
     atualizarSeguidoresPerfilPublico,
   } = usePost();
 
+  const [abaAtiva, setAbaAtiva] = useState("projetos");
+  const [isHoveringBtn, setIsHoveringBtn] = useState(false);
+
   useEffect(() => {
     if (id) {
       carregarPerfilPublico(id);
     }
   }, [id]);
 
-  // 3. O Segurança de Rota
   useEffect(() => {
-    // Se o ID da URL for o meu próprio ID, me mande para o perfil privado!
     if (usuarioLogado && usuarioLogado.id === id) {
-      navigate("/perfil", { replace: true }); // O replace=true evita bugs no botão "Voltar" do navegador
+      navigate("/perfil", { replace: true });
     }
-  }, [id, usuarioLogado, navigate]); // Coloquei o navigate aqui para evitar um bug onde, se eu entrasse na URL do meu próprio perfil, ele carregava o perfil público e só depois redirecionava para o privado. Agora ele já redireciona antes de tentar carregar o perfil público.
+  }, [id, usuarioLogado, navigate]);
 
-  const [abaAtiva, setAbaAtiva] = useState("projetos");
-  const [isHoveringBtn, setIsHoveringBtn] = useState(false); // Estado para controlar o hover do botão
-
-  // Verifica se o usuário logado já segue o perfil que está visitando
   const isFollowing = usuarioLogado?.followingIds?.includes(id);
-
-  // Verifica se o perfil que está sendo visitado é o próprio perfil do usuário logado
   const isMyOwnProfile = usuarioLogado?.id === id;
 
   const lidarComSeguir = async () => {
-    // 1. O handleToggleFollow já faz a requisição e retorna true/false
     const resultIsFollowing = await handleToggleFollow(id);
-
-    // Se não for undefined (ou seja, se não deu erro de API)
     if (resultIsFollowing !== undefined) {
-      // 2. Avisa o PostContext para somar/subtrair +1 na vitrine!
       atualizarSeguidoresPerfilPublico(resultIsFollowing, usuarioLogado.id);
-
-      // 3. Mostra o Toast dinâmico bonitão!
       if (resultIsFollowing) {
         toastSucesso(`Você começou a seguir ${userProfile.nome}!`);
       } else {
@@ -95,7 +89,6 @@ const PerfilPublico = () => {
   return (
     <PerfilContainer>
       <PerfilHeader>
-        {/* Usando 150 de size para ficar do mesmo tamanho do perfil privado */}
         <ProfileAvatar src={userProfile.imagem} size={150} hasBorder={true} />
 
         <InfoContainer>
@@ -125,6 +118,7 @@ const PerfilPublico = () => {
               <span>Seguidores</span>
             </StatItem>
           </StatsContainer>
+
           {!isMyOwnProfile && (
             <BotaoSeguir
               $isFollowing={isFollowing}
@@ -157,10 +151,7 @@ const PerfilPublico = () => {
         </InfoContainer>
       </PerfilHeader>
 
-      {/* Linha divisória fina em REM */}
-      <div
-        style={{ height: "0.1rem", backgroundColor: "#333", width: "100%" }}
-      />
+      <Divider />
 
       <ProfileNav>
         <ProfileTab
@@ -170,68 +161,39 @@ const PerfilPublico = () => {
           Projetos
         </ProfileTab>
         <ProfileTab
-          $active={abaAtiva === "compartilhados"}
-          onClick={() => setAbaAtiva("compartilhados")}
+          $active={abaAtiva === "estatisticas"}
+          onClick={() => setAbaAtiva("estatisticas")}
         >
-          Compartilhados
-        </ProfileTab>
-        <ProfileTab
-          $active={abaAtiva === "aprovados"}
-          onClick={() => setAbaAtiva("aprovados")}
-        >
-          Aprovados
+          Estatísticas
         </ProfileTab>
       </ProfileNav>
 
-      <>
-        {abaAtiva === "projetos" && (
-          <>
-            {userPosts.length > 0 ? (
-              <CardGrid>
-                {userPosts.map((post) => (
-                  <Card key={post.id} post={post} />
-                ))}
-              </CardGrid>
-            ) : (
-              <div
-                style={{
-                  textAlign: "center",
-                  padding: "4rem",
-                  color: "#888",
-                  fontSize: "1.6rem",
-                }}
-              >
-                <p>{userProfile.nome} ainda não publicou nenhum projeto.</p>
-              </div>
-            )}
-          </>
-        )}
+      {/* BLOCO DA ABA DE PROJETOS */}
+      {abaAtiva === "projetos" && (
+        <TabContent>
+          {userPosts.length > 0 ? (
+            <CardGrid>
+              {userPosts.map((post) => (
+                <Card key={post.id} post={post} />
+              ))}
+            </CardGrid>
+          ) : (
+            <EmptyMessage>
+              <p>{userProfile.nome} ainda não publicou nenhum projeto.</p>
+            </EmptyMessage>
+          )}
+        </TabContent>
+      )}
 
-        {abaAtiva === "compartilhados" && (
-          <p
-            style={{
-              color: "#888",
-              fontSize: "1.6rem",
-              textAlign: "center",
-              padding: "2rem",
-            }}
-          >
-            Em breve...
-          </p>
-        )}
-        {abaAtiva === "aprovados" && (
-          <p
-            style={{
-              color: "#888",
-              fontSize: "1.6rem",
-              textAlign: "center",
-              padding: "2rem",
-            }}
-          >
-            Em breve...
-          </p>
-        )}
-      </>
+      {/* BLOCO DA ABA DE ESTATÍSTICAS (NOVO COMPONENTE) */}
+      {abaAtiva === "estatisticas" && (
+        <TabContent>
+          <GithubDashboard
+            githubUsername={userProfile.github_username}
+            isOwner={false}
+          />
+        </TabContent>
+      )}
     </PerfilContainer>
   );
 };
