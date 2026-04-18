@@ -176,7 +176,6 @@ const Post = () => {
   } = useComments(id);
 
   const handleConfirmarExclusao = async () => {
-    
     const isQuestion = postDetails?.type === "QUESTION";
     const tipoPost = isQuestion ? "Dúvida" : "Projeto";
     const sufixoDeGenero = isQuestion ? "a" : "o"; // publicadA / publicadO
@@ -194,6 +193,16 @@ const Post = () => {
     await handleComentar(e, parentId, replyText);
     setReplyText("");
     setReplyingTo(null);
+  };
+
+  const likePost = async (id) => {
+    if (!user) return toastErro("Faça login para curtir o post!");
+    const sucesso = await curtirPost(id);
+    if (sucesso && !hasLikedPost) {
+      toastSucesso("Post curtido com sucesso!");
+    } else if (sucesso && hasLikedPost) {
+      toastSucesso("Curtida removida com sucesso!");
+    }
   };
 
   if (loadingPostDetails)
@@ -492,9 +501,7 @@ const Post = () => {
             <SocialPill
               $variant="like"
               $hasLiked={hasLikedPost}
-              onClick={() =>
-                user ? curtirPost(id) : toastErro("Logue para curtir!")
-              }
+              onClick={() => likePost(id)}
             >
               {hasLikedPost ? <FaHeart /> : <FaRegHeart />}
               <span>{postDetails.likeIds?.length || 0}</span>
