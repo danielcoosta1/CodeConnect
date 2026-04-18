@@ -379,7 +379,7 @@ const Publicar = () => {
                 name="content"
                 placeholder={
                   postType === "PROJECT"
-                    ? "Conte um pouco sobre as tecnologias..."
+                    ? "Conte um pouco sobre o projeto..."
                     : "Descreva passo a passo o que aconteceu..."
                 }
                 value={formData.content}
