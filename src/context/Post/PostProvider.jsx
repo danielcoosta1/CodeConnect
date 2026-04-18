@@ -127,15 +127,17 @@ export const PostProvider = ({ children }) => {
       const postCriado = await createPostRequest(postData); // Sua função do service que faz axios.post
 
       dispatch({ type: "PUBLICACAO_SUCESSO" });
-      toastSucesso("Post publicado com sucesso!");
-
       dispatch({ type: "ADD_POST", payload: postCriado }); // Adiciona o novo post ao estado global
 
       setTimeout(() => limparFormulario(), 1500); // Limpa após 1.5s para ver o sucesso
+
+      return true; // Avisa a página que deu tudo certo!
     } catch (error) {
       const msgErro = error.response?.data?.error || "Erro ao publicar o post.";
+
       dispatch({ type: "PUBLICACAO_ERRO", payload: msgErro });
       toastErro(msgErro);
+      return false; // Avisa a página que deu erro
     }
   };
 
@@ -211,11 +213,9 @@ export const PostProvider = ({ children }) => {
         payload: postId, //  Mandamos o ID exato para o filtro funcionar
       });
 
-      toastSucesso("Projeto excluído com sucesso!");
       return true; // Avisa a página que deu tudo certo!
     } catch (error) {
-      const msgErro =
-        error.response?.data?.error || "Erro ao excluir o projeto.";
+      const msgErro = error.response?.data?.error || "Erro ao excluir o post.";
       dispatch({ type: "DELETAR_POST_ERRO", payload: msgErro });
       toastErro(msgErro);
       console.error(error);
@@ -266,7 +266,6 @@ export const PostProvider = ({ children }) => {
         payload: response.post, // O post atualizado que volta da API
       });
 
-      toastSucesso("Projeto atualizado com sucesso!");
       return true;
     } catch (error) {
       const msgErro =
