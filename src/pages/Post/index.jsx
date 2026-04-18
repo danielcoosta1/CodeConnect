@@ -240,7 +240,7 @@ const Post = () => {
 
         <CommentContentContainer>
           <CommentsContent>
-            <CommentHeaderInfo>
+            <CommentHeaderInfo to={`/perfil/${comment.author?.id}`}>
               <h4>
                 {comment.author?.nome} {comment.author?.sobrenome}
               </h4>
