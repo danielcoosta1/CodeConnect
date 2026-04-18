@@ -39,6 +39,7 @@ import MDEditor from "@uiw/react-md-editor";
 import closeIcon from "./assets/icons/close.svg";
 import ModalConfirmacao from "../../components/ModalConfirmacao";
 import { useNavigate, useParams } from "react-router-dom";
+import { toastSucesso } from "../../utils/toast";
 
 const Publicar = () => {
   const {
@@ -138,15 +139,30 @@ const Publicar = () => {
       postData.repoUrl = null;
     }
 
+    // 1. O Componente analisa o contexto do que está na tela
+    const isQuestion = postData.type === "QUESTION";
+    const nomeDaVertente = isQuestion ? "Dúvida" : "Projeto";
+    const sufixoDeGenero = isQuestion ? "a" : "o"; // publicadA / publicadO
+
     if (isEditMode) {
       const sucesso = await atualizarPost(id, postData);
       if (sucesso) {
+        // 2. Dispara o Toast perfeito!
+        toastSucesso(
+          `${nomeDaVertente} atualizad${sufixoDeGenero} com sucesso!`,
+        );
         limparFormulario();
         navigate(`/post/${id}`);
       }
     } else {
       const sucesso = await publicarPost(postData);
-      if (sucesso) navigate("/feed");
+      if (sucesso) {
+        // 2. Dispara o Toast perfeito!
+        toastSucesso(
+          `${nomeDaVertente} publicad${sufixoDeGenero} com sucesso!`,
+        );
+        navigate("/feed");
+      }
     }
   };
 

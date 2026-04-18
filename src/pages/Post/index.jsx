@@ -176,8 +176,16 @@ const Post = () => {
   } = useComments(id);
 
   const handleConfirmarExclusao = async () => {
+    
+    const isQuestion = postDetails?.type === "QUESTION";
+    const tipoPost = isQuestion ? "Dúvida" : "Projeto";
+    const sufixoDeGenero = isQuestion ? "a" : "o"; // publicadA / publicadO
+
     const sucesso = await deletarPostPorId(id);
-    if (sucesso) navigate("/feed");
+    if (sucesso) {
+      toastSucesso(`${tipoPost} excluíd${sufixoDeGenero} com sucesso!`);
+      navigate("/feed");
+    }
   };
 
   const submitReply = async (e, parentId) => {
@@ -240,7 +248,7 @@ const Post = () => {
 
         <CommentContentContainer>
           <CommentsContent>
-            <CommentHeaderInfo>
+            <CommentHeaderInfo to={`/perfil/${comment.author?.id}`}>
               <h4>
                 {comment.author?.nome} {comment.author?.sobrenome}
               </h4>

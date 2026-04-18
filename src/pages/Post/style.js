@@ -597,7 +597,7 @@ export const CommentsContent = styled.div`
   width: 100%;
 `;
 
-export const CommentHeaderInfo = styled.div`
+export const CommentHeaderInfo = styled(Link)`
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -614,6 +614,10 @@ export const CommentHeaderInfo = styled.div`
     font-size: 1.4rem;
     color: #818388;
     font-weight: 500;
+  }
+
+  &:hover {
+    text-decoration: underline;
   }
 `;
 

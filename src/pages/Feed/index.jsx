@@ -22,7 +22,8 @@ import LoadingState from "../../components/LoadingState";
 import ErrorState from "../../components/ErrorState";
 
 const Feed = () => {
-  const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } = usePost();
+  const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
+    usePost();
 
   const [termoBusca, setTermoBusca] = useState("");
   const [tagsFiltrosAtivos, setTagsFiltrosAtivos] = useState([]);
@@ -96,11 +97,11 @@ const Feed = () => {
       if (postsFiltrados.length > 0) {
         // Usamos .to() porque o elemento já começa no estado 'from' (definido no HTML)
         gsap.to(".post-animado", {
-          y: 0,           // Volta para a posição original Y: 0
-          opacity: 1,     // Fica visível
-          scale: 1,       // Volta pro tamanho original (100%)
-          duration: 1.2,  // Duração macia por card
-          stagger: 0.25,  // Atraso entre os cards (Efeito Cascata)
+          y: 0, // Volta para a posição original Y: 0
+          opacity: 1, // Fica visível
+          scale: 1, // Volta pro tamanho original (100%)
+          duration: 1.2, // Duração macia por card
+          stagger: 0.25, // Atraso entre os cards (Efeito Cascata)
           ease: "back.out(1.2)", // O "quique" elástico do microzoom
         });
       }
@@ -108,7 +109,7 @@ const Feed = () => {
     {
       scope: feedRef,
       dependencies: [postsFiltrados, loadingPosts, errorPosts], // Refaz ao filtrar
-    }
+    },
   );
 
   const temResultados = postsFiltrados.length > 0;
@@ -146,7 +147,7 @@ const Feed = () => {
                         <TagRemoveButton
                           onClick={() =>
                             setTagsFiltrosAtivos(
-                              tagsFiltrosAtivos.filter((_, i) => i !== index)
+                              tagsFiltrosAtivos.filter((_, i) => i !== index),
                             )
                           }
                         >
@@ -166,12 +167,15 @@ const Feed = () => {
           {temResultados ? (
             <CardGrid>
               {postsFiltrados.map((post) => (
-                // --- ✨ WRAPPER DE ANIMAÇÃO (MICROZOOM) ✨ ---
-                <div 
-                  key={post.id} 
+                // --- WRAPPER DE ANIMAÇÃO ---
+                <div
+                  key={post.id}
                   className="post-animado"
-                  // DEFINIMOS O ESTADO INICIAL AQUI: Invisível, menor e rebaixado
-                  style={{ opacity: 0, scale: 0.95, transform: "translateY(30px)" }}
+                  style={{
+                    opacity: 0,
+                    scale: 0.95,
+                    transform: "translateY(30px)",
+                  }}
                 >
                   <Card post={post} />
                 </div>
