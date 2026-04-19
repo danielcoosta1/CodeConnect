@@ -43,7 +43,8 @@ export const buscarEstatisticasGithub = async (githubUsername) => {
   const linguagensArr = Object.keys(contagemLinguagens).map(key => ({
     name: key,
     value: contagemLinguagens[key]
-  }));
+  })); // Transforma o Objeto em um Array para o Recharts - [{name: "JavaScript", value: 5}, {name: "Python", value: 3}]
+  
 
   // Retorna um Objeto Completo com tudo que precisamos para o Dashboard
   return {

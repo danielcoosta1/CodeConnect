@@ -290,6 +290,7 @@ export const PostProvider = ({ children }) => {
         type: "ATUALIZAR_POST_SOCIAL_SUCESSO",
         payload: postAtualizado,
       });
+      return true;
     } catch (error) {
       // 4. Deu erro! Registra o erro e para o loading
       console.error("Erro ao curtir o post:", error);
