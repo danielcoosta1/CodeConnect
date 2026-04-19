@@ -162,3 +162,49 @@ export const toggleFollow = async (req, res) => {
     return res.status(500).json({ error: "Erro interno no servidor." });
   }
 };
+
+export const obterRedeDoUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const rede = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        followers: {
+          select: {
+            id: true,
+            nome: true,
+            sobrenome: true,
+            usuario: true,
+            imagem: true,
+            bio: true,
+            funcao: true,
+          },
+        },
+        following: {
+          select: {
+            id: true,
+            nome: true,
+            sobrenome: true,
+            usuario: true,
+            imagem: true,
+            bio: true,
+            funcao: true,
+          },
+        },
+      },
+    });
+
+    if (!rede) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
+    return res.status(200).json({
+      seguidores: rede.followers,
+      seguindo: rede.following,
+    });
+  } catch (error) {
+    console.error("Erro ao obter rede do usuário:", error);
+    return res.status(500).json({ error: "Erro interno no servidor." });
+  }
+};

@@ -111,15 +111,49 @@ export const StatItem = styled.div`
   align-items: center;
   justify-content: center;
 
+  /* Lógica dinâmica de Cursor e Opacidade */
+  cursor: ${(props) =>
+    props.$isLoading ? "wait" : props.$isClickable ? "pointer" : "default"};
+  opacity: ${(props) => (props.$isLoading ? 0.6 : 1)};
+  pointer-events: ${(props) =>
+    props.$isLoading
+      ? "none"
+      : "auto"}; /* Desativa o clique se estiver carregando */
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+
   strong {
     color: #ffffff;
-    font-size: 1.8rem; /* 18px */
+    font-size: 1.8rem;
+    transition: color 0.2s ease;
   }
 
   span {
     font-size: 1.4rem;
     color: #888888;
+    transition: color 0.2s ease;
   }
+
+  /* Feedback Visual (Hover) APENAS se for um item clicável */
+  ${(props) =>
+    props.$isClickable &&
+    `
+    &:hover {
+      transform: translateY(-2px);
+      strong {
+        color: #81fe88; /* Acende com a cor principal do seu app */
+      }
+      span {
+        color: #ffffff; /* Fica mais claro */
+      }
+    }
+
+    &:active {
+      transform: translateY(0); /* Efeito de afundar ao clicar */
+    }
+  `}
 
   @media ${device.tablet} {
     gap: 0.4rem;

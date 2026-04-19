@@ -23,3 +23,8 @@ export const toggleFollowRequest = async (targetUserId) => {
   const response = await api.post(`/users/${targetUserId}/follow`);
   return response.data; // Vai retornar a {message, isFollowing} do backend
 };
+
+export const getNetworkRequest = async (userId) => {
+  const response = await api.get(`/users/${userId}/network`);
+  return response.data; // Vai retornar { followers: [...], following: [...] }
+}

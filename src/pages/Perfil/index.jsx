@@ -22,9 +22,12 @@ import LoadingState from "../../components/LoadingState/index.jsx";
 import ErrorState from "../../components/ErrorState/index.jsx";
 import ModalEditarPerfil from "../../components/ModalEditarPerfil/index.jsx";
 import ProfileAvatar from "../../components/ProfileAvatar/index.jsx";
-
-// O componente inteligente faz todo o trabalho pesado agora
 import GithubDashboard from "../../components/GithubDashboard/index.jsx";
+
+// Importações novas para o Modal de Conexões
+import ModalConexoes from "../../components/ModalConexoes";
+import { getNetworkRequest } from "../../services/userService";
+import { toastErro } from "../../utils/toast";
 
 const Perfil = () => {
   const { user } = useAuth();
@@ -33,9 +36,43 @@ const Perfil = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [abaAtiva, setAbaAtiva] = useState("projetos");
 
+  // Novos estados para o Modal de Conexões
+  const [modalConexoesAtivo, setModalConexoesAtivo] = useState(false);
+  const [dadosModalConexoes, setDadosModalConexoes] = useState({
+    titulo: "",
+    lista: [],
+  });
+  const [loadingRede, setLoadingRede] = useState(false);
+
   useEffect(() => {
     carregarMeusPostsDoBanco();
   }, []);
+
+  // Nova função para buscar a rede do próprio usuário
+  const lidarComAbrirModalConexoes = async (tipo) => {
+    setLoadingRede(true);
+    try {
+      const rede = await getNetworkRequest(user.id);
+      
+      if (tipo === "followers") {
+        setDadosModalConexoes({ 
+          titulo: "Seguidores", 
+          lista: rede.seguidores || [] 
+        });
+      } else {
+        setDadosModalConexoes({ 
+          titulo: "Seguindo", 
+          lista: rede.seguindo || [] 
+        });
+      }
+      setModalConexoesAtivo(true);
+    } catch (error) {
+      console.error("Erro ao carregar sua rede:", error);
+      toastErro("Não foi possível carregar as conexões");
+    } finally {
+      setLoadingRede(false);
+    }
+  };
 
   if (!user) return null;
 
@@ -67,9 +104,23 @@ const Perfil = () => {
               <strong>{myPosts.length}</strong>
               <span>Projetos</span>
             </StatItem>
-            <StatItem>
+            
+            <StatItem
+              $isClickable={true}
+              $isLoading={loadingRede}
+              onClick={() => lidarComAbrirModalConexoes("following")}
+            >
+              <strong>{user.followingIds?.length || 0}</strong>
+              <span>Seguindo</span>
+            </StatItem>
+
+            <StatItem
+              $isClickable={true}
+              $isLoading={loadingRede}
+              onClick={() => lidarComAbrirModalConexoes("followers")}
+            >
               <strong>{user.followerIds?.length || 0}</strong>
-              <span>Conexões</span>
+              <span>Seguidores</span>
             </StatItem>
           </StatsContainer>
         </InfoContainer>
@@ -121,15 +172,23 @@ const Perfil = () => {
         </TabContent>
       )}
 
-      {/* BLOCO DA ABA DE ESTATÍSTICAS (NOVO COMPONENTE) */}
+      {/* BLOCO DA ABA DE ESTATÍSTICAS */}
       {abaAtiva === "estatisticas" && (
         <TabContent>
           <GithubDashboard
             githubUsername={user.github_username}
-            isOwner={true} // Define que é o perfil do dono
+            isOwner={true}
           />
         </TabContent>
       )}
+
+      {/* MODAL DE CONEXÕES REAPROVEITADO */}
+      <ModalConexoes
+        isOpen={modalConexoesAtivo}
+        onClose={() => setModalConexoesAtivo(false)}
+        titulo={dadosModalConexoes.titulo}
+        usuarios={dadosModalConexoes.lista}
+      />
     </PerfilContainer>
   );
 };
