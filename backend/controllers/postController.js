@@ -254,7 +254,7 @@ export const updatePost = async (req, res) => {
       return res.status(404).json({ error: "Publicação não encontrada." });
     }
 
-    if (post.authorId !== userId) {
+    if (post.authorId !== userId) { // Segurança caso alguém tente editar o post de outro usuário pela URL - 
       return res.status(403).json({
         error: "Acesso negado. Você só pode editar suas próprias publicações.",
       });

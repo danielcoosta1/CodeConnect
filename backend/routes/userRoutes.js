@@ -3,6 +3,7 @@ import {
   atualizarPerfil,
   buscarPerfil,
   buscarUsuarioPorId,
+  obterRedeDoUsuario,
   toggleFollow,
 } from "../controllers/userController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
@@ -15,5 +16,6 @@ router.put("/perfil", authMiddleware, atualizarPerfil);
 router.get("/me", authMiddleware, buscarPerfil);
 router.get("/:id", authMiddleware, buscarUsuarioPorId);
 router.post("/:id/follow", authMiddleware, toggleFollow);
+router.get("/:id/network", authMiddleware, obterRedeDoUsuario);
 
 export default router;
