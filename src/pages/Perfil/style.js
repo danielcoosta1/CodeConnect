@@ -257,7 +257,6 @@ export const Divider = styled.div`
 
 export const TabContent = styled.div`
   padding: 4rem 2rem;
-  text-align: center;
   width: 100%;
 `;
 
