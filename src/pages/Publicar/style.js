@@ -571,3 +571,107 @@ export const ContainerCode = styled.div`
     overflow: hidden;
   }
 `;
+
+export const ColaboradoresWrapper = styled.div`
+  display: flex;
+  position: relative;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+`;
+
+export const ColaboradorTag = styled.div`
+  background: #2d2d2d;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+
+  img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  span {
+    font-size: 1.4rem; /* Ajuste para o padrão de tamanho da sua aplicação */
+  }
+
+  button {
+    background: transparent;
+    border: none;
+    color: #ff4d4d;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+`;
+
+export const AddColaboradorBtn = styled.button`
+  background: transparent;
+  border: 1px dashed #666;
+  color: #ccc;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1.4rem;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    border-color: #fff;
+    color: #fff;
+  }
+`;
+
+// O container do Menu Suspenso
+export const DropdownLista = styled.div`
+  position: absolute; /* Faz flutuar sobre os outros itens */
+  top: 100%; /* Fica exatamente abaixo do botão */
+  left: 0;
+  background: #1e1e1e; /* Cor escura do seu tema */
+  border: 1px solid #333;
+  border-radius: 8px;
+  margin-top: 8px;
+  width: 280px;
+  max-height: 200px; /* Se tiver muitos amigos, cria barra de rolagem */
+  overflow-y: auto;
+  z-index: 10; /* Garante que fique por cima do resto do formulário */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+`;
+
+export const DropdownEmptyMessage = styled.div`
+  padding: 10px;
+  color: #ccc;
+  text-align: center;
+  font-size: 1.2rem;
+`;
+
+// Cada linha de amigo dentro da lista
+export const DropdownItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: #fff;
+  font-size: 1.4rem;
+
+  &:hover {
+    background: #2d2d2d; /* Efeito de hover ao passar o mouse */
+  }
+
+  img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+`;

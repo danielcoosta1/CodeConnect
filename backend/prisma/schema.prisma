@@ -39,7 +39,11 @@ model User {
   funcao String? // Ex: "Front-end Developer", "Fullstack"
 
   // A relação inversa: um usuário pode ter múltiplos posts
-  posts Post[]
+  posts Post[] @relation("PostAuthor")
+
+  // --- CAMPO PARA SISTEMA DE CO-AUTORES(COLLAB) ---
+  collabPostIds String[] @db.ObjectId // Lista de IDs dos posts onde o usuário é co-autor
+  collabPosts   Post[]   @relation("PostCollaborators", fields: [collabPostIds], references: [id]) // Relaciona os IDs dos posts de colaboração com os posts correspondentes
 
   // --- SISTEMA DE SEGUIDORES  ---
 
@@ -79,8 +83,12 @@ model Post {
   comments Comment[] // Um post pode ter múltiplos comentários
 
   // --- A Relação com o User ---
-  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade) // Relaciona o post ao autor
+  author   User   @relation("PostAuthor", fields: [authorId], references: [id], onDelete: Cascade) // Relaciona o post ao autor
   authorId String @db.ObjectId
+
+  // --- SISTEMA DE CO-AUTORES (COLLAB) ---
+  collaboratorIds String[] @db.ObjectId // Lista de IDs dos co-autores
+  collaborators   User[]   @relation("PostCollaborators", fields: [collaboratorIds], references: [id]) // Relaciona os co-autores com os usuários correspondentes
 }
 
 model Comment {
