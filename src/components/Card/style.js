@@ -10,9 +10,9 @@ export const CardContainer = styled.article`
   border-radius: 0.8rem;
   padding: 1.6rem;
   gap: 1.6rem;
+  
 
   width: 100%;
-
   height: 44rem;
 
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
@@ -28,7 +28,6 @@ export const CardContainer = styled.article`
     border-color: #81fe88;
   }
 
-  /* No mobile, é melhor deixar crescer para não cortar texto importante */
   @media ${device.mobile} {
     height: auto;
     min-height: 40rem;
@@ -37,8 +36,8 @@ export const CardContainer = styled.article`
 
 export const ImgCard = styled.div`
   width: 100%;
-  height: 18rem; /* Altura fixa para a imagem */
-  flex-shrink: 0; /* Impede a imagem de encolher se o texto for grande */
+  height: 18rem;
+  flex-shrink: 0;
 
   border-radius: 0.4rem;
   overflow: hidden;
@@ -59,19 +58,18 @@ export const ImgCard = styled.div`
 export const ContentCard = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1; /* Ocupa o espaço restante */
+  flex: 1;
   gap: 1rem;
   overflow: hidden;
 `;
 
 export const TitleCard = styled.h3`
   margin: 0.5rem 0;
-  font-size: 2.2rem; /* 22px visual */
+  font-size: 2.2rem;
   font-weight: 700;
   color: #fff;
   line-height: 1.3;
 
-  /* Limita a 2 linhas */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -88,7 +86,6 @@ export const Description = styled.p`
   line-height: 1.5;
   color: #bcbcbc;
 
-  /* Limita a 3 linhas */
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -105,7 +102,7 @@ export const CardFooter = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: auto; /* Empurra para o fundo, mantendo alinhado */
+  margin-top: auto;
   padding-top: 1.5rem;
   border-top: 0.1rem solid #2d3538;
   gap: 1rem;
@@ -167,4 +164,38 @@ export const AuthorInfo = styled(Link)`
       font-size: 1.2rem;
     }
   }
+`;
+
+/* --- ESTILOS DO FACEPILE (EQUIPE) --- */
+
+export const FacepileWrapper = styled.div`
+  display: flex;
+  align-items: center;
+
+  /* Borda com a cor de fundo do CardContainer para criar o efeito de corte visual */
+  & > div {
+    border: 3px solid #171d1f;
+    border-radius: 50%;
+    background-color: #171d1f;
+  }
+`;
+
+export const AvatarWrapper = styled.div`
+  position: relative;
+  /* Utiliza Transient Props ($) para receber valores lógicos do JavaScript */
+  z-index: ${(props) => props.$zIndex || 0};
+  margin-left: ${(props) => props.$marginLeft || "0"};
+`;
+
+export const ExtraBadge = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #2d3538;
+  color: #bcbcbc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
 `;

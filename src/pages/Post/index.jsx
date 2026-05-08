@@ -56,7 +56,12 @@ import {
   LanguageDot,
   SocialEngagementBar,
   SocialPill,
-  QuestionBadge, // ✨ O Badge importado corretamente aqui
+  QuestionBadge,
+  TeamContainer,
+  TeamLabel,
+  MainAuthorWrapper,
+  CollaboratorsGrid,
+  CollabCard,
 } from "./style";
 
 import { usePost } from "../../hooks/usePost";
@@ -524,31 +529,56 @@ const Post = () => {
               <span>{comments.length}</span>
             </SocialPill>
           </SocialEngagementBar>
-
-          <AuthorContainer
+          {/* --- SESSÃO DA EQUIPE (AUTOR + COAUTORES) --- */}
+          <TeamContainer
             className="anim-scroll"
-            style={{
-              opacity: 0,
-              transform: "translateY(40px)",
-              borderTop: "none",
-              paddingTop: 0,
-              marginTop: 0,
-            }}
+            style={{ opacity: 0, transform: "translateY(40px)" }}
           >
-            <AuthorInfo to={`/perfil/${postDetails.author.id}`}>
-              <ProfileAvatar
-                src={postDetails.author?.imagem}
-                size={50}
-                hasBorder={true}
-              />
+            {/* 1. AUTOR PRINCIPAL */}
+            <MainAuthorWrapper>
               <div>
-                <h3>
-                  {postDetails.author.nome} {postDetails.author.sobrenome}
-                </h3>
-                <small>@{postDetails.author.usuario}</small>
+                <TeamLabel>Publicado por</TeamLabel>
+                <AuthorInfo to={`/perfil/${postDetails.author.id}`}>
+                  <ProfileAvatar
+                    src={postDetails.author?.imagem}
+                    size={60} // Destaque maior para o autor
+                    hasBorder={true}
+                  />
+                  <div>
+                    <h3>
+                      {postDetails.author.nome} {postDetails.author.sobrenome}
+                    </h3>
+                    <small>@{postDetails.author.usuario}</small>
+                  </div>
+                </AuthorInfo>
               </div>
-            </AuthorInfo>
-          </AuthorContainer>
+            </MainAuthorWrapper>
+
+            {/* 2. COAUTORES (SÓ APARECE SE A LISTA EXISTIR E FOR MAIOR QUE ZERO) */}
+            {postDetails.collaborators &&
+              postDetails.collaborators.length > 0 && (
+                <div>
+                  <TeamLabel>Coautores e Equipe</TeamLabel>
+                  <CollaboratorsGrid>
+                    {postDetails.collaborators.map((collab) => (
+                      <CollabCard key={collab.id} to={`/perfil/${collab.id}`}>
+                        <ProfileAvatar
+                          src={collab.imagem}
+                          size={40} // Tamanho padrão para equipe
+                          hasBorder={false}
+                        />
+                        <div className="collab-info">
+                          <strong>
+                            {collab.nome} {collab.sobrenome}
+                          </strong>
+                          <small>@{collab.usuario}</small>
+                        </div>
+                      </CollabCard>
+                    ))}
+                  </CollaboratorsGrid>
+                </div>
+              )}
+          </TeamContainer>
         </PostHeader>
 
         {postDetails.codeContent && (
