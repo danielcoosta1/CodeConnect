@@ -28,7 +28,13 @@ import {
   GithubInputWrapper,
   TypeSelectorContainer,
   TypeTab,
-  EmptyImagePlaceholder, //  Importado o nosso novo componente
+  EmptyImagePlaceholder,
+  ColaboradoresWrapper,
+  ColaboradorTag,
+  AddColaboradorBtn,
+  DropdownItem,
+  DropdownLista,
+  DropdownEmptyMessage,
 } from "./style";
 
 import { FaGithub, FaTrash, FaUpload, FaRegImage } from "react-icons/fa";
@@ -40,6 +46,8 @@ import closeIcon from "./assets/icons/close.svg";
 import ModalConfirmacao from "../../components/ModalConfirmacao";
 import { useNavigate, useParams } from "react-router-dom";
 import { toastSucesso } from "../../utils/toast";
+import { useAuth } from "../../hooks/useAuth";
+import ProfileAvatar from "../../components/ProfileAvatar";
 
 const Publicar = () => {
   const {
@@ -61,7 +69,12 @@ const Publicar = () => {
     atualizarPost,
     iniciarNovoPost,
     importarDadosDoGithub,
+    carregarRedeAmigos,
+    redeAmigos,
+    loadingRede,
   } = usePost();
+
+  const { user } = useAuth();
 
   const inputRef = useRef();
   const navigate = useNavigate();
@@ -72,6 +85,29 @@ const Publicar = () => {
   const [modalDescartarIsOpen, setModalDescartarIsOpen] = useState(false);
   const [erroTags, setErroTags] = useState("");
   const [erroLocal, setErroLocal] = useState("");
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const listaColaboradores = formData.collaboratorIds || [];
+
+  const adicionarColaborador = (amigo) => {
+    if (!listaColaboradores.includes(amigo.id)) {
+      atualizarDado("collaboratorIds", [...listaColaboradores, amigo.id]);
+    }
+    setDropdownOpen(false); // Fecha a lista ao escolher
+  };
+
+  const removerColaborador = (idRemover) => {
+    atualizarDado(
+      "collaboratorIds",
+      listaColaboradores.filter((id) => id !== idRemover),
+    );
+  };
+
+  const amigosDisponiveis =
+    redeAmigos?.filter((amigo) => !listaColaboradores.includes(amigo.id)) || [];
+  const amigosSelecionados =
+    redeAmigos?.filter((amigo) => listaColaboradores.includes(amigo.id)) || [];
 
   const isSubmitting = loading || loadingEditPost;
   const isEditMode = !!id;
@@ -348,6 +384,68 @@ const Publicar = () => {
                 required
               />
             </CampoInput>
+
+            {postType === "PROJECT" && (
+              <CampoInput>
+                <label>Coautores da Equipe</label>
+
+                <ColaboradoresWrapper>
+                  {/* 1. DESENHA QUEM JÁ FOI SELECIONADO */}
+                  {amigosSelecionados.map((amigo) => (
+                    <ColaboradorTag key={amigo.id}>
+                      <ProfileAvatar src={amigo.imagem} size={24} hasBorder={false} />
+                      <span>{amigo.nome}</span>
+                      <button
+                        type="button"
+                        onClick={() => removerColaborador(amigo.id)}
+                        title="Remover coautor"
+                      >
+                        X
+                      </button>
+                    </ColaboradorTag>
+                  ))}
+
+                  {/* 2. BOTÃO QUE BUSCA A REDE E ABRE O MENU */}
+                  <AddColaboradorBtn
+                    type="button"
+                    disabled={loadingRede}
+                    onClick={() => {
+                      if (user?.id) carregarRedeAmigos(user.id); // O Lazy Loading em ação!
+                      setDropdownOpen(!dropdownOpen);
+                    }}
+                  >
+                    {loadingRede ? "Carregando rede..." : "+ Adicionar colega"}
+                  </AddColaboradorBtn>
+
+                  {/* 3. A LISTA FLUTUANTE DE AMIGOS */}
+                  {dropdownOpen && (
+                    <DropdownLista>
+                      {amigosDisponiveis.length === 0 ? (
+                        <DropdownEmptyMessage>
+                          Nenhum amigo disponível.
+                        </DropdownEmptyMessage>
+                      ) : (
+                        amigosDisponiveis.map((amigo) => (
+                          <DropdownItem
+                            key={amigo.id}
+                            onClick={() => adicionarColaborador(amigo)}
+                          >
+                            <ProfileAvatar
+                              src={amigo.imagem}
+                              size={30}
+                              hasBorder={false}
+                            />
+                            <span>
+                              {amigo.nome} {amigo.sobrenome}
+                            </span>
+                          </DropdownItem>
+                        ))
+                      )}
+                    </DropdownLista>
+                  )}
+                </ColaboradoresWrapper>
+              </CampoInput>
+            )}
 
             {postType === "PROJECT" && (
               <InputGroupRow>

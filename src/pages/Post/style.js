@@ -774,3 +774,76 @@ export const SocialPill = styled.button`
     font-size: 1.8rem; /* Ícone em tamanho ideal para toque */
   }
 `;
+
+/* --- SESSÃO DA EQUIPE E COAUTORES --- */
+
+export const TeamContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4rem;
+  width: 100%;
+
+  padding-top: 2.4rem;
+  border-top: 0.1rem solid #2d3538;
+  margin-top: 1.6rem;
+
+  @media ${device.mobile} {
+    flex-direction: column;
+    gap: 2.4rem;
+  }
+`;
+
+export const TeamLabel = styled.h4`
+  font-size: 1.4rem;
+  color: #818388;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  margin: 0;
+  margin-bottom: 0.8rem;
+  padding-left: 0.8rem;
+`;
+
+export const MainAuthorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const CollaboratorsGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.6rem;
+`;
+
+export const CollabCard = styled(Link)`
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  text-decoration: none;
+  color: inherit;
+
+  padding: 0.8rem;
+  border-radius: 0.8rem;
+  transition: background-color 0.2s ease;
+  width: max-content;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .collab-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  strong {
+    font-size: 1.6rem;
+    color: #fff;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  small {
+    font-size: 1.4rem;
+    color: #818388;
+  }
+`;

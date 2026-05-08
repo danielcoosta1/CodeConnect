@@ -14,6 +14,7 @@ export const ESTADO_LIMPO = {
     imageFileName: "",
     projectUrl: "",
     repoUrl: "",
+    collaboratorIds: [],
   },
 
   allTags: [], // Lista de todas as tags disponíveis (vinda do JSON)
@@ -54,6 +55,10 @@ export const ESTADO_LIMPO = {
   // Dados para interações sociais
   loadingSocial: false,
   errorSocial: null,
+
+  // Dados para Rede de amigos
+  loadingRede: false,
+  redeAmigos: [],
 };
 
 // 2. Tenta ler o rascunho

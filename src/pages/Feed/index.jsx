@@ -88,7 +88,6 @@ const Feed = () => {
     });
   }, [allPosts, tagsFiltrosAtivos, termoBusca]);
 
-  // --- ✨ MOTOR DE ANIMAÇÃO GSAP (EFEITO MICROZOOM) ✨ ---
   useGSAP(
     () => {
       // Aborta a animação se a referência não existir ou se a tela estiver pronta

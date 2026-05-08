@@ -118,7 +118,6 @@ export const postReducer = (state, action) => {
         loading: false,
         success: true,
         error: null,
-        // Opcional: Aqui você poderia limpar o form direto, ou deixar o componente decidir
       };
 
     // A API deu erro (400/500)
@@ -128,6 +127,26 @@ export const postReducer = (state, action) => {
         loading: false,
         success: false,
         error: action.payload, // A mensagem de erro
+      };
+
+    //Rede de amigos
+    case "CARREGAR_REDE_INICIO":
+      return {
+        ...state,
+        loadingRede: true,
+      };
+
+    case "CARREGAR_REDE_SUCESSO":
+      return {
+        ...state,
+        loadingRede: false,
+        redeAmigos: action.payload, 
+      };
+
+    case "CARREGAR_REDE_ERRO":
+      return {
+        ...state,
+        loadingRede: false,
       };
 
     // GRUPO 3: Meus Posts
@@ -277,7 +296,10 @@ export const postReducer = (state, action) => {
       };
 
     // Essa ação pega os dados do post e joga para dentro dos inputs do formulário!
-    case "PREENCHER_FORMULARIO_EDICAO":
+    case "PREENCHER_FORMULARIO_EDICAO": {
+      const idsDosColaboradores = action.payload.collaborators
+        ? action.payload.collaborators.map((colab) => colab.id)
+        : []; // Extrai só os IDs dos colaboradores para colocar no formData, porque o formData espera um array de IDs, não de objetos completos
       return {
         ...state,
         formData: {
@@ -291,11 +313,13 @@ export const postReducer = (state, action) => {
           imageFileName: action.payload.imageFileName || "",
           projectUrl: action.payload.projectUrl || "",
           repoUrl: action.payload.repoUrl || "",
+          collaboratorIds: idsDosColaboradores,
         },
         // Limpa qualquer erro antigo ao entrar no modo edição
         errorUpdatePost: null,
         successUpdatePost: false,
       };
+    }
 
     case "ATUALIZAR_POST_INICIO":
       return {

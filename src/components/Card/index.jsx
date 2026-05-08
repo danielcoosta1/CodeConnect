@@ -10,6 +10,9 @@ import {
   AuthorInfo,
   ActionIcons,
   IconGroup,
+  FacepileWrapper,
+  AvatarWrapper,
+  ExtraBadge,
 } from "./style";
 
 import {
@@ -31,16 +34,20 @@ const Card = ({ post }) => {
   // Verifica se o usuário atual logado está na lista de curtidas desse post
   const hasLiked = post.likeIds?.includes(user?.id);
 
+  // --- LÓGICA DO FACEPILE (EQUIPE) ---
+  const maxCollabs = 2; // Quantos avatares de coautores mostrar antes de virar "+X"
+  const visibleCollabs = post.collaborators?.slice(0, maxCollabs) || [];
+  const extraCollabs = (post.collaborators?.length || 0) - maxCollabs;
+
   // Função que abre o post inteiro
   const abrirPost = () => {
     navigate(`/post/${post.id}`);
   };
 
-const handleShare = async (e) => {
+  const handleShare = async (e) => {
     e.stopPropagation(); // Evita abrir o post ao clicar no botão
     const link = `${window.location.origin}/post/${post.id}`;
 
-    // 1. CHAMA A API IMEDIATAMENTE! (Isso garante que o contador suba na hora)
     compartilharPost(post.id);
 
     try {
@@ -58,7 +65,6 @@ const handleShare = async (e) => {
       }
     } catch (error) {
       console.log("Compartilhamento cancelado pelo usuário.", error);
-      // Como já chamamos a API lá em cima, não importa se ele cancelou, o +1 já contou!
     }
   };
   return (
@@ -110,15 +116,40 @@ const handleShare = async (e) => {
             </ActionIcons>
           )}
 
+          {/* --- INFORMAÇÕES DO AUTOR E EQUIPE (FACEPILE) --- */}
           <AuthorInfo to={`/perfil/${post.author.id}`}>
-            <ProfileAvatar
-              src={post.author?.imagem}
-              size={60}
-              hasBorder={true}
-            />
-            <div className="author-text">
-              <small>@{post.author.usuario}</small>
-            </div>
+            <FacepileWrapper>
+              {/* 1. Avatar do Autor Principal (Z-Index alto para ficar na frente) */}
+              <AvatarWrapper $zIndex={10}>
+                <ProfileAvatar
+                  src={post.author?.imagem}
+                  size={60}
+                  hasBorder={true}
+                />
+              </AvatarWrapper>
+
+              {/* 2. Avatares dos Coautores (Puxados pela margem negativa) */}
+              {visibleCollabs.map((collab, index) => (
+                <AvatarWrapper
+                  key={collab.id}
+                  $zIndex={9 - index}
+                  $marginLeft="-15px"
+                >
+                  <ProfileAvatar
+                    src={collab.imagem}
+                    size={40}
+                    hasBorder={true}
+                  />
+                </AvatarWrapper>
+              ))}
+
+              {/* 3. Bolinha Extra (+X) */}
+              {extraCollabs > 0 && (
+                <AvatarWrapper $zIndex={0} $marginLeft="-15px">
+                  <ExtraBadge>+{extraCollabs}</ExtraBadge>
+                </AvatarWrapper>
+              )}
+            </FacepileWrapper>
           </AuthorInfo>
         </CardFooter>
       </ContentCard>

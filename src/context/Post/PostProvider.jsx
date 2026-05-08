@@ -16,7 +16,7 @@ import {
 } from "../../services/postService";
 import { localStorageService } from "../../services/localStorageService";
 import { postInicialState } from "./inicialState";
-import { getUserById } from "../../services/userService";
+import { getNetworkRequest, getUserById } from "../../services/userService";
 import {
   buscarDadosDoRepo,
   buscarReadme,
@@ -318,6 +318,26 @@ export const PostProvider = ({ children }) => {
     }
   };
 
+  const carregarRedeAmigos = async (meuId) => {
+    if (state.redeAmigos && state.redeAmigos.length > 0) return; // Se já temos a rede carregada, não precisamos carregar de novo
+
+    dispatch({ type: "CARREGAR_REDE_INICIO" });
+    try {
+      const rede = await getNetworkRequest(meuId);
+
+      // Criamos uma lista única de amigos, juntando seguidores e seguindo, e removendo duplicatas (no caso de amizades mútuas)
+      const listaUnica = [...rede.seguidores, ...rede.seguindo].filter(
+        (amigo, index, self) =>
+          index === self.findIndex((t) => t.id === amigo.id),
+      );
+
+      dispatch({ type: "CARREGAR_REDE_SUCESSO", payload: listaUnica });
+    } catch (error) {
+      console.error("Erro ao carregar rede de amigos:", error);
+      dispatch({ type: "CARREGAR_REDE_ERRO" });
+    }
+  };
+
   return (
     <PostContext.Provider
       value={{
@@ -362,6 +382,10 @@ export const PostProvider = ({ children }) => {
         loadingSocial: state.loadingSocial,
         errorSocial: state.errorSocial,
 
+        // Estado Rede de amigos
+        loadingRede: state.loadingRede,
+        redeAmigos: state.redeAmigos,
+
         //AÇÕES / FUNÇÕES
         carregarPerfilPublico,
         atualizarDado,
@@ -383,6 +407,7 @@ export const PostProvider = ({ children }) => {
         iniciarNovoPost,
         curtirPost,
         compartilharPost,
+        carregarRedeAmigos,
       }}
     >
       {" "}
