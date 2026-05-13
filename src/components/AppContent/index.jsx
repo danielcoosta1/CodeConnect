@@ -36,9 +36,10 @@ const AppContent = () => {
         <Route path="/" element={<ProtectedLayout />}>
           {/* 1. Redireciona a raiz '/' para '/feed' */}
           <Route index element={<Navigate to="/feed" replace />} />
-          <Route path="feed" element={<Feed />} />
+          <Route path="feed" element={<Feed postType="PROJECT" />} />
+          <Route path="duvidas" element={<Feed postType="QUESTION" />} />
           <Route path="publicar" element={<Publicar />} />
-          <Route path="/editar/:id" element={<Publicar />} />
+          <Route path="editar/:id" element={<Publicar />} />
           <Route path="perfil" element={<Perfil />} />
           <Route path="sobre-nos" element={<SobreNos />} />
           <Route path="perfil/:id" element={<PerfilPublico />} />

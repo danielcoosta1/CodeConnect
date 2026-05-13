@@ -21,7 +21,7 @@ import Card from "../../components/Card";
 import LoadingState from "../../components/LoadingState";
 import ErrorState from "../../components/ErrorState";
 
-const Feed = () => {
+const Feed = ({ postType = "PROJECT" }) => {
   const { allPosts, loadingPosts, errorPosts, carregarPostsDoBanco } =
     usePost();
 
@@ -29,8 +29,12 @@ const Feed = () => {
   const [tagsFiltrosAtivos, setTagsFiltrosAtivos] = useState([]);
   const [erroLocal, setErroLocal] = useState("");
 
-  // Referência para a "Caixa Pai" da animação
   const feedRef = useRef(null);
+
+  // Variáveis auxiliares para deixar o texto dinâmico (Projeto ou Dúvida)
+  const isQuestion = postType === "QUESTION";
+  const nomeDaVertente = isQuestion ? "dúvida" : "projeto";
+  const sufixoDeGenero = isQuestion ? "a" : "o";
 
   useEffect(() => {
     carregarPostsDoBanco();
@@ -45,7 +49,7 @@ const Feed = () => {
     if (novaTagFiltros && !tagsFiltrosAtivos.includes(novaTagFiltros)) {
       setTagsFiltrosAtivos([...tagsFiltrosAtivos, novaTagFiltros]);
       setErroLocal("");
-      setTermoBusca(""); // Limpa o campo de entrada
+      setTermoBusca("");
     } else if (tagsFiltrosAtivos.includes(novaTagFiltros)) {
       setErroLocal("Essa tag já está aplicada como filtro.");
     }
@@ -58,11 +62,16 @@ const Feed = () => {
   };
 
   const postsFiltrados = useMemo(() => {
+    // 1. PRIMEIRO FILTRO: Pega só os posts que pertencem à vertente atual (PROJECT ou QUESTION)
+    const postsDaVertente = allPosts.filter((post) => post.type === postType);
+
+    // 2. Se não houver busca, devolve os posts da vertente
     if (tagsFiltrosAtivos.length === 0 && termoBusca.trim() === "") {
-      return allPosts;
+      return postsDaVertente;
     }
 
-    return allPosts.filter((post) => {
+    // 3. Aplica a busca em texto e tags APENAS nos posts da vertente correta
+    return postsDaVertente.filter((post) => {
       const atendeTags =
         tagsFiltrosAtivos.length === 0 ||
         tagsFiltrosAtivos.every((termo) => {
@@ -86,37 +95,33 @@ const Feed = () => {
 
       return atendeTags && atendeBusca;
     });
-  }, [allPosts, tagsFiltrosAtivos, termoBusca]);
+  }, [allPosts, tagsFiltrosAtivos, termoBusca, postType]); // Adicionamos postType nas dependências
 
   useGSAP(
     () => {
-      // Aborta a animação se a referência não existir ou se a tela estiver pronta
       if (!feedRef.current || loadingPosts || errorPosts) return;
 
       if (postsFiltrados.length > 0) {
-        // Usamos .to() porque o elemento já começa no estado 'from' (definido no HTML)
         gsap.to(".post-animado", {
-          y: 0, // Volta para a posição original Y: 0
-          opacity: 1, // Fica visível
-          scale: 1, // Volta pro tamanho original (100%)
-          duration: 1.2, // Duração macia por card
-          stagger: 0.25, // Atraso entre os cards (Efeito Cascata)
-          ease: "back.out(1.2)", // O "quique" elástico do microzoom
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 1.2,
+          stagger: 0.25,
+          ease: "back.out(1.2)",
         });
       }
     },
     {
       scope: feedRef,
-      dependencies: [postsFiltrados, loadingPosts, errorPosts], // Refaz ao filtrar
+      dependencies: [postsFiltrados, loadingPosts, errorPosts],
     },
   );
 
   const temResultados = postsFiltrados.length > 0;
 
   return (
-    // O PAI DE TODOS: Recebe a ref do GSAP e SEMPRE é renderizado
     <FeedContainerMain ref={feedRef}>
-      {/* RENDERIZAÇÃO CONDICIONAL SEGURA */}
       {loadingPosts ? (
         <LoadingState texto="Carregando feed..." size={45} />
       ) : errorPosts ? (
@@ -128,7 +133,8 @@ const Feed = () => {
               id="search-feed"
               name="search-feed"
               type="search"
-              placeholder="Digite o que você procura..."
+              // Placeholder Inteligente
+              placeholder={`Buscar ${nomeDaVertente}s...`}
               value={termoBusca}
               onChange={(e) => setTermoBusca(e.target.value)}
               onKeyDown={lidarComKeyDown}
@@ -166,7 +172,6 @@ const Feed = () => {
           {temResultados ? (
             <CardGrid>
               {postsFiltrados.map((post) => (
-                // --- WRAPPER DE ANIMAÇÃO ---
                 <div
                   key={post.id}
                   className="post-animado"
@@ -182,11 +187,17 @@ const Feed = () => {
             </CardGrid>
           ) : (
             <NoPostsContainer>
-              {allPosts.length === 0 ? (
-                <p>Nenhum post encontrado no sistema.</p>
+              {allPosts.filter((p) => p.type === postType).length === 0 ? (
+                <p>
+                  Nenhum{sufixoDeGenero} {nomeDaVertente} encontrad
+                  {sufixoDeGenero} no sistema.
+                </p>
               ) : (
                 <>
-                  <p>Nenhum post encontrado para essa busca.</p>
+                  <p>
+                    Nenhum{sufixoDeGenero} {nomeDaVertente} encontrad
+                    {sufixoDeGenero} para essa busca.
+                  </p>
                   <LimparBuscaButton onClick={limparBuscaTotal}>
                     Limpar busca
                   </LimparBuscaButton>
