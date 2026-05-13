@@ -10,12 +10,12 @@ import {
   LinkNavegacao,
 } from "./style.js";
 import logoImg from "./assets/Logo.svg";
+import { FaPen, FaRegQuestionCircle } from "react-icons/fa";
 
 import feedIcon from "./assets/feed.svg";
 import accountIcon from "./assets/account_circle.svg";
 import infoIcon from "./assets/info.svg";
 import logoutIcon from "./assets/logout.svg";
-import { FaPen } from "react-icons/fa";
 
 import feedIconWhite from "./assets/feedwhite.svg";
 import accountIconWhite from "./assets/account_circlewhite.svg";
@@ -35,6 +35,13 @@ const SideBar = () => {
       path: "/feed",
       src: feedIcon,
       src2: feedIconWhite,
+      onclick: null,
+    },
+    {
+      name: "Dúvidas",
+      path: "/duvidas",
+      src: "react-icon",
+      iconComponent: <FaRegQuestionCircle className="icone-react" />,
       onclick: null,
     },
     {
@@ -87,10 +94,20 @@ const SideBar = () => {
               <LinkNavegacao to={link.path} onClick={link.onclick} end>
                 {({ isActive }) => (
                   <>
-                    <img
-                      src={isActive && link.src2 ? link.src2 : link.src}
-                      alt={link.name}
-                    />
+                    {link.src === "react-icon" ? (
+                      // Renderiza o React Icon
+                      <div
+                        className={`icone-container ${isActive ? "ativo" : ""}`}
+                      >
+                        {link.iconComponent}
+                      </div>
+                    ) : (
+                      // Renderiza o SVG normal
+                      <img
+                        src={isActive && link.src2 ? link.src2 : link.src}
+                        alt={link.name}
+                      />
+                    )}
                     <p className="texto-link">{link.name}</p>
                   </>
                 )}

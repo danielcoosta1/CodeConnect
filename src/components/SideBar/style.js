@@ -178,6 +178,20 @@ export const LinkNavegacao = styled(NavLink)`
     height: 2rem;
   }
 
+  .icone-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem; /* Trava o mesmo espaço físico do SVG */
+  }
+
+  .icone-react {
+    font-size: 2.2rem;
+    color: #888888;
+    transition: color 0.2s ease;
+  }
+
   p {
     font-size: 1.5rem;
     margin: 0;
@@ -187,14 +201,23 @@ export const LinkNavegacao = styled(NavLink)`
   &:hover {
     background-color: #2d3538;
     color: #ffffff;
+
+    .icone-react {
+      color: #ffffff;
+    }
   }
 
   &.active {
     color: #ffffff;
     background-color: #2d3538;
     font-weight: bold;
+
     img {
       filter: brightness(1.5);
+    }
+
+    .icone-react {
+      color: #ffffff;
     }
   }
 
@@ -209,11 +232,20 @@ export const LinkNavegacao = styled(NavLink)`
 
   @media ${device.mobile} {
     padding: 1rem;
+
     &.active {
       background-color: transparent;
+
       /* Destaque verde no ícone da página atual */
-      filter: sepia(100%) hue-rotate(80deg) saturate(300%) brightness(1.2);
+      img {
+        filter: sepia(100%) hue-rotate(80deg) saturate(300%) brightness(1.2);
+      }
+
+      .icone-react {
+        color: #81fe88;
+      }
     }
+
     &:hover {
       background-color: transparent;
     }
