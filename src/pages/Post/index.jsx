@@ -295,7 +295,7 @@ const Post = () => {
             )}
 
             {/* O Dono do Post pode marcar soluções! Excelente para as Dúvidas */}
-            {isAuthorPost && !isReply && (
+            {isAuthorPost && !isReply && isQuestion && (
               <ActionButton
                 onClick={() => handleToggleSolution(comment.id)}
                 $active={comment.isSolution}
